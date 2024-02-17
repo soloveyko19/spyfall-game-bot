@@ -9,23 +9,27 @@ from aiogram.types import (
 async def get_commands(bot: Bot):
     # Group commands
     commands_group_chats = [
-        BotCommand(command="start", description="Запустить бота"),
-        BotCommand(command="game", description="Начать новую игру"),
+        BotCommand(command="game", description="Начало новой игры"),
         BotCommand(
             command="skip",
-            description="Пропустить набор игроков и начать игру",
+            description="Пропустить этап игры",
         ),
-        BotCommand(command="stop", description="Отменить игру"),
+        BotCommand(command="stop", description="Отмена игры"),
     ]
     await bot.set_my_commands(
         commands_group_chats, scope=BotCommandScopeAllGroupChats()
     )
     # Private chat commands
     commands_chats = [
-        BotCommand(command="start", description="Запустить бота"),
-        BotCommand(command="location", description="Добавить локации"),
-        BotCommand(command="cancel", description="Снять все состояния"),
+        BotCommand(command="location", description="Просмотр или добавление локаций"),
+        BotCommand(command="cancel", description="Отмена действия"),
     ]
     await bot.set_my_commands(
         commands_chats, scope=BotCommandScopeAllPrivateChats()
     )
+    # Global commands
+    global_commands = [
+        BotCommand(command="start", description="Запустить бота"),
+        BotCommand(command="help", description="Правила игры")
+    ]
+    await bot.set_my_commands(global_commands)
