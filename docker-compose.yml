@@ -1,0 +1,36 @@
+services:
+  telebot:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    container_name: telebot
+    networks:
+      - db_access
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+    depends_on:
+      postgres:
+        condition: service_started
+    restart: always
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    networks:
+      - db_access
+    volumes:
+      - ./postgres/postgres-data:/var/lib/postgresql/data
+      - ./postgres/init_db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 5432:5432 # Only for developing (DO NOT USE IT IN PRODUCTION)
+
+networks:
+  db_access:
+    driver: bridge

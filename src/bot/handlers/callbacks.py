@@ -1,0 +1,89 @@
+from database.models import Player, Vote, Location, User
+from states.state import LocationStates
+from keyboards.inline import cancel_keyboard, location_options_keyboard
+from utils.messages import send_message
+
+from aiogram.filters import StateFilter
+from aiogram import Router
+from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
+
+router = Router()
+
+
+@router.callback_query(lambda call: call.data == "cancel")
+async def callback_cancel(call: CallbackQuery, state: FSMContext):
+    await state.clear()
+    await call.message.answer(text="Отмена!")
+    await call.message.delete()
+
+
+@router.callback_query(lambda call: call.data.startswith("voting="))
+async def callback_voting(call: CallbackQuery):
+    await call.message.delete()
+    try:
+        spy_player_id = int(call.data.split("=")[1])
+    except (ValueError, IndexError):
+        return
+    player = await Player.get(user_tg_id=call.from_user.id)
+    spy_player = await Player.get(_id=spy_player_id)
+    if not player or not spy_player:
+        return
+    try:
+        vote = Vote(player_id=player.id, spy_id=spy_player.id)
+        await vote.save()
+        await call.message.answer(
+            text=f"*Вы отдали свой голос за [{spy_player.user.full_name}](tg://user?id={spy_player.user.tg_id})\\!*",
+            parse_mode="MarkdownV2",
+        )
+        await send_message(
+            chat_id=player.game.group_tg_id,
+            text=f"*[{player.user.full_name}](tg://user?id={player.user.tg_id}) проголосовал\\(\\-а\\)\\!*",
+            parse_mode="MarkdownV2",
+        )
+    except ValueError:
+        return
+
+
+@router.callback_query(
+    lambda call: call.data.startswith("location_option="),
+    StateFilter(LocationStates.option),
+)
+async def callback_location(call: CallbackQuery, state: FSMContext):
+    try:
+        option = call.data.split("=")[1]
+    except IndexError:
+        return
+    if option == "list":
+        locations = await Location.get_list()
+        await call.message.delete()
+        await call.message.answer(
+            text="*Все доступные локации:*\n\n"
+            + "\n".join([location.name for location in locations]),
+            parse_mode="Markdown",
+        )
+        await call.message.answer(
+            text="*Выберите опцию:*",
+            reply_markup=location_options_keyboard(),
+            parse_mode="MarkdownV2",
+        )
+    elif option == "add":
+        user = await User.get(tg_id=call.from_user.id)
+        if user.is_admin:
+            await call.message.delete()
+            await call.message.answer(
+                text="*Давайте добавим локацию\\!*\n_Отправьте название локации в формате перечисления через комму\\._",
+                reply_markup=cancel_keyboard(),
+                parse_mode="MarkdownV2",
+            )
+            await state.set_state(LocationStates.location)
+        else:
+            await call.answer(
+                text="У вас нет доступа к этой функции",
+                show_alert=True,
+            )
+
+
+@router.callback_query()
+async def echo_callback_query(call: CallbackQuery):
+    await call.message.delete()
