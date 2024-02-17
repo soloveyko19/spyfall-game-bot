@@ -8,7 +8,7 @@ from handlers.messages import router as message_router
 from handlers.callbacks import router as callback_router
 from utils.commands import get_commands
 from utils.database import load_fixtures
-from middlewares.outer_middlewares import ManageGameChatMiddleware
+from middlewares.outer_middlewares import ManageGameChatMiddleware, SendErrorInfoMiddleware
 
 from aiogram import Bot, Dispatcher
 
@@ -27,6 +27,7 @@ async def register_handlers(dp: Dispatcher):
 
 async def set_middlewares(dp: Dispatcher):
     dp.update.outer_middleware(ManageGameChatMiddleware())
+    dp.update.outer_middleware(SendErrorInfoMiddleware())
 
 
 async def main() -> None:
