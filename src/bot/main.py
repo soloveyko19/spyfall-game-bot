@@ -6,9 +6,13 @@ from config import conf
 from handlers.commands import router as command_router
 from handlers.messages import router as message_router
 from handlers.callbacks import router as callback_router
+from handlers.memberships import router as membership_router
 from utils.commands import get_commands
 from utils.database import load_fixtures
-from middlewares.outer_middlewares import ManageGameChatMiddleware, SendErrorInfoMiddleware
+from middlewares.outer_middlewares import (
+    ManageGameChatMiddleware,
+    SendErrorInfoMiddleware,
+)
 
 from aiogram import Bot, Dispatcher
 
@@ -22,6 +26,7 @@ async def register_handlers(dp: Dispatcher):
         command_router,
         callback_router,
         message_router,
+        membership_router,
     )
 
 

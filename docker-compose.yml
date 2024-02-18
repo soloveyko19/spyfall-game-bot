@@ -28,8 +28,8 @@ services:
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-#    ports:
-#      - 5432:5432 # Only for developing (DO NOT USE IT IN PRODUCTION)
+    ports:
+      - 5432:5432 # Only for developing (DO NOT USE IT IN PRODUCTION)
 
 networks:
   db_access:

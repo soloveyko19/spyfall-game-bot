@@ -18,7 +18,9 @@ def join_message(players: List[Player] = None, seconds: int = None):
                 f"[{player.user.full_name}](tg://user?id={player.user.tg_id})"
             )
         msg += ", ".join(players_links)
-        msg += f"\n\n_Всего {len(players)} участник\\(\\-ов\\)\\. 👤_"
+        msg += (
+            f"\n\n_Всего {len(players)} участник\\(\\-ов\\)\\. 👤_"
+        )
     return msg
 
 

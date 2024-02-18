@@ -1,6 +1,9 @@
 from database.models import Player, Vote, Location, User
 from states.state import LocationStates
-from keyboards.inline import cancel_keyboard, location_options_keyboard
+from keyboards.inline import (
+    cancel_keyboard,
+    location_options_keyboard,
+)
 from utils.messages import send_message
 
 from aiogram.filters import StateFilter

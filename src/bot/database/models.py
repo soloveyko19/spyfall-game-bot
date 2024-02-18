@@ -33,13 +33,17 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    tg_id = Column(BigInteger, index=True, nullable=False, unique=True)
+    tg_id = Column(
+        BigInteger, index=True, nullable=False, unique=True
+    )
     full_name = Column(String(200), nullable=False)
     is_admin = Column(Boolean, nullable=False, default=False)
     players = relationship("Player", back_populates="user")
 
     @classmethod
-    async def get_or_create(cls, tg_id: int, full_name: str) -> "User":
+    async def get_or_create(
+        cls, tg_id: int, full_name: str
+    ) -> "User":
         async with async_session() as session:
             query = select(User).filter(User.tg_id == tg_id)
             res = await session.execute(query)
@@ -57,7 +61,9 @@ class User(Base):
     @classmethod
     async def get(cls, tg_id: int = None, id: int = None) -> "User":
         if not tg_id and not id:
-            raise ValueError("At least one argument must be provided")
+            raise ValueError(
+                "At least one argument must be provided"
+            )
         async with async_session() as session:
             query = select(User).filter()
             if id:
@@ -82,7 +88,9 @@ class Location(Base):
             return res.unique().scalar_one()
 
     @classmethod
-    async def add_many(cls, instances: List["Location"]) -> List["Location"]:
+    async def add_many(
+        cls, instances: List["Location"]
+    ) -> List["Location"]:
         async with async_session() as session:
             session.add_all(instances)
             await session.commit()
@@ -128,7 +136,9 @@ class GameState(Base):
     __tablename__ = "game_states"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(20), nullable=False)
-    games = relationship("Game", back_populates="state", lazy="joined")
+    games = relationship(
+        "Game", back_populates="state", lazy="joined"
+    )
 
     @classmethod
     async def has_fixtures(cls) -> bool:
@@ -138,7 +148,9 @@ class GameState(Base):
             return bool(res.unique().scalar_one_or_none())
 
     @classmethod
-    async def add_many(cls, instances: List["GameState"]) -> List["GameState"]:
+    async def add_many(
+        cls, instances: List["GameState"]
+    ) -> List["GameState"]:
         async with async_session() as session:
             session.add_all(instances)
             await session.commit()
@@ -154,6 +166,7 @@ class Game(Base):
     location_id = Column(
         Integer, ForeignKey("locations.id", ondelete="SET NULL")
     )
+    is_allowed = Column(Boolean, nullable=False, default=False)
     state_id = Column(
         Integer,
         ForeignKey("game_states.id", ondelete="CASCADE"),
@@ -161,8 +174,12 @@ class Game(Base):
         default=1,
     )
     state = relationship("GameState", back_populates="games")
-    location = relationship("Location", back_populates="games", lazy="joined")
-    players = relationship("Player", back_populates="game", lazy="selectin")
+    location = relationship(
+        "Location", back_populates="games", lazy="joined"
+    )
+    players = relationship(
+        "Player", back_populates="game", lazy="selectin"
+    )
 
     async def __aenter__(self):
         self.join_key = str(uuid.uuid4())
@@ -193,7 +210,7 @@ class Game(Base):
                 return False
         return True
 
-    async def get_players(self) -> Iterable['Player']:
+    async def get_players(self) -> Iterable["Player"]:
         async with async_session() as session:
             query = select(Player).filter(Player.game_id == self.id)
             res = await session.execute(query)
@@ -204,7 +221,9 @@ class Game(Base):
             await session.execute(
                 delete(Player).filter(
                     Player.id.in_(
-                        select(Player.id).filter(Player.game_id == self.id)
+                        select(Player.id).filter(
+                            Player.game_id == self.id
+                        )
                     )
                 )
             )
@@ -215,7 +234,9 @@ class Game(Base):
         cls, join_key: str = None, group_tg_id: int = None
     ) -> Optional["Game"]:
         if not join_key and not group_tg_id:
-            raise ValueError("At least one argument must be specified")
+            raise ValueError(
+                "At least one argument must be specified"
+            )
         async with async_session() as session:
             query = select(Game)
             if join_key is not None:
@@ -243,14 +264,24 @@ class Player(Base):
     __tablename__ = "players"
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(
-        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
     )
     game_id = Column(
-        Integer, ForeignKey("games.id", ondelete="CASCADE"), nullable=False
+        Integer,
+        ForeignKey("games.id", ondelete="CASCADE"),
+        nullable=False,
     )
-    role_id = Column(Integer, ForeignKey("roles.id", ondelete="SET NULL"))
-    user = relationship("User", back_populates="players", lazy="joined")
-    game = relationship("Game", back_populates="players", lazy="joined")
+    role_id = Column(
+        Integer, ForeignKey("roles.id", ondelete="SET NULL")
+    )
+    user = relationship(
+        "User", back_populates="players", lazy="joined"
+    )
+    game = relationship(
+        "Game", back_populates="players", lazy="joined"
+    )
     role = relationship("Role", back_populates="players")
     votes = relationship(
         "Vote",
@@ -270,7 +301,9 @@ class Player(Base):
         cls, game_id: int, user_id: int
     ) -> Optional["Player"]:
         async with async_session() as session:
-            query = select(Player).filter(and_(Player.user_id == user_id))
+            query = select(Player).filter(
+                and_(Player.user_id == user_id)
+            )
             res = await session.execute(query)
             player = res.unique().scalar_one_or_none()
             if player:
@@ -294,11 +327,15 @@ class Player(Base):
     @classmethod
     async def get(cls, user_tg_id: int = None, _id: int = None):
         if not user_tg_id and not _id:
-            raise ValueError("At least one argument must be provided")
+            raise ValueError(
+                "At least one argument must be provided"
+            )
         async with async_session() as session:
             query = select(Player)
             if user_tg_id:
-                subquery = select(User.id).filter(User.tg_id == user_tg_id)
+                subquery = select(User.id).filter(
+                    User.tg_id == user_tg_id
+                )
                 query = query.filter(Player.user_id.in_(subquery))
             if _id:
                 query = query.filter(Player.id == _id)
@@ -309,14 +346,18 @@ class Player(Base):
 class Vote(Base):
     __tablename__ = "votes"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    player_id = Column(Integer, ForeignKey("players.id", ondelete="CASCADE"))
+    player_id = Column(
+        Integer, ForeignKey("players.id", ondelete="CASCADE")
+    )
     player = relationship(
         "Player",
         back_populates="votes",
         foreign_keys="Vote.player_id",
         lazy="joined",
     )
-    spy_id = Column(Integer, ForeignKey("players.id", ondelete="CASCADE"))
+    spy_id = Column(
+        Integer, ForeignKey("players.id", ondelete="CASCADE")
+    )
     spy_player = relationship(
         "Player",
         back_populates="spy_voted",

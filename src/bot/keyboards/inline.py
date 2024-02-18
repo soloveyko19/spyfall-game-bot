@@ -5,13 +5,13 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.models import Player
 
 
-def join_game_keyboard(join_key: str):
+def join_game_keyboard(join_key: str, bot_username: str):
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
                     text="Присоединиться!",
-                    url=f"https://t.me/my_spyfall_game_bot?start={join_key}",
+                    url=f"https://t.me/{bot_username}?start={join_key}",
                 )
             ]
         ]
@@ -21,18 +21,22 @@ def join_game_keyboard(join_key: str):
 def cancel_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="Отменить! ❌", callback_data="cancel")]
+            [
+                InlineKeyboardButton(
+                    text="Отменить! ❌", callback_data="cancel"
+                )
+            ]
         ]
     )
 
 
-def link_to_bot_keyboard():
+def link_to_bot_keyboard(bot_username: str):
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
                     text="➡️ Перейти к боту ⬅️",
-                    url="https://t.me/my_spyfall_game_bot",
+                    url=f"https://t.me/{bot_username}",
                 )
             ]
         ]

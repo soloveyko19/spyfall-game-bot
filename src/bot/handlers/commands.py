@@ -4,7 +4,7 @@ from keyboards.inline import (
     vote_players_keyboard,
     location_options_keyboard,
 )
-from database.models import User, Game, Player, Vote
+from database.models import User, Game, Player
 from utils.messages import (
     update_message,
     join_message,
@@ -28,7 +28,8 @@ router = Router()
 @router.message(Command("start"), ChatTypeFilter("private"))
 async def command_start(message: types.Message):
     user = await User.get_or_create(
-        tg_id=message.from_user.id, full_name=message.from_user.full_name
+        tg_id=message.from_user.id,
+        full_name=message.from_user.full_name,
     )
     try:
         join_key = message.text.split()[1]
@@ -39,19 +40,16 @@ async def command_start(message: types.Message):
         )
         return
     game = await Game.get(join_key=join_key)
-    try:
-        if not game:
-            return await message.reply(
-                text="*Ошибка ❗️*\n_Такой игры не существует либо она уже была окончена\\._",
-                parse_mode="MarkdownV2",
-            )
-        elif game.state_id != 2:
-            await message.reply(
-                text="*Ошибка ❗️*\nНабор в игру уже окончен\\!",
-                parse_mode="MarkdownV2",
-            )
-    except AttributeError:
-        return await message.answer(text="*Невозможно подключиться к игре\\!*")
+    if not game:
+        return await message.reply(
+            text="*Ошибка ❗️*\n_Такой игры не существует либо она уже была окончена\\._",
+            parse_mode="MarkdownV2",
+        )
+    elif game.state_id != 2:
+        await message.reply(
+            text="*Ошибка ❗️*\nНабор в игру уже окончен\\!",
+            parse_mode="MarkdownV2",
+        )
     try:
         await Player.join_to_game(game_id=game.id, user_id=user.id)
     except ValueError:
@@ -60,11 +58,14 @@ async def command_start(message: types.Message):
         )
         return
     await game.refresh()
+    bot = await message.bot.get_me()
     await update_message(
         message_id=game.join_message_tg_id,
         message_chat_id=game.group_tg_id,
         new_message=join_message(seconds=90, players=game.players),
-        reply_markup=join_game_keyboard(join_key=game.join_key),
+        reply_markup=join_game_keyboard(
+            join_key=game.join_key, bot_username=bot.username
+        ),
     )
     await message.answer(
         text="*Вы присоединились к игре в Шпиона\\! ✅*",
@@ -72,37 +73,41 @@ async def command_start(message: types.Message):
     )
 
 
-@router.message(Command("start"), ChatTypeFilter("supergroup", "group"))
+@router.message(
+    Command("start"), ChatTypeFilter("supergroup", "group")
+)
 async def command_start_group(message: types):
-    await message.delete()
     await message.answer(
         text="*Чтобы начать игру введите команду /game*",
         parse_mode="MarkdownV2",
     )
 
 
-@router.message(Command("game"), ChatTypeFilter("supergroup", "group"))
+@router.message(
+    Command("game"), ChatTypeFilter("supergroup", "group")
+)
 async def command_game(message: types.Message):
-    await message.delete()
     game = await Game.get(group_tg_id=message.chat.id)
-    if not game:
-        game = Game(group_tg_id=message.chat.id, state_id=1)
-        await game.save()
-    elif game.state_id != 1:
+    if game.state_id != 1:
         await message.answer(
             text="*Игра уже запущена\\!* ⛔️", parse_mode="MarkdownV2"
         )
         return
+    elif not game.is_allowed:
+        await message.answer(
+            text="*Вы не предоставили необходимые права администратора\\!*",
+            parse_mode="MarkdownV2",
+        )
+        return
+    await message.delete()
     async with game:
-        # TESTING FEATURES
-        # nikita = await Player(game_id=game.id, user_id=1).save()
-        # skuba = await Player(game_id=game.id, user_id=5).save()
-        # await game.refresh()
-
+        bot = await message.bot.get_me()
         reg_messages = [
             await message.answer(
-                text=join_message(seconds=90, players=game.players),
-                reply_markup=join_game_keyboard(join_key=game.join_key),
+                text=join_message(seconds=90),
+                reply_markup=join_game_keyboard(
+                    join_key=game.join_key, bot_username=bot.username
+                ),
                 parse_mode="MarkdownV2",
             )
         ]
@@ -120,12 +125,15 @@ async def command_game(message: types.Message):
                     await message.answer(
                         text=join_message(seconds=sec),
                         reply_markup=join_game_keyboard(
-                            join_key=game.join_key
+                            join_key=game.join_key,
+                            bot_username=bot.username,
                         ),
                         parse_mode="MarkdownV2",
                     )
                 )
-        await asyncio.gather(delete_all_messages(reg_messages), game.refresh())
+        await asyncio.gather(
+            delete_all_messages(reg_messages), game.refresh()
+        )
         if len(game.players) < 4:
             await message.answer(
                 text="*Игра не запущена\\! ❌*\n_Нужно как минимум 4 участника для игры\\._",
@@ -143,7 +151,9 @@ async def command_game(message: types.Message):
         await game.save()
         await message.answer(
             text=discussion_message(game.players),
-            reply_markup=link_to_bot_keyboard(),
+            reply_markup=link_to_bot_keyboard(
+                bot_username=bot.username
+            ),
             parse_mode="MarkdownV2",
         )
         spies = random.sample(population=game.players, k=spies_count)
@@ -186,19 +196,13 @@ async def command_game(message: types.Message):
                 )
         await message.answer(
             text="*Время на обсуждение вышло\\! ⌛️*\nДавайте проголосуем за шпиона\\!",
-            reply_markup=link_to_bot_keyboard(),
+            reply_markup=link_to_bot_keyboard(
+                bot_username=bot.username
+            ),
             parse_mode="MarkdownV2",
         )
         game.state_id = 4
         await game.save()
-
-        # TESTING FEATURES
-        # vote = Vote(
-        #     player_id=skuba.id,
-        #     spy_id=nikita.id
-        # )
-        # await vote.save()
-
         await asyncio.gather(
             *[
                 send_message(
@@ -206,7 +210,9 @@ async def command_game(message: types.Message):
                     text="*Кто шпион? 🦸*",
                     reply_markup=vote_players_keyboard(
                         players=[
-                            _player for _player in game.players if _player != player
+                            _player
+                            for _player in game.players
+                            if _player != player
                         ]
                     ),
                     parse_mode="MarkdownV2",
@@ -215,7 +221,9 @@ async def command_game(message: types.Message):
             ]
         )
         for sec in range(60, 0, -1):
-            await asyncio.gather(asyncio.sleep(1), game.refresh(attrs=["state_id"]))
+            await asyncio.gather(
+                asyncio.sleep(1), game.refresh(attrs=["state_id"])
+            )
             if game.state_id == 1:
                 return
             elif await game.all_players_voted():
@@ -244,16 +252,16 @@ async def command_game(message: types.Message):
 
         await asyncio.sleep(5)
         if real_spy.id == spy_player.id:
-            res_msg = (
-                "*Победа мирных игроков\\!*\n_Личность шпиона раскрыта\\!_"
-            )
+            res_msg = "*Победа мирных игроков\\!*\n_Личность шпиона раскрыта\\!_"
         else:
             res_msg = f"*Победа Шпиона\\!*\n_Его личность не раскрыта\\!_\nШпионом был\\(\\-a\\) [{real_spy.user.full_name}](tg://user?id={real_spy.user.tg_id})"
         await message.answer(text=res_msg, parse_mode="MarkdownV2")
 
 
 @router.message(Command("location"), ChatTypeFilter("private"))
-async def command_location(message: types.Message, state: FSMContext):
+async def command_location(
+    message: types.Message, state: FSMContext
+):
     await message.delete()
     await message.answer(
         text="*Выберите опцию:*",
@@ -263,24 +271,33 @@ async def command_location(message: types.Message, state: FSMContext):
     await state.set_state(LocationStates.option)
 
 
-@router.message(Command("skip"), ChatTypeFilter("supergroup", "group"))
+@router.message(
+    Command("skip"), ChatTypeFilter("supergroup", "group")
+)
 async def command_skip(message: types.Message):
-    await message.delete()
     game = await Game.get(group_tg_id=message.chat.id)
+    if not game.is_allowed:
+        return
+    await message.delete()
     if game and game.state_id in (2, 3):
         game.state_id += 1
         await game.save()
 
 
-@router.message(Command("stop"), ChatTypeFilter("supergroup", "group"))
+@router.message(
+    Command("stop"), ChatTypeFilter("supergroup", "group")
+)
 async def command_stop(message: types.Message):
-    await message.delete()
     game = await Game.get(group_tg_id=message.chat.id)
+    if not game.is_allowed:
+        return
+    await message.delete()
     if game and game.state_id != 1:
         game.state_id = 1
         await game.save()
         await message.answer(
-            text="*Игра была отменена\\. ❌*", parse_mode="MarkdownV2"
+            text="*Игра была отменена\\. ❌*",
+            parse_mode="MarkdownV2",
         )
 
 
@@ -289,13 +306,14 @@ async def command_cancel(message: types.Message, state: FSMContext):
     await state.clear()
     await message.delete()
     await message.answer(
-        text="*Отмена\\! ❌*\nВсе состояния сняты\\!", parse_mode="MarkdownV2"
+        text="*Отмена\\! ❌*\nВсе состояния сняты\\!",
+        parse_mode="MarkdownV2",
     )
 
 
 @router.message(Command("help"))
 async def command_help(message: types):
     await message.answer(
-        text="*Вас приветствкет бот для игры в шпиона\\! 👋*\n\n*Правила игры следующие:*\nЧтобы начать играть\\, вам нужно написать команду /game непосредственно в группе где планируется игра\\. Минимальное кол\\-во человек для игры \\- 4\\, максимальное 10\\.\nПосле завершения набора игроков\\, бот вышлет вам вашу роль на эту игру которая выпадет вам случайным образом\\. В игре есть две роли:\n*Шпион* \\- задача которого не выдать свою роль до конца игры\\.\n*Не Шпион* \\- задача которого постараться вычислить шпиона\\.\n\nЕсли ваша роль \\- \"Не Шпион\"\\, то вам также бот выдаст случайную локацию для этой игры\\. Задача всех игроков на протяжении игры \\- задавать вопросы по локации\\, чтобы вычислить шпиона\\. После завершения игры проводится голосование\\, все участники игры голосуют за возможного шпиона\\. Если большинство игроков выбирают неправильного игрока\\, то Шпион побеждает\\. Если же шпиона вычислили\\, и больше всего игроков проголосовало за него\\, то у него еще есть шанс победить\\, назвав слово игры которое он понял исходя из заданных ранее вопросов\\.\n*Удачной игры\\!*",
-        parse_mode="MarkdownV2"
+        text='*Вас приветствкет бот для игры в шпиона\\! 👋*\n\n*Правила игры следующие:*\nЧтобы начать играть\\, вам нужно написать команду /game непосредственно в группе где планируется игра\\. Минимальное кол\\-во человек для игры \\- 4\\, максимальное 10\\.\nПосле завершения набора игроков\\, бот вышлет вам вашу роль на эту игру которая выпадет вам случайным образом\\. В игре есть две роли:\n*Шпион* \\- задача которого не выдать свою роль до конца игры\\.\n*Не Шпион* \\- задача которого постараться вычислить шпиона\\.\n\nЕсли ваша роль \\- "Не Шпион"\\, то вам также бот выдаст случайную локацию для этой игры\\. Задача всех игроков на протяжении игры \\- задавать вопросы по локации\\, чтобы вычислить шпиона\\. После завершения игры проводится голосование\\, все участники игры голосуют за возможного шпиона\\. Если большинство игроков выбирают неправильного игрока\\, то Шпион побеждает\\. Если же шпиона вычислили\\, и больше всего игроков проголосовало за него\\, то у него еще есть шанс победить\\, назвав слово игры которое он понял исходя из заданных ранее вопросов\\.\n*Удачной игры\\!*',
+        parse_mode="MarkdownV2",
     )
