@@ -88,7 +88,15 @@ async def command_start_group(message: types):
 )
 async def command_game(message: types.Message):
     game = await Game.get(group_tg_id=message.chat.id)
-    if game.state_id != 1:
+    if not game:
+        game = Game(group_id=message.chat.id, state_id=1)
+        await game.save()
+        await message.answer(
+            text="*Пожалуйста\\, обновите мне права администратора*\n_Извините за неудобства\\(_",
+            parse_mode="MarkdownV2"
+        )
+        return
+    elif game.state_id != 1:
         await message.answer(
             text="*Игра уже запущена\\!* ⛔️", parse_mode="MarkdownV2"
         )
