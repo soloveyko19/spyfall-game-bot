@@ -1,4 +1,5 @@
 from typing import Callable, Dict, Any, Awaitable
+import traceback
 
 from database.models import Game
 
@@ -46,8 +47,10 @@ class SendErrorInfoMiddleware(BaseMiddleware):
             await handler(event, data)
         except Exception as exc:
             bot: Bot = data.get("bot")
+            user = data.get("event_from_user")
             await bot.send_message(
                 chat_id=546994614,
-                text="Снова ошибка 😭\n\n" + str(exc),
+                text=f"*Снова ошибка 😭*\n\n`{traceback.format_exc()}`\n\nПользователь: [{user.full_name}](tg://user?id={user.id})",
+                parse_mode="markdown"
             )
             raise exc
