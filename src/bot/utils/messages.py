@@ -73,3 +73,10 @@ async def delete_message(message: types.Message):
 async def delete_all_messages(messages: List[types.Message]):
     tasks = [delete_message(message) for message in messages]
     await asyncio.gather(*tasks)
+
+
+def escape_markdown_v2(text: str) -> str:
+    escape_chars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+    for char in escape_chars:
+        text = text.replace(char, '\\' + char)
+    return text

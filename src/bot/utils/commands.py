@@ -3,7 +3,10 @@ from aiogram.types import (
     BotCommand,
     BotCommandScopeAllGroupChats,
     BotCommandScopeAllPrivateChats,
+    BotCommandScopeChat
 )
+
+from database.models import User
 
 
 async def get_commands(bot: Bot):
@@ -30,7 +33,17 @@ async def get_commands(bot: Bot):
         BotCommand(command="cancel", description="Отмена действия"),
         BotCommand(command="start", description="Запустить бота"),
         BotCommand(command="help", description="Правила игры"),
+        BotCommand(command="feedback", description="Написать комментарий разработчику")
     ]
     await bot.set_my_commands(
         commands_chats, scope=BotCommandScopeAllPrivateChats()
     )
+    commands_admins = [
+        BotCommand(command="get_feedback", description="Отобразить последние фидбэки")
+    ]
+    commands_admins.extend(commands_chats)
+    for user in await User.get_admins():
+        await bot.set_my_commands(
+            commands_admins,
+            scope=BotCommandScopeChat(chat_id=user.tg_id)
+        )

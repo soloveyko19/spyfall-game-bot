@@ -1,4 +1,3 @@
-import asyncio
 import uuid
 from config import conf
 from typing import Optional, List, Sequence, Iterable
@@ -18,9 +17,10 @@ from sqlalchemy import (
     and_,
     select,
     delete,
-    BigInteger,
+    BigInteger, desc,
 )
 from sqlalchemy import func
+
 
 db_url = f"postgresql+asyncpg://{conf.DB_USERNAME}:{conf.DB_PASSWORD}@{conf.DB_HOST}:5432/telegram_bot"
 engine = create_async_engine(url=db_url)
@@ -39,6 +39,7 @@ class User(Base):
     full_name = Column(String(200), nullable=False)
     is_admin = Column(Boolean, nullable=False, default=False)
     players = relationship("Player", back_populates="user")
+    feedbacks = relationship("Feedback", back_populates="user")
 
     @classmethod
     async def get_or_create(
@@ -72,6 +73,13 @@ class User(Base):
                 query = query.filter(User.tg_id == tg_id)
             res = await session.execute(query)
             return res.scalar_one_or_none()
+
+    @classmethod
+    async def get_admins(cls):
+        async with async_session() as session:
+            query = select(User).filter(User.is_admin == True)
+            res = await session.execute(query)
+            return res.scalars().all()
 
 
 class Location(Base):
@@ -369,3 +377,27 @@ class Vote(Base):
         async with async_session() as session:
             session.add(self)
             await session.commit()
+
+
+class Feedback(Base):
+    __tablename__ = "feedbacks"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    message = Column(String(4096), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user = relationship(
+        "User",
+        lazy="joined",
+        back_populates="feedbacks"
+    )
+
+    async def save(self):
+        async with async_session() as session:
+            session.add(self)
+            await session.commit()
+
+    @classmethod
+    async def get_last(self, limit: int = 10):
+        async with async_session() as session:
+            query = select(Feedback).order_by(desc(Feedback.id)).limit(limit)
+            res = await session.execute(query)
+            return res.scalars().all()

@@ -4,15 +4,15 @@ from keyboards.inline import (
     vote_players_keyboard,
     location_options_keyboard,
 )
-from database.models import User, Game, Player
+from database.models import User, Game, Player, Feedback
 from utils.messages import (
     update_message,
     join_message,
     send_message,
     delete_all_messages,
-    discussion_message,
+    discussion_message, escape_markdown_v2,
 )
-from states.state import LocationStates
+from states.state import LocationStates, FeedbackStates
 from filters.chat import ChatTypeFilter
 
 import asyncio
@@ -327,6 +327,39 @@ async def command_help(message: types.Message):
     )
 
 
-# @router.message(Command("error"))
-# async def command_error(message: types.Message):
-#     return 1 / 0
+@router.message(Command("feedback"), ChatTypeFilter("private"))
+async def command_feedback(message: types.Message, state: FSMContext):
+    await message.delete()
+    await message.answer(
+        text="*Чтобы обратиться к разработчику напишите свой комментарий ниже\\. 👇*\n_Напоминаем что это не коммерческий продукт и каждый ваш отзыв помогает улучшить его\\._",
+        parse_mode="MarkdownV2"
+    )
+    await state.set_state(FeedbackStates.feedback)
+
+
+@router.message(Command("get_feedback"), ChatTypeFilter("private"))
+async def command_get_feedback(message: types.Message):
+    await message.delete()
+    user = await User.get(tg_id=message.from_user.id)
+    if user.is_admin:
+        try:
+            limit = int(message.text.split()[1])
+        except (IndexError, ValueError):
+            limit = 10
+        feedbacks = await Feedback.get_last(limit)
+        await message.answer(
+            text="Вот последние отзывы:\n\n" + "\n\n".join([f"\\[\\#{feedback.id}\\] [{feedback.user.full_name}](tg://user?id={feedback.user.tg_id}) пишет: {escape_markdown_v2(feedback.message)}" for feedback in feedbacks]),
+            parse_mode="MarkdownV2"
+        )
+    else:
+        await message.answer(
+            text="*У Вас нет права на выполнение этой команды\\.*",
+            parse_mode="MarkdownV2"
+        )
+
+
+@router.message(Command("error"))
+async def command_error(message: types.Message):
+    user = await User.get(tg_id=message.from_user.id)
+    if user.is_admin:
+        return 1 / 0
