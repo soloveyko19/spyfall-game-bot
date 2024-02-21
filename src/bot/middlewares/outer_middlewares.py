@@ -2,6 +2,7 @@ from typing import Callable, Dict, Any, Awaitable
 import traceback
 
 from database.models import Game
+from utils.messages import escape_markdown_v2
 
 from aiogram import BaseMiddleware, Bot
 from aiogram.types import TelegramObject, Message
@@ -50,7 +51,7 @@ class SendErrorInfoMiddleware(BaseMiddleware):
             user = data.get("event_from_user")
             await bot.send_message(
                 chat_id=546994614,
-                text=f"*Снова ошибка 😭*\n\n`{traceback.format_exc()}`\n\nПользователь: [{user.full_name}](tg://user?id={user.id})",
+                text=f"*Снова ошибка 😭*\n\n`{escape_markdown_v2(traceback.format_exc())}`\n\nПользователь: [{escape_markdown_v2(user.full_name)}](tg://user?id={user.id})",
                 parse_mode="markdown"
             )
             raise exc
