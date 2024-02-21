@@ -2,6 +2,7 @@ from aiogram import Router, types
 from aiogram.filters import (
     ChatMemberUpdatedFilter,
     JOIN_TRANSITION,
+    LEAVE_TRANSITION,
     MEMBER,
     ADMINISTRATOR,
 )
@@ -47,9 +48,29 @@ async def check_promoted(message: types.ChatMemberUpdated):
                 parse_mode="MarkdownV2",
             )
         else:
+            if game.state_id != 1:
+                game.state_id = 1
             game.is_allowed = False
             await game.save()
             await message.answer(
                 text=f"*Предоставлены не все необходимые права администратора\\:*\n{'✅' if rights[0] else '❌'} \\- Удалять сообщения\n{'✅' if rights[1] else '❌'} \\- Блокировать пользователей\n{'✅' if rights[2] else '❌'} \\- Закреплять сообщения",
                 parse_mode="MarkdownV2",
             )
+
+
+@router.my_chat_member(
+    ChatMemberUpdatedFilter(
+        LEAVE_TRANSITION
+    )
+)
+async def bot_leaved(message: types.ChatMemberUpdated):
+    if message.new_chat_member.user.id != message.bot.id:
+        return
+    game = await Game.get(group_tg_id=message.chat.id)
+    if not game:
+        return
+    elif game.state_id != 1:
+        game.state_id = 1
+    game.is_allowed = False
+    await game.save()
+

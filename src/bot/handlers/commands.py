@@ -127,7 +127,6 @@ async def command_game(message: types.Message):
         for sec in range(89, 0, -1):
             await asyncio.gather(asyncio.sleep(1), game.refresh())
             if game.state_id == 1:
-                await delete_all_messages(reg_messages)
                 return
             elif game.state_id == 3:
                 break
