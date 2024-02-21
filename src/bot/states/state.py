@@ -8,3 +8,7 @@ class LocationStates(StatesGroup):
 
 class FeedbackStates(StatesGroup):
     feedback = State()
+
+
+class AdminStates(StatesGroup):
+    message_user = State()

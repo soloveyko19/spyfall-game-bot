@@ -81,6 +81,11 @@ class User(Base):
             res = await session.execute(query)
             return res.scalars().all()
 
+    async def save(self):
+        async with async_session() as session:
+            session.add(self)
+            await session.commit()
+
 
 class Location(Base):
     __tablename__ = "locations"

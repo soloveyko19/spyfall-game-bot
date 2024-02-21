@@ -5,6 +5,7 @@ from keyboards.inline import (
     location_options_keyboard,
 )
 from database.models import User, Game, Player, Feedback
+from keyboards.reply import request_contact_keyboard
 from utils.messages import (
     update_message,
     join_message,
@@ -12,7 +13,7 @@ from utils.messages import (
     delete_all_messages,
     discussion_message, escape_markdown_v2,
 )
-from states.state import LocationStates, FeedbackStates
+from states.state import LocationStates, FeedbackStates, AdminStates
 from filters.chat import ChatTypeFilter
 
 import asyncio
@@ -21,6 +22,7 @@ import random
 from aiogram import Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
+from aiogram.types import ReplyKeyboardRemove
 
 router = Router()
 
@@ -316,6 +318,7 @@ async def command_cancel(message: types.Message, state: FSMContext):
     await message.answer(
         text="*Отмена\\! ❌*\nВсе состояния сняты\\!",
         parse_mode="MarkdownV2",
+        reply_markup=ReplyKeyboardRemove()
     )
 
 
@@ -360,6 +363,31 @@ async def command_get_feedback(message: types.Message):
 
 @router.message(Command("error"))
 async def command_error(message: types.Message):
+    await message.delete()
     user = await User.get(tg_id=message.from_user.id)
     if user.is_admin:
         return 1 / 0
+    else:
+        await message.answer(
+            text="*У вас нет права на выполнение этой команды\\!*",
+            parse_mode="MarkdownV2"
+        )
+
+
+@router.message(Command("admin"), ChatTypeFilter("private"))
+async def command_admin(message: types.Message, state: FSMContext):
+    await message.delete()
+    user = await User.get(tg_id=message.from_user.id)
+    if user.is_admin:
+        await message.answer(
+            text="*Вы собираетесь добавить администратора для этого бота\\! 👨‍💻*\n_Пожалуйста\\, поделитесь контактом пользователя которого вы хотите назначить администратором 👇_",
+            parse_mode="MarkdownV2",
+            reply_markup=request_contact_keyboard()
+        )
+        await state.set_state(AdminStates.message_user)
+    else:
+        await message.answer(
+            text="*У вас нет права на выполнение этой команды\\!*",
+            parse_mode="MarkdownV2"
+        )
+

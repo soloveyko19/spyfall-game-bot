@@ -1,8 +1,8 @@
+from database.models import Player
+
 from typing import List
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
-from database.models import Player
 
 
 def join_game_keyboard(join_key: str, bot_username: str):
@@ -23,7 +23,7 @@ def cancel_keyboard():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Отменить! ❌", callback_data="cancel"
+                    text="Отменить! ❌", callback_data="cancel",
                 )
             ]
         ]
@@ -62,7 +62,7 @@ def location_options_keyboard():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Список всех локаций",
+                    text="Список всех локаций 📋",
                     callback_data="location_option=list",
                 )
             ],
