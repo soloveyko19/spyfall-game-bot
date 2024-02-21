@@ -11,7 +11,8 @@ from utils.messages import (
     join_message,
     send_message,
     delete_all_messages,
-    discussion_message, escape_markdown_v2,
+    discussion_message,
+    escape_markdown_v2,
 )
 from states.state import LocationStates, FeedbackStates, AdminStates
 from filters.chat import ChatTypeFilter
@@ -187,7 +188,7 @@ async def command_game(message: types.Message):
                 tasks.append(
                     send_message(
                         chat_id=player.user.tg_id,
-                        text=f"*Вы НЕ Шпион! 👨*\nЛокация: *{game.location.name.capitalize()}*\n_Вычислите шпиона!_",
+                        text=f"*Вы НЕ Шпион! 👨*\nЛокация: *{escape_markdown_v2(game.location.name.capitalize())}*\n_Вычислите шпиона!_",
                         parse_mode="Markdown",
                     )
                 )
@@ -250,13 +251,13 @@ async def command_game(message: types.Message):
 
         if not spy_player:
             await message.answer(
-                text=f"*Мнения разошлись\\, а значит победа Шпиона\\! 💁‍♂️*\nШпионом был\\(\\-a\\) [{real_spy.user.full_name}](tg://user?id={real_spy.user.tg_id})",
+                text=f"*Мнения разошлись\\, а значит победа Шпиона\\! 💁‍♂️*\nШпионом был\\(\\-a\\) [{escape_markdown_v2(real_spy.user.full_name)}](tg://user?id={real_spy.user.tg_id})",
                 parse_mode="MarkdownV2",
             )
             return
 
         await message.answer(
-            text=f"*Большинство проголосовало за* [{spy_player.user.full_name}](tg://user?id={spy_player.user.tg_id})",
+            text=f"*Большинство проголосовало за* [{escape_markdown_v2(spy_player.user.full_name)}](tg://user?id={spy_player.user.tg_id})",
             parse_mode="MarkdownV2",
         )
 
@@ -264,7 +265,7 @@ async def command_game(message: types.Message):
         if real_spy.id == spy_player.id:
             res_msg = "*Победа мирных игроков\\!*\n_Личность шпиона раскрыта\\!_"
         else:
-            res_msg = f"*Победа Шпиона\\!*\n_Его личность не раскрыта\\!_\nШпионом был\\(\\-a\\) [{real_spy.user.full_name}](tg://user?id={real_spy.user.tg_id})"
+            res_msg = f"*Победа Шпиона\\!*\n_Его личность не раскрыта\\!_\nШпионом был\\(\\-a\\) [{escape_markdown_v2(real_spy.user.full_name)}](tg://user?id={real_spy.user.tg_id})"
         await message.answer(text=res_msg, parse_mode="MarkdownV2")
 
 

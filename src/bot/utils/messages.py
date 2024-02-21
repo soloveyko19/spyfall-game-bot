@@ -1,9 +1,9 @@
+from database.models import Player
+
 import asyncio
 from typing import List
 
 from aiogram import types
-
-from database.models import Player
 
 
 def join_message(players: List[Player] = None, seconds: int = None):
@@ -15,7 +15,7 @@ def join_message(players: List[Player] = None, seconds: int = None):
         players_links = []
         for player in players:
             players_links.append(
-                f"[{player.user.full_name}](tg://user?id={player.user.tg_id})"
+                f"[{escape_markdown_v2(player.user.full_name)}](tg://user?id={player.user.tg_id})"
             )
         msg += ", ".join(players_links)
         msg += (
@@ -26,19 +26,19 @@ def join_message(players: List[Player] = None, seconds: int = None):
 
 def discussion_message(players: List[Player]) -> str:
     return (
-        f"*Начинается обсуждение\\! 🗣*\n_Игра будет длиться: {len(players)} минут\\(\\-ы\\) ⏳_\n\n*Игроки:*\n"
-        + ",\n".join(
-            [
-                f"[{player.user.full_name}](tg://user?id={player.user.tg_id})"
-                for player in players
-            ]
-        )
-        + f"\n\n_Всего {len(players)} участников\\. 👤_"
+            f"*Начинается обсуждение\\! 🗣*\n_Игра будет длиться: {len(players)} минут\\(\\-ы\\) ⏳_\n\n*Игроки:*\n"
+            + ",\n".join(
+        [
+            f"[{escape_markdown_v2(player.user.full_name)}](tg://user?id={player.user.tg_id})"
+            for player in players
+        ]
+    )
+            + f"\n\n_Всего {len(players)} участников\\. 👤_"
     )
 
 
 async def update_message(
-    message_id, message_chat_id, new_message, reply_markup=None
+        message_id, message_chat_id, new_message, reply_markup=None
 ):
     from main import bot
 
@@ -53,7 +53,7 @@ async def update_message(
 
 
 async def send_message(
-    chat_id: int, text: str, reply_markup=None, parse_mode=None
+        chat_id: int, text: str, reply_markup=None, parse_mode=None
 ):
     from main import bot
 

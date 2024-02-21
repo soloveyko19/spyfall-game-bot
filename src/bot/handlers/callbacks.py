@@ -4,7 +4,7 @@ from keyboards.inline import (
     cancel_keyboard,
     location_options_keyboard,
 )
-from utils.messages import send_message
+from utils.messages import send_message, escape_markdown_v2
 
 from aiogram.filters import StateFilter
 from aiogram import Router
@@ -17,7 +17,7 @@ router = Router()
 @router.callback_query(lambda call: call.data == "cancel")
 async def callback_cancel(call: CallbackQuery, state: FSMContext):
     await state.clear()
-    await call.message.answer(text="Отмена!")
+    await call.message.answer(text="*Отмена\\!*", parse_mode="MarkdownV2")
     await call.message.delete()
 
 
@@ -36,12 +36,12 @@ async def callback_voting(call: CallbackQuery):
         vote = Vote(player_id=player.id, spy_id=spy_player.id)
         await vote.save()
         await call.message.answer(
-            text=f"*Вы отдали свой голос за [{spy_player.user.full_name}](tg://user?id={spy_player.user.tg_id})\\!*",
+            text=f"*Вы отдали свой голос за [{escape_markdown_v2(spy_player.user.full_name)}](tg://user?id={spy_player.user.tg_id})\\!*",
             parse_mode="MarkdownV2",
         )
         await send_message(
             chat_id=player.game.group_tg_id,
-            text=f"*[{player.user.full_name}](tg://user?id={player.user.tg_id}) проголосовал\\(\\-а\\)\\!*",
+            text=f"*[{escape_markdown_v2(player.user.full_name)}](tg://user?id={player.user.tg_id}) проголосовал\\(\\-а\\)\\!*",
             parse_mode="MarkdownV2",
         )
     except ValueError:
@@ -62,7 +62,7 @@ async def callback_location(call: CallbackQuery, state: FSMContext):
         await call.message.delete()
         await call.message.answer(
             text="*Все доступные локации:*\n\n"
-            + "\n".join([location.name for location in locations]),
+            + escape_markdown_v2("\n".join([location.name for location in locations])),
             parse_mode="Markdown",
         )
         await call.message.answer(
