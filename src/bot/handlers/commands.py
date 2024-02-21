@@ -188,8 +188,8 @@ async def command_game(message: types.Message):
                 tasks.append(
                     send_message(
                         chat_id=player.user.tg_id,
-                        text=f"*Вы НЕ Шпион! 👨*\nЛокация: *{escape_markdown_v2(game.location.name.capitalize())}*\n_Вычислите шпиона!_",
-                        parse_mode="Markdown",
+                        text=f"*Вы НЕ Шпион\\! 👨*\nЛокация: *{escape_markdown_v2(game.location.name.capitalize())}*\n_Вычислите шпиона\\!_",
+                        parse_mode="MarkdownV2",
                     )
                 )
             await player.save()

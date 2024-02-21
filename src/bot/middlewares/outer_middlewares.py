@@ -52,6 +52,6 @@ class SendErrorInfoMiddleware(BaseMiddleware):
             await bot.send_message(
                 chat_id=546994614,
                 text=f"*Снова ошибка 😭*\n\n`{escape_markdown_v2(traceback.format_exc())}`\n\nПользователь: [{escape_markdown_v2(user.full_name)}](tg://user?id={user.id})",
-                parse_mode="markdown"
+                parse_mode="MarkdownV2"
             )
             raise exc
