@@ -11,6 +11,7 @@ services:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_HOST=${DB_HOST}
+      - LOG_LEVEL=${LOG_LEVEL}
     depends_on:
       postgres:
         condition: service_started

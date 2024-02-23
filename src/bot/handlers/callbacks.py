@@ -4,7 +4,7 @@ from keyboards.inline import (
     cancel_keyboard,
     location_options_keyboard,
 )
-from utils.messages import send_message, escape_markdown_v2
+from utils.messages import escape_markdown_v2
 
 from aiogram.filters import StateFilter
 from aiogram import Router
@@ -39,7 +39,7 @@ async def callback_voting(call: CallbackQuery):
             text=f"*Вы отдали свой голос за [{escape_markdown_v2(spy_player.user.full_name)}](tg://user?id={spy_player.user.tg_id})\\!*",
             parse_mode="MarkdownV2",
         )
-        await send_message(
+        await call.bot.send_message(
             chat_id=player.game.group_tg_id,
             text=f"*[{escape_markdown_v2(player.user.full_name)}](tg://user?id={player.user.tg_id}) проголосовал\\(\\-а\\)\\!*",
             parse_mode="MarkdownV2",

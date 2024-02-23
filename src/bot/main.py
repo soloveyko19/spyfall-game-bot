@@ -1,4 +1,3 @@
-import sys
 import logging
 import asyncio
 
@@ -17,11 +16,7 @@ from middlewares.outer_middlewares import (
 from aiogram import Bot, Dispatcher
 
 
-bot = Bot(token=conf.TELEGRAM_BOT_TOKEN)
-dispatcher = Dispatcher()
-
-
-async def register_handlers(dp: Dispatcher):
+def register_handlers(dp: Dispatcher):
     dp.include_routers(
         command_router,
         callback_router,
@@ -30,21 +25,31 @@ async def register_handlers(dp: Dispatcher):
     )
 
 
-async def set_middlewares(dp: Dispatcher):
+def set_middlewares(dp: Dispatcher):
     dp.update.outer_middleware(ManageGameChatMiddleware())
     dp.update.outer_middleware(SendErrorInfoMiddleware())
 
 
-async def main() -> None:
-    await asyncio.gather(
-        load_fixtures(),
-        get_commands(bot),
-        register_handlers(dispatcher),
-        set_middlewares(dispatcher),
-    )
-    await dispatcher.start_polling(bot)
+async def aiogram_on_startup(bot: Bot):
+    await get_commands(bot)
+    await load_fixtures()
+
+
+def set_bot_options(dp: Dispatcher):
+    set_middlewares(dp)
+    register_handlers(dp)
+    dp.startup.register(aiogram_on_startup)
+
+
+def main() -> None:
+    logging.basicConfig(level=conf.LOG_LEVEL)
+
+    bot = Bot(token=conf.TELEGRAM_BOT_TOKEN, parse_mode="MarkdownV2")
+    dp = Dispatcher()
+
+    set_bot_options(dp)
+    asyncio.run(dp.start_polling(bot))
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.WARNING, stream=sys.stdout)
-    asyncio.run(main())
+    main()

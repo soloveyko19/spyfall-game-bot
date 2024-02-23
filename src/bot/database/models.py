@@ -17,9 +17,11 @@ from sqlalchemy import (
     and_,
     select,
     delete,
-    BigInteger, desc,
+    BigInteger,
+    desc
 )
 from sqlalchemy import func
+from sqlalchemy.schema import DefaultClause
 
 
 db_url = f"postgresql+asyncpg://{conf.DB_USERNAME}:{conf.DB_PASSWORD}@{conf.DB_HOST}:5432/telegram_bot"
@@ -176,6 +178,7 @@ class Game(Base):
     group_tg_id = Column(BigInteger, index=True, nullable=False)
     join_key = Column(String, index=True, unique=True)
     join_message_tg_id = Column(Integer, index=True)
+    extend = Column(Integer, nullable=False, server_default=DefaultClause("0"))
     location_id = Column(
         Integer, ForeignKey("locations.id", ondelete="SET NULL")
     )
@@ -198,6 +201,7 @@ class Game(Base):
         self.join_key = str(uuid.uuid4())
         self.state_id = 2
         self.location = await Location.get_random()
+        self.extend = 0
         await self.save()
         return self
 
@@ -206,6 +210,7 @@ class Game(Base):
         self.state_id = 1
         self.location_id = None
         self.join_message_tg_id = None
+        self.extend = 0
         await self.save()
         await self.delete_players()
 
