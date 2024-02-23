@@ -28,9 +28,7 @@ async def bot_joined(message: types.ChatMemberUpdated):
 
 
 @router.my_chat_member(
-    ChatMemberUpdatedFilter(
-        (MEMBER | ADMINISTRATOR) >> ADMINISTRATOR
-    )
+    ChatMemberUpdatedFilter((MEMBER | ADMINISTRATOR) >> ADMINISTRATOR)
 )
 async def check_promoted(message: types.ChatMemberUpdated):
     if message.new_chat_member.user.id == message.bot.id:
@@ -58,11 +56,7 @@ async def check_promoted(message: types.ChatMemberUpdated):
             )
 
 
-@router.my_chat_member(
-    ChatMemberUpdatedFilter(
-        LEAVE_TRANSITION
-    )
-)
+@router.my_chat_member(ChatMemberUpdatedFilter(LEAVE_TRANSITION))
 async def bot_leaved(message: types.ChatMemberUpdated):
     if message.new_chat_member.user.id != message.bot.id:
         return
@@ -73,4 +67,3 @@ async def bot_leaved(message: types.ChatMemberUpdated):
         game.state_id = 1
     game.is_allowed = False
     await game.save()
-

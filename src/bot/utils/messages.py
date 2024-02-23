@@ -18,22 +18,20 @@ def join_message(players: List[Player] = None, seconds: int = None):
                 f"[{escape_markdown_v2(player.user.full_name)}](tg://user?id={player.user.tg_id})"
             )
         msg += ", ".join(players_links)
-        msg += (
-            f"\n\n_Всего {len(players)} участник\\(\\-ов\\)\\. 👤_"
-        )
+        msg += f"\n\n_Всего {len(players)} участник\\(\\-ов\\)\\. 👤_"
     return msg
 
 
 def discussion_message(players: List[Player]) -> str:
     return (
-            f"*Начинается обсуждение\\! 🗣*\n_Игра будет длиться: {len(players)} минут\\(\\-ы\\) ⏳_\n\n*Игроки:*\n"
-            + ",\n".join(
-        [
-            f"[{escape_markdown_v2(player.user.full_name)}](tg://user?id={player.user.tg_id})"
-            for player in players
-        ]
-    )
-            + f"\n\n_Всего {len(players)} участников\\. 👤_"
+        f"*Начинается обсуждение\\! 🗣*\n_Игра будет длиться: {len(players)} минут\\(\\-ы\\) ⏳_\n\n*Игроки:*\n"
+        + ",\n".join(
+            [
+                f"[{escape_markdown_v2(player.user.full_name)}](tg://user?id={player.user.tg_id})"
+                for player in players
+            ]
+        )
+        + f"\n\n_Всего {len(players)} участников\\. 👤_"
     )
 
 
@@ -47,7 +45,26 @@ async def delete_all_messages(messages: List[types.Message]):
 
 
 def escape_markdown_v2(text: str) -> str:
-    escape_chars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+    escape_chars = [
+        "_",
+        "*",
+        "[",
+        "]",
+        "(",
+        ")",
+        "~",
+        "`",
+        ">",
+        "#",
+        "+",
+        "-",
+        "=",
+        "|",
+        "{",
+        "}",
+        ".",
+        "!",
+    ]
     for char in escape_chars:
-        text = text.replace(char, '\\' + char)
+        text = text.replace(char, "\\" + char)
     return text

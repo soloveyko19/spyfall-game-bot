@@ -28,7 +28,7 @@ async def message_location(message: types.Message):
     await message.answer(
         text=msg,
         parse_mode="MarkdownV2",
-        reply_markup=cancel_keyboard()
+        reply_markup=cancel_keyboard(),
     )
 
 
@@ -40,7 +40,7 @@ async def message_feedback(message: types.Message, state: FSMContext):
     await state.clear()
     await message.answer(
         text="*Спасибо за фидбэк\\! ❤️*\n_Ваше сообщение отправлено и будет принято во внимание разработчиками\\!_",
-        parse_mode="MarkdownV2"
+        parse_mode="MarkdownV2",
     )
 
 
@@ -54,24 +54,24 @@ async def message_admin_user(message: types.Message, state: FSMContext):
             await message.answer(
                 text=f"*Вы успешно сделали [{escape_markdown_v2(user.full_name)}](tg://user?id={user.tg_id}) администратором\\!*",
                 parse_mode="MarkdownV2",
-                reply_markup=ReplyKeyboardRemove()
+                reply_markup=ReplyKeyboardRemove(),
             )
             await state.clear()
             await message.bot.send_message(
                 chat_id=user.tg_id,
                 text=f"*[{escape_markdown_v2(message.from_user.full_name)}](tg://user?id={message.from_user.id}) назначил Вас моим администратором\\!*",
-                parse_mode="MarkdownV2"
+                parse_mode="MarkdownV2",
             )
             await set_admin_commands(bot=message.bot, user=user)
         else:
             await message.answer(
                 text="*Такого пользователя нет в моей системе\\!*\n_Сперва ему нужно ввести команду /start\\._",
                 parse_mode="MarkdownV2",
-                reply_markup=ReplyKeyboardRemove()
+                reply_markup=ReplyKeyboardRemove(),
             )
             await state.clear()
     else:
         await message.answer(
             text="*Некоректный ввод\\(*_Пожалйста, поделитесь пользователем через клавиатуру 👇_",
-            parse_mode="MarkdownV2"
+            parse_mode="MarkdownV2",
         )
