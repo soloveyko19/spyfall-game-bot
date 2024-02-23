@@ -8,6 +8,8 @@ from aiogram.types import (
 
 from database.models import User
 
+
+# Group chats
 commands_group_chats = [
     BotCommand(command="game", description="Начало новой игры"),
     BotCommand(
@@ -17,8 +19,10 @@ commands_group_chats = [
     BotCommand(command="stop", description="Отмена игры"),
     BotCommand(command="start", description="Запустить бота"),
     BotCommand(command="help", description="Правила игры"),
+    BotCommand(command="extend", description="Продлить регистрацию")
 ]
 
+# Private chats
 commands_private_chats = [
     BotCommand(
         command="location",
@@ -30,6 +34,7 @@ commands_private_chats = [
     BotCommand(command="feedback", description="Написать комментарий разработчику")
 ]
 
+# Additional commands in chats only for admins
 commands_admins = [
     BotCommand(command="get_feedback", description="Отобразить последние фидбэки"),
     BotCommand(command="error", description="Вызвать ошибку"),
@@ -40,17 +45,12 @@ commands_admins.extend(commands_private_chats)
 
 
 async def get_commands(bot: Bot):
-    # Group commands
-
     await bot.set_my_commands(
         commands_group_chats, scope=BotCommandScopeAllGroupChats()
     )
-    # Private chat commands
-
     await bot.set_my_commands(
         commands_private_chats, scope=BotCommandScopeAllPrivateChats()
     )
-
     for user in await User.get_admins():
         await bot.set_my_commands(
             commands_admins,

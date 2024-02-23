@@ -7,9 +7,7 @@ from keyboards.inline import (
 from database.models import User, Game, Player, Feedback
 from keyboards.reply import request_contact_keyboard
 from utils.messages import (
-    update_message,
     join_message,
-    send_message,
     delete_all_messages,
     discussion_message,
     escape_markdown_v2,
@@ -62,10 +60,10 @@ async def command_start(message: types.Message):
         return
     await game.refresh()
     bot = await message.bot.get_me()
-    await update_message(
+    await message.bot.edit_message_text(
         message_id=game.join_message_tg_id,
-        message_chat_id=game.group_tg_id,
-        new_message=join_message(seconds=90, players=game.players),
+        chat_id=game.group_tg_id,
+        text=join_message(seconds=90, players=game.players),
         reply_markup=join_game_keyboard(
             join_key=game.join_key, bot_username=bot.username
         ),
@@ -124,12 +122,23 @@ async def command_game(message: types.Message):
         ]
         game.join_message_tg_id = reg_messages[0].message_id
         await game.save()
-        for sec in range(89, 0, -1):
+        sec = 89
+        while sec != 0:
             await asyncio.gather(asyncio.sleep(1), game.refresh())
             if game.state_id == 1:
                 return
             elif game.state_id == 3:
                 break
+            elif game.extend != 0:
+                sec += 30 * game.extend
+                game.extend = 0
+                await game.save()
+                reg_messages.append(
+                    await message.answer(
+                        text=f"*\\+30 секунд к регистрации\\!*\n_Оставшееся время \\- {sec} секунд\\._",
+                        parse_mode="MarkdownV2"
+                    )
+                )
             elif sec % 30 == 0:
                 reg_messages.append(
                     await message.answer(
@@ -141,6 +150,7 @@ async def command_game(message: types.Message):
                         parse_mode="MarkdownV2",
                     )
                 )
+            sec -= 1
         await asyncio.gather(
             delete_all_messages(reg_messages), game.refresh()
         )
@@ -173,7 +183,7 @@ async def command_game(message: types.Message):
                 player.role_id = 1
                 tasks.extend(
                     [
-                        send_message(
+                        message.bot.send_message(
                             chat_id=player.user.tg_id,
                             text="*Вы Шпион\\! 🦸*\n_Не дайте остальным участникам вычислить вашу роль\\!_",
                             parse_mode="MarkdownV2",
@@ -185,7 +195,7 @@ async def command_game(message: types.Message):
             else:
                 player.role_id = 2
                 tasks.append(
-                    send_message(
+                    message.bot.send_message(
                         chat_id=player.user.tg_id,
                         text=f"*Вы НЕ Шпион\\! 👨*\nЛокация: *{escape_markdown_v2(game.location.name.capitalize())}*\n_Вычислите шпиона\\!_",
                         parse_mode="MarkdownV2",
@@ -215,7 +225,7 @@ async def command_game(message: types.Message):
         await game.save()
         await asyncio.gather(
             *[
-                send_message(
+                message.bot.send_message(
                     chat_id=player.user.tg_id,
                     text="*Кто шпион? 🦸*",
                     reply_markup=vote_players_keyboard(
@@ -309,6 +319,20 @@ async def command_stop(message: types.Message):
             text="*Игра была отменена\\. ❌*",
             parse_mode="MarkdownV2",
         )
+
+
+@router.message(Command("extend"), ChatTypeFilter("supergroup", "group"))
+async def command_extend(message: types.Message):
+    game = await Game.get(
+        group_tg_id=message.chat.id
+    )
+    if not game or game.state_id != 2 or not game.is_allowed:
+        return
+    await message.delete()
+    game.extend += 1
+    await game.save()
+
+
 
 
 @router.message(Command("cancel"), ChatTypeFilter("private"))

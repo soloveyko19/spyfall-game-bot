@@ -37,35 +37,6 @@ def discussion_message(players: List[Player]) -> str:
     )
 
 
-async def update_message(
-        message_id, message_chat_id, new_message, reply_markup=None
-):
-    from main import bot
-
-    message = await bot.edit_message_text(
-        text=new_message,
-        chat_id=message_chat_id,
-        message_id=message_id,
-        reply_markup=reply_markup,
-        parse_mode="MarkdownV2",
-    )
-    return message
-
-
-async def send_message(
-        chat_id: int, text: str, reply_markup=None, parse_mode=None
-):
-    from main import bot
-
-    message = await bot.send_message(
-        chat_id=chat_id,
-        text=text,
-        reply_markup=reply_markup,
-        parse_mode=parse_mode,
-    )
-    return message
-
-
 async def delete_message(message: types.Message):
     await message.delete()
 
