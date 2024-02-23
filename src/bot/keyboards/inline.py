@@ -23,7 +23,8 @@ def cancel_keyboard():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Отменить! ❌", callback_data="cancel",
+                    text="Отменить! ❌",
+                    callback_data="cancel",
                 )
             ]
         ]

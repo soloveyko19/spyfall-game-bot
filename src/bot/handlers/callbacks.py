@@ -62,7 +62,9 @@ async def callback_location(call: CallbackQuery, state: FSMContext):
         await call.message.delete()
         await call.message.answer(
             text="*Все доступные локации:*\n\n"
-            + escape_markdown_v2("\n".join([location.name for location in locations])),
+            + escape_markdown_v2(
+                "\n".join([location.name for location in locations])
+            ),
             parse_mode="MarkdownV2",
         )
         await call.message.answer(

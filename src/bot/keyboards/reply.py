@@ -1,4 +1,8 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, KeyboardButtonRequestUser
+from aiogram.types import (
+    ReplyKeyboardMarkup,
+    KeyboardButton,
+    KeyboardButtonRequestUser,
+)
 
 
 def request_contact_keyboard() -> ReplyKeyboardMarkup:
@@ -8,11 +12,9 @@ def request_contact_keyboard() -> ReplyKeyboardMarkup:
                 KeyboardButton(
                     text="Выбрать пользователя 👤",
                     request_user=KeyboardButtonRequestUser(
-                        user_is_bot=False,
-                        request_id=0
-                    )
+                        user_is_bot=False, request_id=0
+                    ),
                 )
             ]
         ]
     )
-

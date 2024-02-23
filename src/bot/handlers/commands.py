@@ -74,9 +74,7 @@ async def command_start(message: types.Message):
     )
 
 
-@router.message(
-    Command("start"), ChatTypeFilter("supergroup", "group")
-)
+@router.message(Command("start"), ChatTypeFilter("supergroup", "group"))
 async def command_start_group(message: types):
     await message.answer(
         text="*Чтобы начать игру введите команду /game*",
@@ -84,9 +82,7 @@ async def command_start_group(message: types):
     )
 
 
-@router.message(
-    Command("game"), ChatTypeFilter("supergroup", "group")
-)
+@router.message(Command("game"), ChatTypeFilter("supergroup", "group"))
 async def command_game(message: types.Message):
     game = await Game.get(group_tg_id=message.chat.id)
     if not game:
@@ -94,7 +90,7 @@ async def command_game(message: types.Message):
         await game.save()
         await message.answer(
             text="*Пожалуйста\\, обновите мне права администратора*\n_Извините за неудобства\\(_",
-            parse_mode="MarkdownV2"
+            parse_mode="MarkdownV2",
         )
         return
     elif game.state_id != 1:
@@ -136,7 +132,7 @@ async def command_game(message: types.Message):
                 reg_messages.append(
                     await message.answer(
                         text=f"*\\+30 секунд к регистрации\\!*\n_Оставшееся время \\- {sec} секунд\\._",
-                        parse_mode="MarkdownV2"
+                        parse_mode="MarkdownV2",
                     )
                 )
             elif sec % 30 == 0:
@@ -151,9 +147,7 @@ async def command_game(message: types.Message):
                     )
                 )
             sec -= 1
-        await asyncio.gather(
-            delete_all_messages(reg_messages), game.refresh()
-        )
+        await asyncio.gather(delete_all_messages(reg_messages), game.refresh())
         if len(game.players) < 4:
             await message.answer(
                 text="*Игра не запущена\\! ❌*\n_Нужно как минимум 4 участника для игры\\._",
@@ -171,9 +165,7 @@ async def command_game(message: types.Message):
         await game.save()
         await message.answer(
             text=discussion_message(game.players),
-            reply_markup=link_to_bot_keyboard(
-                bot_username=bot.username
-            ),
+            reply_markup=link_to_bot_keyboard(bot_username=bot.username),
             parse_mode="MarkdownV2",
         )
         spies = random.sample(population=game.players, k=spies_count)
@@ -216,9 +208,7 @@ async def command_game(message: types.Message):
                 )
         await message.answer(
             text="*Время на обсуждение вышло\\! ⌛️*\nДавайте проголосуем за шпиона\\!",
-            reply_markup=link_to_bot_keyboard(
-                bot_username=bot.username
-            ),
+            reply_markup=link_to_bot_keyboard(bot_username=bot.username),
             parse_mode="MarkdownV2",
         )
         game.state_id = 4
@@ -272,16 +262,16 @@ async def command_game(message: types.Message):
 
         await asyncio.sleep(5)
         if real_spy.id == spy_player.id:
-            res_msg = "*Победа мирных игроков\\!*\n_Личность шпиона раскрыта\\!_"
+            res_msg = (
+                "*Победа мирных игроков\\!*\n_Личность шпиона раскрыта\\!_"
+            )
         else:
             res_msg = f"*Победа Шпиона\\!*\n_Его личность не раскрыта\\!_\nШпионом был\\(\\-a\\) [{escape_markdown_v2(real_spy.user.full_name)}](tg://user?id={real_spy.user.tg_id})"
         await message.answer(text=res_msg, parse_mode="MarkdownV2")
 
 
 @router.message(Command("location"), ChatTypeFilter("private"))
-async def command_location(
-        message: types.Message, state: FSMContext
-):
+async def command_location(message: types.Message, state: FSMContext):
     await message.delete()
     await message.answer(
         text="*Выберите опцию:*",
@@ -291,9 +281,7 @@ async def command_location(
     await state.set_state(LocationStates.option)
 
 
-@router.message(
-    Command("skip"), ChatTypeFilter("supergroup", "group")
-)
+@router.message(Command("skip"), ChatTypeFilter("supergroup", "group"))
 async def command_skip(message: types.Message):
     game = await Game.get(group_tg_id=message.chat.id)
     if not game.is_allowed:
@@ -304,9 +292,7 @@ async def command_skip(message: types.Message):
         await game.save()
 
 
-@router.message(
-    Command("stop"), ChatTypeFilter("supergroup", "group")
-)
+@router.message(Command("stop"), ChatTypeFilter("supergroup", "group"))
 async def command_stop(message: types.Message):
     game = await Game.get(group_tg_id=message.chat.id)
     if not game.is_allowed:
@@ -323,16 +309,12 @@ async def command_stop(message: types.Message):
 
 @router.message(Command("extend"), ChatTypeFilter("supergroup", "group"))
 async def command_extend(message: types.Message):
-    game = await Game.get(
-        group_tg_id=message.chat.id
-    )
+    game = await Game.get(group_tg_id=message.chat.id)
     if not game or game.state_id != 2 or not game.is_allowed:
         return
     await message.delete()
     game.extend += 1
     await game.save()
-
-
 
 
 @router.message(Command("cancel"), ChatTypeFilter("private"))
@@ -342,7 +324,7 @@ async def command_cancel(message: types.Message, state: FSMContext):
     await message.answer(
         text="*Отмена\\! ❌*\nВсе состояния сняты\\!",
         parse_mode="MarkdownV2",
-        reply_markup=ReplyKeyboardRemove()
+        reply_markup=ReplyKeyboardRemove(),
     )
 
 
@@ -359,7 +341,7 @@ async def command_feedback(message: types.Message, state: FSMContext):
     await message.delete()
     await message.answer(
         text="*Чтобы обратиться к разработчику напишите свой комментарий ниже\\. 👇*\n_Напоминаем что это не коммерческий продукт и каждый ваш отзыв помогает улучшить его\\._",
-        parse_mode="MarkdownV2"
+        parse_mode="MarkdownV2",
     )
     await state.set_state(FeedbackStates.feedback)
 
@@ -375,13 +357,19 @@ async def command_get_feedback(message: types.Message):
             limit = 10
         feedbacks = await Feedback.get_last(limit)
         await message.answer(
-            text="Вот последние отзывы:\n\n" + "\n\n".join([f"\\[\\#{feedback.id}\\] [{feedback.user.full_name}](tg://user?id={feedback.user.tg_id}) пишет: {escape_markdown_v2(feedback.message)}" for feedback in feedbacks]),
-            parse_mode="MarkdownV2"
+            text="Вот последние отзывы:\n\n"
+            + "\n\n".join(
+                [
+                    f"\\[\\#{feedback.id}\\] [{feedback.user.full_name}](tg://user?id={feedback.user.tg_id}) пишет: {escape_markdown_v2(feedback.message)}"
+                    for feedback in feedbacks
+                ]
+            ),
+            parse_mode="MarkdownV2",
         )
     else:
         await message.answer(
             text="*У Вас нет права на выполнение этой команды\\.*",
-            parse_mode="MarkdownV2"
+            parse_mode="MarkdownV2",
         )
 
 
@@ -394,7 +382,7 @@ async def command_error(message: types.Message):
     else:
         await message.answer(
             text="*У вас нет права на выполнение этой команды\\!*",
-            parse_mode="MarkdownV2"
+            parse_mode="MarkdownV2",
         )
 
 
@@ -406,12 +394,11 @@ async def command_admin(message: types.Message, state: FSMContext):
         await message.answer(
             text="*Вы собираетесь добавить администратора для этого бота\\! 👨‍💻*\n_Пожалуйста\\, поделитесь контактом пользователя которого вы хотите назначить администратором 👇_",
             parse_mode="MarkdownV2",
-            reply_markup=request_contact_keyboard()
+            reply_markup=request_contact_keyboard(),
         )
         await state.set_state(AdminStates.message_user)
     else:
         await message.answer(
             text="*У вас нет права на выполнение этой команды\\!*",
-            parse_mode="MarkdownV2"
+            parse_mode="MarkdownV2",
         )
-

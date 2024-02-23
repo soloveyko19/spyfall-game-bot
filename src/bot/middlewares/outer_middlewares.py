@@ -11,9 +11,7 @@ from aiogram.types import TelegramObject, Message
 class ManageGameChatMiddleware(BaseMiddleware):
     async def __call__(
         self,
-        handler: Callable[
-            [TelegramObject, Dict[str, Any]], Awaitable[Any]
-        ],
+        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
         data: Dict[str, Any],
     ):
@@ -38,9 +36,7 @@ class ManageGameChatMiddleware(BaseMiddleware):
 class SendErrorInfoMiddleware(BaseMiddleware):
     async def __call__(
         self,
-        handler: Callable[
-            [TelegramObject, Dict[str, Any]], Awaitable[Any]
-        ],
+        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
         data: Dict[str, Any],
     ):
@@ -52,6 +48,6 @@ class SendErrorInfoMiddleware(BaseMiddleware):
             await bot.send_message(
                 chat_id=546994614,
                 text=f"*Снова ошибка 😭*\n\n`{escape_markdown_v2(traceback.format_exc())}`\n\nПользователь: [{escape_markdown_v2(user.full_name)}](tg://user?id={user.id})",
-                parse_mode="MarkdownV2"
+                parse_mode="MarkdownV2",
             )
             raise exc
