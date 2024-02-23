@@ -35,11 +35,10 @@ async def command_start(message: types.Message):
     try:
         join_key = message.text.split()[1]
     except IndexError:
-        await message.answer(
+        return await message.answer(
             text="*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!",
             parse_mode="MarkdownV2",
         )
-        return
     game = await Game.get(join_key=join_key)
     if not game:
         return await message.reply(
@@ -47,7 +46,7 @@ async def command_start(message: types.Message):
             parse_mode="MarkdownV2",
         )
     elif game.state_id != 2:
-        await message.reply(
+        return await message.reply(
             text="*Ошибка ❗️*\nНабор в игру уже окончен\\!",
             parse_mode="MarkdownV2",
         )
