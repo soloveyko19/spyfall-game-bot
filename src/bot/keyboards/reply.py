@@ -14,7 +14,11 @@ def request_contact_keyboard() -> ReplyKeyboardMarkup:
                     request_user=KeyboardButtonRequestUser(
                         user_is_bot=False, request_id=0
                     ),
+                ),
+                KeyboardButton(
+                    text="Отменить! ❌",
                 )
             ]
-        ]
+        ],
+        resize_keyboard=True
     )

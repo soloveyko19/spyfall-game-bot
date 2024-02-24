@@ -46,7 +46,15 @@ async def message_feedback(message: types.Message, state: FSMContext):
 
 @router.message(StateFilter(AdminStates.message_user))
 async def message_admin_user(message: types.Message, state: FSMContext):
-    if message.user_shared:
+    if message.text == "Отменить! ❌":
+        await state.clear()
+        await message.answer(
+            text="Отменено\\!",
+            reply_markup=ReplyKeyboardRemove(),
+            parse_mode="MarkdownV2"
+        )
+        return
+    elif message.user_shared:
         user = await User.get(tg_id=message.user_shared.user_id)
         if user:
             user.is_admin = True
