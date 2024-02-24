@@ -10,6 +10,7 @@ from aiogram.filters import StateFilter
 from aiogram import Router
 from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
+from aiogram.exceptions import TelegramBadRequest
 
 router = Router()
 
@@ -23,10 +24,10 @@ async def callback_cancel(call: CallbackQuery, state: FSMContext):
 
 @router.callback_query(lambda call: call.data.startswith("voting="))
 async def callback_voting(call: CallbackQuery):
-    await call.message.delete()
     try:
+        await call.message.delete()
         spy_player_id = int(call.data.split("=")[1])
-    except (ValueError, IndexError):
+    except (ValueError, IndexError, TelegramBadRequest):
         return
     player = await Player.get(user_tg_id=call.from_user.id)
     spy_player = await Player.get(_id=spy_player_id)
