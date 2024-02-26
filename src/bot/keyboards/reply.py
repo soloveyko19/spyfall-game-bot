@@ -17,8 +17,8 @@ def request_contact_keyboard() -> ReplyKeyboardMarkup:
                 ),
                 KeyboardButton(
                     text="Отменить! ❌",
-                )
+                ),
             ]
         ],
-        resize_keyboard=True
+        resize_keyboard=True,
     )

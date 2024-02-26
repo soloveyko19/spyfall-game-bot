@@ -77,6 +77,13 @@ class User(Base):
             res = await session.execute(query)
             return res.scalars().all()
 
+    @classmethod
+    async def get_count(cls):
+        async with async_session() as session:
+            query = select(func.count()).select_from(User)
+            res = await session.execute(query)
+            return res.scalar()
+
     async def save(self):
         async with async_session() as session:
             session.add(self)
@@ -94,7 +101,7 @@ class Location(Base):
         async with async_session() as session:
             query = select(Location).order_by(func.random()).limit(1)
             res = await session.execute(query)
-            return res.unique().scalar_one()
+            return res.scalar()
 
     @classmethod
     async def add_many(cls, instances: List["Location"]) -> List["Location"]:
@@ -241,6 +248,24 @@ class Game(Base):
                 query = query.filter(Game.join_key == join_key)
             if group_tg_id is not None:
                 query = query.filter(Game.group_tg_id == group_tg_id)
+            res = await session.execute(query)
+            return res.scalar()
+
+    @classmethod
+    async def get_count(cls) -> int:
+        async with async_session() as session:
+            query = select(func.count()).select_from(Game)
+            res = await session.execute(query)
+            return res.scalar()
+
+    @classmethod
+    async def get_active_count(cls) -> int:
+        async with async_session() as session:
+            query = (
+                select(func.count())
+                .select_from(Game)
+                .filter(Game.state_id != 1)
+            )
             res = await session.execute(query)
             return res.scalar()
 

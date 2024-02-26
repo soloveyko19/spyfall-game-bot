@@ -1,8 +1,10 @@
+from filters.user import AdminFilter
 from keyboards.inline import (
     join_game_keyboard,
     link_to_bot_keyboard,
     vote_players_keyboard,
     location_options_keyboard,
+    cancel_keyboard,
 )
 from database.models import User, Game, Player, Feedback
 from keyboards.reply import request_contact_keyboard
@@ -341,63 +343,56 @@ async def command_feedback(message: types.Message, state: FSMContext):
     await message.answer(
         text="*Чтобы обратиться к разработчику напишите свой комментарий ниже\\. 👇*\n_Напоминаем что это не коммерческий продукт и каждый ваш отзыв помогает улучшить его\\._",
         parse_mode="MarkdownV2",
+        reply_markup=cancel_keyboard(),
     )
     await state.set_state(FeedbackStates.feedback)
 
 
-@router.message(Command("get_feedback"), ChatTypeFilter("private"))
+@router.message(
+    Command("get_feedback"), ChatTypeFilter("private"), AdminFilter()
+)
 async def command_get_feedback(message: types.Message):
     await message.delete()
-    user = await User.get(tg_id=message.from_user.id)
-    if user.is_admin:
-        try:
-            limit = int(message.text.split()[1])
-        except (IndexError, ValueError):
-            limit = 10
-        feedbacks = await Feedback.get_last(limit)
-        await message.answer(
-            text="Вот последние отзывы:\n\n"
-            + "\n\n".join(
-                [
-                    f"\\[\\#{feedback.id}\\] [{feedback.user.full_name}](tg://user?id={feedback.user.tg_id}) пишет: {escape_markdown_v2(feedback.message)}"
-                    for feedback in feedbacks
-                ]
-            ),
-            parse_mode="MarkdownV2",
-        )
-    else:
-        await message.answer(
-            text="*У Вас нет права на выполнение этой команды\\.*",
-            parse_mode="MarkdownV2",
-        )
+    try:
+        limit = int(message.text.split()[1])
+    except (IndexError, ValueError):
+        limit = 10
+    feedbacks = await Feedback.get_last(limit)
+    await message.answer(
+        text="Вот последние отзывы:\n\n"
+        + "\n\n".join(
+            [
+                f"\\[\\#{feedback.id}\\] [{feedback.user.full_name}](tg://user?id={feedback.user.tg_id}) пишет: {escape_markdown_v2(feedback.message)}"
+                for feedback in feedbacks
+            ]
+        ),
+        parse_mode="MarkdownV2",
+    )
 
 
-@router.message(Command("error"))
-async def command_error(message: types.Message):
-    await message.delete()
-    user = await User.get(tg_id=message.from_user.id)
-    if user.is_admin:
-        return 1 / 0
-    else:
-        await message.answer(
-            text="*У вас нет права на выполнение этой команды\\!*",
-            parse_mode="MarkdownV2",
-        )
+@router.message(Command("error"), AdminFilter())
+async def command_error():
+    return 1 / 0
 
 
-@router.message(Command("admin"), ChatTypeFilter("private"))
+@router.message(Command("admin"), ChatTypeFilter("private"), AdminFilter())
 async def command_admin(message: types.Message, state: FSMContext):
     await message.delete()
-    user = await User.get(tg_id=message.from_user.id)
-    if user.is_admin:
-        await message.answer(
-            text="*Вы собираетесь добавить администратора для этого бота\\! 👨‍💻*\n_Пожалуйста\\, поделитесь контактом пользователя которого вы хотите назначить администратором 👇_",
-            parse_mode="MarkdownV2",
-            reply_markup=request_contact_keyboard(),
-        )
-        await state.set_state(AdminStates.message_user)
-    else:
-        await message.answer(
-            text="*У вас нет права на выполнение этой команды\\!*",
-            parse_mode="MarkdownV2",
-        )
+    await message.answer(
+        text="*Вы собираетесь добавить администратора для этого бота\\! 👨‍💻*\n_Пожалуйста\\, поделитесь контактом пользователя которого вы хотите назначить администратором 👇_",
+        parse_mode="MarkdownV2",
+        reply_markup=request_contact_keyboard(),
+    )
+    await state.set_state(AdminStates.message_user)
+
+
+@router.message(Command("stats"), ChatTypeFilter("private"), AdminFilter())
+async def command_statistics(message: types.Message):
+    await message.delete()
+    users_count = await User.get_count()
+    games_count = await Game.get_count()
+    active_games_count = await Game.get_active_count()
+    await message.answer(
+        text=f"*Статистика 📈*\n\nКол\\-во пользователей: {users_count}\nОбщее кол\\-во игр: {games_count}\nКол\\-во активных игр: {active_games_count}",
+        parse_mode="MarkdownV2",
+    )

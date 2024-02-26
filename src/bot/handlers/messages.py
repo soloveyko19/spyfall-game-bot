@@ -51,7 +51,7 @@ async def message_admin_user(message: types.Message, state: FSMContext):
         await message.answer(
             text="Отменено\\!",
             reply_markup=ReplyKeyboardRemove(),
-            parse_mode="MarkdownV2"
+            parse_mode="MarkdownV2",
         )
         return
     elif message.user_shared:
