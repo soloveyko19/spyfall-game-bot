@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardRemove
 
-from states.state import LocationStates, FeedbackStates, AdminStates
+from utils.states import LocationStates, FeedbackStates, AdminStates
 from database.models import Location, User, Feedback
 from keyboards.inline import cancel_keyboard
 from utils.messages import escape_markdown_v2

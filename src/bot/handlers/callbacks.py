@@ -1,5 +1,5 @@
 from database.models import Player, Vote, Location, User
-from states.state import LocationStates
+from utils.states import LocationStates
 from keyboards.inline import (
     cancel_keyboard,
     location_options_keyboard,

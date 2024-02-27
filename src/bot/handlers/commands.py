@@ -14,7 +14,7 @@ from utils.messages import (
     discussion_message,
     escape_markdown_v2,
 )
-from states.state import LocationStates, FeedbackStates, AdminStates
+from utils.states import LocationStates, FeedbackStates, AdminStates
 from filters.chat import ChatTypeFilter
 
 import asyncio
