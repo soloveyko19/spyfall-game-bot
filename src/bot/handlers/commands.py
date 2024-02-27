@@ -21,7 +21,7 @@ import asyncio
 import random
 
 from aiogram import Router, types
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 
@@ -29,19 +29,17 @@ router = Router()
 
 
 @router.message(Command("start"), ChatTypeFilter("private"))
-async def command_start(message: types.Message):
+async def command_start(message: types.Message, command: CommandObject):
     user = await User.get_or_create(
         tg_id=message.from_user.id,
         full_name=message.from_user.full_name,
     )
-    try:
-        join_key = message.text.split()[1]
-    except IndexError:
+    if not command.args:
         return await message.answer(
             text="*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!",
             parse_mode="MarkdownV2",
         )
-    game = await Game.get(join_key=join_key)
+    game = await Game.get(join_key=command.args)
     if not game:
         return await message.reply(
             text="*Ошибка ❗️*\n_Такой игры не существует либо она уже была окончена\\._",
@@ -351,12 +349,17 @@ async def command_feedback(message: types.Message, state: FSMContext):
 @router.message(
     Command("get_feedback"), ChatTypeFilter("private"), AdminFilter()
 )
-async def command_get_feedback(message: types.Message):
+async def command_get_feedback(message: types.Message, command: CommandObject):
     await message.delete()
-    try:
-        limit = int(message.text.split()[1])
-    except (IndexError, ValueError):
+    if not command.args:
         limit = 10
+    else:
+        try:
+            limit = int(command.args)
+        except ValueError:
+            return await message.answer(
+                text="*Ошибка значения\\, лимит должен быть указан в числовом значении\\!*"
+            )
     feedbacks = await Feedback.get_last(limit)
     await message.answer(
         text="Вот последние отзывы:\n\n"
