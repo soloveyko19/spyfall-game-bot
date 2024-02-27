@@ -18,7 +18,7 @@ router = Router()
 @router.callback_query(lambda call: call.data == "cancel")
 async def callback_cancel(call: CallbackQuery, state: FSMContext):
     await state.clear()
-    await call.message.answer(text="*Отмена\\!*", parse_mode="MarkdownV2")
+    await call.message.answer(text="*Отмена\\!*")
     await call.message.delete()
 
 
@@ -37,13 +37,11 @@ async def callback_voting(call: CallbackQuery):
         vote = Vote(player_id=player.id, spy_id=spy_player.id)
         await vote.save()
         await call.message.answer(
-            text=f"*Вы отдали свой голос за [{escape_markdown_v2(spy_player.user.full_name)}](tg://user?id={spy_player.user.tg_id})\\!*",
-            parse_mode="MarkdownV2",
+            text=f"*Вы отдали свой голос за [{escape_markdown_v2(spy_player.user.full_name)}](tg://user?id={spy_player.user.tg_id})\\!*"
         )
         await call.bot.send_message(
             chat_id=player.game.group_tg_id,
-            text=f"*[{escape_markdown_v2(player.user.full_name)}](tg://user?id={player.user.tg_id}) проголосовал\\(\\-а\\)\\!*",
-            parse_mode="MarkdownV2",
+            text=f"*[{escape_markdown_v2(player.user.full_name)}](tg://user?id={player.user.tg_id}) проголосовал\\(\\-а\\)\\!*"
         )
     except ValueError:
         return
@@ -65,21 +63,18 @@ async def callback_location(call: CallbackQuery, state: FSMContext, db_user: Use
             text="*Все доступные локации:*\n\n"
             + escape_markdown_v2(
                 "\n".join([location.name for location in locations])
-            ),
-            parse_mode="MarkdownV2",
+            )
         )
         await call.message.answer(
             text="*Выберите опцию:*",
-            reply_markup=location_options_keyboard(),
-            parse_mode="MarkdownV2",
+            reply_markup=location_options_keyboard()
         )
     elif option == "add":
         if db_user.is_admin:
             await call.message.delete()
             await call.message.answer(
                 text="*Давайте добавим локацию\\!*\n_Отправьте название локации в формате перечисления через комму\\._",
-                reply_markup=cancel_keyboard(),
-                parse_mode="MarkdownV2",
+                reply_markup=cancel_keyboard()
             )
             await state.set_state(LocationStates.location)
         else:

@@ -27,7 +27,6 @@ async def message_location(message: types.Message):
     msg += "\n\n*Добавим еще\\?*"
     await message.answer(
         text=msg,
-        parse_mode="MarkdownV2",
         reply_markup=cancel_keyboard(),
     )
 
@@ -38,8 +37,7 @@ async def message_feedback(message: types.Message, state: FSMContext, db_user: U
     await feedback.save()
     await state.clear()
     await message.answer(
-        text="*Спасибо за фидбэк\\! ❤️*\n_Ваше сообщение отправлено и будет принято во внимание разработчиками\\!_",
-        parse_mode="MarkdownV2",
+        text="*Спасибо за фидбэк\\! ❤️*\n_Ваше сообщение отправлено и будет принято во внимание разработчиками\\!_"
     )
 
 
@@ -49,8 +47,7 @@ async def message_admin_user(message: types.Message, state: FSMContext, db_user:
         await state.clear()
         await message.answer(
             text="Отменено\\!",
-            reply_markup=ReplyKeyboardRemove(),
-            parse_mode="MarkdownV2",
+            reply_markup=ReplyKeyboardRemove()
         )
         return
     elif message.user_shared:
@@ -59,25 +56,21 @@ async def message_admin_user(message: types.Message, state: FSMContext, db_user:
             await db_user.save()
             await message.answer(
                 text=f"*Вы успешно сделали [{escape_markdown_v2(db_user.full_name)}](tg://user?id={db_user.tg_id}) администратором\\!*",
-                parse_mode="MarkdownV2",
                 reply_markup=ReplyKeyboardRemove(),
             )
             await state.clear()
             await message.bot.send_message(
                 chat_id=db_user.tg_id,
                 text=f"*[{escape_markdown_v2(message.from_user.full_name)}](tg://user?id={message.from_user.id}) назначил Вас моим администратором\\!*",
-                parse_mode="MarkdownV2",
             )
             await set_admin_commands(bot=message.bot, user=db_user)
         else:
             await message.answer(
                 text="*Такого пользователя нет в моей системе\\!*\n_Сперва ему нужно ввести команду /start\\._",
-                parse_mode="MarkdownV2",
                 reply_markup=ReplyKeyboardRemove(),
             )
             await state.clear()
     else:
         await message.answer(
-            text="*Некоректный ввод\\(*_Пожалйста, поделитесь пользователем через клавиатуру 👇_",
-            parse_mode="MarkdownV2",
+            text="*Некоректный ввод\\(*_Пожалйста, поделитесь пользователем через клавиатуру 👇_"
         )

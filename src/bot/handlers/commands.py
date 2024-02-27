@@ -39,24 +39,21 @@ async def command_start(message: types.Message, command: CommandObject, db_user:
     if not command.args:
         return await message.answer(
             text="*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!",
-            parse_mode="MarkdownV2",
         )
     game = await Game.get(join_key=command.args)
     if not game:
         return await message.reply(
             text="*Ошибка ❗️*\n_Такой игры не существует либо она уже была окончена\\._",
-            parse_mode="MarkdownV2",
         )
     elif game.state_id != 2:
         return await message.reply(
             text="*Ошибка ❗️*\nНабор в игру уже окончен\\!",
-            parse_mode="MarkdownV2",
         )
     try:
         await Player.join_to_game(game_id=game.id, user_id=db_user.id)
     except ValueError:
         await message.answer(
-            text="*Вы уже в игре\\!* ⛔️", parse_mode="MarkdownV2"
+            text="*Вы уже в игре\\!* ⛔️"
         )
         return
     await game.refresh()
@@ -71,7 +68,6 @@ async def command_start(message: types.Message, command: CommandObject, db_user:
     )
     await message.answer(
         text="*Вы присоединились к игре в Шпиона\\! ✅*",
-        parse_mode="MarkdownV2",
     )
 
 
@@ -79,7 +75,6 @@ async def command_start(message: types.Message, command: CommandObject, db_user:
 async def command_start_group(message: types):
     await message.answer(
         text="*Чтобы начать игру введите команду /game*",
-        parse_mode="MarkdownV2",
     )
 
 
@@ -90,16 +85,14 @@ async def command_game(message: types.Message, game: Game):
         await game.save()
         return await message.answer(
             text="*Пожалуйста\\, обновите мне права администратора*\n_Извините за неудобства\\(_",
-            parse_mode="MarkdownV2",
         )
     elif game.state_id != 1:
         return await message.answer(
-            text="*Игра уже запущена\\!* ⛔️", parse_mode="MarkdownV2"
+            text="*Игра уже запущена\\!* ⛔️"
         )
     elif not game.is_allowed:
         return await message.answer(
-            text="*Вы не предоставили необходимые права администратора\\!*",
-            parse_mode="MarkdownV2",
+            text="*Вы не предоставили необходимые права администратора\\!*"
         )
     await message.delete()
     async with game:
@@ -110,7 +103,6 @@ async def command_game(message: types.Message, game: Game):
                 reply_markup=join_game_keyboard(
                     join_key=game.join_key, bot_username=bot.username
                 ),
-                parse_mode="MarkdownV2",
             )
         ]
         game.join_message_tg_id = reg_messages[0].message_id
@@ -128,8 +120,7 @@ async def command_game(message: types.Message, game: Game):
                 await game.save()
                 reg_messages.append(
                     await message.answer(
-                        text=f"*\\+30 секунд к регистрации\\!*\n_Оставшееся время \\- {sec} секунд\\._",
-                        parse_mode="MarkdownV2",
+                        text=f"*\\+30 секунд к регистрации\\!*\n_Оставшееся время \\- {sec} секунд\\._"
                     )
                 )
             elif sec % 30 == 0:
@@ -139,22 +130,19 @@ async def command_game(message: types.Message, game: Game):
                         reply_markup=join_game_keyboard(
                             join_key=game.join_key,
                             bot_username=bot.username,
-                        ),
-                        parse_mode="MarkdownV2",
+                        )
                     )
                 )
             sec -= 1
         await asyncio.gather(delete_all_messages(reg_messages), game.refresh())
         if len(game.players) < 4:
             await message.answer(
-                text="*Игра не запущена\\! ❌*\n_Нужно как минимум 4 участника для игры\\._",
-                parse_mode="MarkdownV2",
+                text="*Игра не запущена\\! ❌*\n_Нужно как минимум 4 участника для игры\\._"
             )
             return
         elif len(game.players) > 10:
             await message.answer(
-                text="*Игра не запущена\\! ❌*\n_Максимум 10 игроков в игре\\._",
-                parse_mode="MarkdownV2",
+                text="*Игра не запущена\\! ❌*\n_Максимум 10 игроков в игре\\._"
             )
             return
         spies_count = 1
@@ -162,8 +150,7 @@ async def command_game(message: types.Message, game: Game):
         await game.save()
         await message.answer(
             text=discussion_message(game.players),
-            reply_markup=link_to_bot_keyboard(bot_username=bot.username),
-            parse_mode="MarkdownV2",
+            reply_markup=link_to_bot_keyboard(bot_username=bot.username)
         )
         spies = random.sample(population=game.players, k=spies_count)
         tasks = []
@@ -174,8 +161,7 @@ async def command_game(message: types.Message, game: Game):
                     [
                         message.bot.send_message(
                             chat_id=player.user.tg_id,
-                            text="*Вы Шпион\\! 🦸*\n_Не дайте остальным участникам вычислить вашу роль\\!_",
-                            parse_mode="MarkdownV2",
+                            text="*Вы Шпион\\! 🦸*\n_Не дайте остальным участникам вычислить вашу роль\\!_"
                         ),
                         player.save(),
                     ]
@@ -186,8 +172,7 @@ async def command_game(message: types.Message, game: Game):
                 tasks.append(
                     message.bot.send_message(
                         chat_id=player.user.tg_id,
-                        text=f"*Вы НЕ Шпион\\! 👨*\nЛокация: *{escape_markdown_v2(game.location.name.capitalize())}*\n_Вычислите шпиона\\!_",
-                        parse_mode="MarkdownV2",
+                        text=f"*Вы НЕ Шпион\\! 👨*\nЛокация: *{escape_markdown_v2(game.location.name.capitalize())}*\n_Вычислите шпиона\\!_"
                     )
                 )
             await player.save()
@@ -200,13 +185,11 @@ async def command_game(message: types.Message, game: Game):
                 break
             elif sec == 60:
                 await message.answer(
-                    text="*Осталась 1 минута до голосования\\! ⏳*",
-                    parse_mode="MarkdownV2",
+                    text="*Осталась 1 минута до голосования\\! ⏳*"
                 )
         await message.answer(
             text="*Время на обсуждение вышло\\! ⌛️*\nДавайте проголосуем за шпиона\\!",
-            reply_markup=link_to_bot_keyboard(bot_username=bot.username),
-            parse_mode="MarkdownV2",
+            reply_markup=link_to_bot_keyboard(bot_username=bot.username)
         )
         game.state_id = 4
         await game.save()
@@ -222,7 +205,6 @@ async def command_game(message: types.Message, game: Game):
                             if _player != player
                         ]
                     ),
-                    parse_mode="MarkdownV2",
                 )
                 for player in game.players
             ]
@@ -248,13 +230,11 @@ async def command_game(message: types.Message, game: Game):
         if not spy_player:
             await message.answer(
                 text=f"*Мнения разошлись\\, а значит победа Шпиона\\! 💁‍♂️*\nШпионом был\\(\\-a\\) [{escape_markdown_v2(real_spy.user.full_name)}](tg://user?id={real_spy.user.tg_id})",
-                parse_mode="MarkdownV2",
             )
             return
 
         await message.answer(
             text=f"*Большинство проголосовало за* [{escape_markdown_v2(spy_player.user.full_name)}](tg://user?id={spy_player.user.tg_id})",
-            parse_mode="MarkdownV2",
         )
 
         await asyncio.sleep(5)
@@ -264,7 +244,7 @@ async def command_game(message: types.Message, game: Game):
             )
         else:
             res_msg = f"*Победа Шпиона\\!*\n_Его личность не раскрыта\\!_\nШпионом был\\(\\-a\\) [{escape_markdown_v2(real_spy.user.full_name)}](tg://user?id={real_spy.user.tg_id})"
-        await message.answer(text=res_msg, parse_mode="MarkdownV2")
+        await message.answer(text=res_msg)
 
 
 @router.message(Command("location"), ChatTypeFilter("private"))
@@ -272,8 +252,7 @@ async def command_location(message: types.Message, state: FSMContext):
     await message.delete()
     await message.answer(
         text="*Выберите опцию:*",
-        reply_markup=location_options_keyboard(),
-        parse_mode="MarkdownV2",
+        reply_markup=location_options_keyboard()
     )
     await state.set_state(LocationStates.option)
 
@@ -297,8 +276,7 @@ async def command_stop(message: types.Message, game: Game):
         game.state_id = 1
         await game.save()
         await message.answer(
-            text="*Игра была отменена\\. ❌*",
-            parse_mode="MarkdownV2",
+            text="*Игра была отменена\\. ❌*"
         )
 
 
@@ -317,7 +295,6 @@ async def command_cancel(message: types.Message, state: FSMContext):
     await message.delete()
     await message.answer(
         text="*Отмена\\! ❌*\nВсе состояния сняты\\!",
-        parse_mode="MarkdownV2",
         reply_markup=ReplyKeyboardRemove(),
     )
 
@@ -326,7 +303,6 @@ async def command_cancel(message: types.Message, state: FSMContext):
 async def command_help(message: types.Message):
     await message.answer(
         text='*Вас приветствует бот для игры в Шпиона\\! 👋*\n\n*Правила игры следующие:*\nЧтобы начать играть\\, вам нужно написать команду /game непосредственно в группе где планируется игра\\. Минимальное кол\\-во человек для игры \\- 4\\, максимальное \\- 10\\.\nПосле завершения набора игроков\\, бот вышлет вам вашу роль на эту игру\\. В игре есть две роли:\n*Шпион* \\- задача которого не выдать свою роль до конца игры\\.\n*Не Шпион* \\- задача которого постараться вычислить шпиона\\.\n\nЕсли ваша роль \\- "Не Шпион"\\, то бот скажет локацию для этой игры\\. Задача всех игроков на протяжении игры \\- задавать вопросы по локации\\, чтобы вычислить шпиона\\. После завершения игры проводится голосование\\, все участники игры голосуют за возможного шпиона\\. Если большинство игроков выбирают неправильного игрока\\, то Шпион побеждает\\. Если же шпиона вычислили\\, и большинство игроков проголосовало за него\\, то у него еще есть шанс победить\\, назвав локацию игры которое он понял исходя из заданных ранее вопросов\\.\n\n*Удачной игры\\!*',
-        parse_mode="MarkdownV2",
     )
 
 
@@ -335,7 +311,6 @@ async def command_feedback(message: types.Message, state: FSMContext):
     await message.delete()
     await message.answer(
         text="*Чтобы обратиться к разработчику напишите свой комментарий ниже\\. 👇*\n_Напоминаем что это не коммерческий продукт и каждый ваш отзыв помогает улучшить его\\._",
-        parse_mode="MarkdownV2",
         reply_markup=cancel_keyboard(),
     )
     await state.set_state(FeedbackStates.feedback)
@@ -364,7 +339,6 @@ async def command_get_feedback(message: types.Message, command: CommandObject):
                 for feedback in feedbacks
             ]
         ),
-        parse_mode="MarkdownV2",
     )
 
 
@@ -378,7 +352,6 @@ async def command_admin(message: types.Message, state: FSMContext):
     await message.delete()
     await message.answer(
         text="*Вы собираетесь добавить администратора для этого бота\\! 👨‍💻*\n_Пожалуйста\\, поделитесь контактом пользователя которого вы хотите назначить администратором 👇_",
-        parse_mode="MarkdownV2",
         reply_markup=request_contact_keyboard(),
     )
     await state.set_state(AdminStates.message_user)
@@ -392,5 +365,4 @@ async def command_statistics(message: types.Message):
     active_games_count = await Game.get_active_count()
     await message.answer(
         text=f"*Статистика 📈*\n\nКол\\-во пользователей: {users_count}\nОбщее кол\\-во игр: {games_count}\nКол\\-во активных игр: {active_games_count}",
-        parse_mode="MarkdownV2",
     )
