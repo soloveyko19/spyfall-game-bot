@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram import Bot
 from aiogram.types import (
     BotCommand,
@@ -67,6 +69,7 @@ async def get_commands(bot: Bot):
             commands_admins,
             scope=BotCommandScopeChat(chat_id=user.tg_id),
         )
+        await asyncio.sleep(.05)
 
 
 async def set_admin_commands(bot: Bot, user: User):
