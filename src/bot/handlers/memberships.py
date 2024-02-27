@@ -13,9 +13,8 @@ router = Router()
 
 
 @router.my_chat_member(ChatMemberUpdatedFilter(JOIN_TRANSITION))
-async def bot_joined(message: types.ChatMemberUpdated):
+async def bot_joined(message: types.ChatMemberUpdated, game: Game):
     if message.new_chat_member.user.id == message.bot.id:
-        game = await Game.get(group_tg_id=message.chat.id)
         if not game:
             game = Game(group_tg_id=message.chat.id, state_id=1)
         else:
@@ -30,9 +29,8 @@ async def bot_joined(message: types.ChatMemberUpdated):
 @router.my_chat_member(
     ChatMemberUpdatedFilter((MEMBER | ADMINISTRATOR) >> ADMINISTRATOR)
 )
-async def check_promoted(message: types.ChatMemberUpdated):
+async def check_promoted(message: types.ChatMemberUpdated, game: Game):
     if message.new_chat_member.user.id == message.bot.id:
-        game = await Game.get(group_tg_id=message.chat.id)
         rights = [
             message.new_chat_member.can_delete_messages,
             message.new_chat_member.can_restrict_members,
@@ -57,10 +55,9 @@ async def check_promoted(message: types.ChatMemberUpdated):
 
 
 @router.my_chat_member(ChatMemberUpdatedFilter(LEAVE_TRANSITION))
-async def bot_leaved(message: types.ChatMemberUpdated):
+async def bot_leaved(message: types.ChatMemberUpdated, game: Game):
     if message.new_chat_member.user.id != message.bot.id:
         return
-    game = await Game.get(group_tg_id=message.chat.id)
     if not game:
         return
     elif game.state_id != 1:

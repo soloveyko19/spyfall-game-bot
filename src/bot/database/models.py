@@ -42,22 +42,6 @@ class User(Base):
     feedbacks = relationship("Feedback", back_populates="user")
 
     @classmethod
-    async def get_or_create(cls, tg_id: int, full_name: str) -> "User":
-        async with async_session() as session:
-            query = select(User).filter(User.tg_id == tg_id)
-            res = await session.execute(query)
-            user = res.scalar()
-            if user:
-                if user.full_name != full_name:
-                    user.full_name = full_name
-                    await session.commit()
-                return user
-            user = User(tg_id=tg_id, full_name=full_name)
-            session.add(user)
-            await session.commit()
-            return user
-
-    @classmethod
     async def get(cls, tg_id: int = None, id: int = None) -> "User":
         if not tg_id and not id:
             raise ValueError("At least one argument must be provided")

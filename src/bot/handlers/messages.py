@@ -33,9 +33,8 @@ async def message_location(message: types.Message):
 
 
 @router.message(StateFilter(FeedbackStates.feedback))
-async def message_feedback(message: types.Message, state: FSMContext):
-    user = await User.get(tg_id=message.from_user.id)
-    feedback = Feedback(user_id=user.id, message=message.text)
+async def message_feedback(message: types.Message, state: FSMContext, db_user: User):
+    feedback = Feedback(user_id=db_user.id, message=message.text)
     await feedback.save()
     await state.clear()
     await message.answer(
@@ -45,7 +44,7 @@ async def message_feedback(message: types.Message, state: FSMContext):
 
 
 @router.message(StateFilter(AdminStates.message_user))
-async def message_admin_user(message: types.Message, state: FSMContext):
+async def message_admin_user(message: types.Message, state: FSMContext, db_user: User):
     if message.text == "Отменить! ❌":
         await state.clear()
         await message.answer(
@@ -55,22 +54,21 @@ async def message_admin_user(message: types.Message, state: FSMContext):
         )
         return
     elif message.user_shared:
-        user = await User.get(tg_id=message.user_shared.user_id)
-        if user:
-            user.is_admin = True
-            await user.save()
+        if db_user:
+            db_user.is_admin = True
+            await db_user.save()
             await message.answer(
-                text=f"*Вы успешно сделали [{escape_markdown_v2(user.full_name)}](tg://user?id={user.tg_id}) администратором\\!*",
+                text=f"*Вы успешно сделали [{escape_markdown_v2(db_user.full_name)}](tg://user?id={db_user.tg_id}) администратором\\!*",
                 parse_mode="MarkdownV2",
                 reply_markup=ReplyKeyboardRemove(),
             )
             await state.clear()
             await message.bot.send_message(
-                chat_id=user.tg_id,
+                chat_id=db_user.tg_id,
                 text=f"*[{escape_markdown_v2(message.from_user.full_name)}](tg://user?id={message.from_user.id}) назначил Вас моим администратором\\!*",
                 parse_mode="MarkdownV2",
             )
-            await set_admin_commands(bot=message.bot, user=user)
+            await set_admin_commands(bot=message.bot, user=db_user)
         else:
             await message.answer(
                 text="*Такого пользователя нет в моей системе\\!*\n_Сперва ему нужно ввести команду /start\\._",

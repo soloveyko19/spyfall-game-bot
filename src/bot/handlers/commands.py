@@ -29,11 +29,13 @@ router = Router()
 
 
 @router.message(Command("start"), ChatTypeFilter("private"))
-async def command_start(message: types.Message, command: CommandObject):
-    user = await User.get_or_create(
-        tg_id=message.from_user.id,
-        full_name=message.from_user.full_name,
-    )
+async def command_start(message: types.Message, command: CommandObject, db_user: User):
+    if not db_user:
+        db_user = User(
+            tg_id=message.from_user.id,
+            full_name=message.from_user.full_name,
+        )
+        await db_user.save()
     if not command.args:
         return await message.answer(
             text="*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!",
@@ -51,7 +53,7 @@ async def command_start(message: types.Message, command: CommandObject):
             parse_mode="MarkdownV2",
         )
     try:
-        await Player.join_to_game(game_id=game.id, user_id=user.id)
+        await Player.join_to_game(game_id=game.id, user_id=db_user.id)
     except ValueError:
         await message.answer(
             text="*Вы уже в игре\\!* ⛔️", parse_mode="MarkdownV2"
@@ -82,27 +84,23 @@ async def command_start_group(message: types):
 
 
 @router.message(Command("game"), ChatTypeFilter("supergroup", "group"))
-async def command_game(message: types.Message):
-    game = await Game.get(group_tg_id=message.chat.id)
+async def command_game(message: types.Message, game: Game):
     if not game:
         game = Game(group_id=message.chat.id, state_id=1)
         await game.save()
-        await message.answer(
+        return await message.answer(
             text="*Пожалуйста\\, обновите мне права администратора*\n_Извините за неудобства\\(_",
             parse_mode="MarkdownV2",
         )
-        return
     elif game.state_id != 1:
-        await message.answer(
+        return await message.answer(
             text="*Игра уже запущена\\!* ⛔️", parse_mode="MarkdownV2"
         )
-        return
     elif not game.is_allowed:
-        await message.answer(
+        return await message.answer(
             text="*Вы не предоставили необходимые права администратора\\!*",
             parse_mode="MarkdownV2",
         )
-        return
     await message.delete()
     async with game:
         bot = await message.bot.get_me()
@@ -281,23 +279,21 @@ async def command_location(message: types.Message, state: FSMContext):
 
 
 @router.message(Command("skip"), ChatTypeFilter("supergroup", "group"))
-async def command_skip(message: types.Message):
-    game = await Game.get(group_tg_id=message.chat.id)
-    if not game.is_allowed:
+async def command_skip(message: types.Message, game: Game):
+    if not game or not game.is_allowed:
         return
     await message.delete()
-    if game and game.state_id in (2, 3):
+    if game.state_id in (2, 3):
         game.state_id += 1
         await game.save()
 
 
 @router.message(Command("stop"), ChatTypeFilter("supergroup", "group"))
-async def command_stop(message: types.Message):
-    game = await Game.get(group_tg_id=message.chat.id)
-    if not game.is_allowed:
+async def command_stop(message: types.Message, game: Game):
+    if not game or not game.is_allowed:
         return
     await message.delete()
-    if game and game.state_id != 1:
+    if game.state_id != 1:
         game.state_id = 1
         await game.save()
         await message.answer(
@@ -307,8 +303,7 @@ async def command_stop(message: types.Message):
 
 
 @router.message(Command("extend"), ChatTypeFilter("supergroup", "group"))
-async def command_extend(message: types.Message):
-    game = await Game.get(group_tg_id=message.chat.id)
+async def command_extend(message: types.Message, game: Game):
     if not game or game.state_id != 2 or not game.is_allowed:
         return
     await message.delete()
@@ -374,7 +369,7 @@ async def command_get_feedback(message: types.Message, command: CommandObject):
 
 
 @router.message(Command("error"), AdminFilter())
-async def command_error():
+async def command_error(message: types.Message):
     return 1 / 0
 
 

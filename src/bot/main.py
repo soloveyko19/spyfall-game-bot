@@ -11,6 +11,7 @@ from utils.database import load_fixtures
 from middlewares.outer_middlewares import (
     ManageGameChatMiddleware,
     SendErrorInfoMiddleware,
+    DatabaseContextMiddleware
 )
 
 from aiogram import Bot, Dispatcher
@@ -26,6 +27,7 @@ def register_handlers(dp: Dispatcher):
 
 
 def set_middlewares(dp: Dispatcher):
+    dp.update.outer_middleware(DatabaseContextMiddleware())
     dp.update.outer_middleware(ManageGameChatMiddleware())
     dp.update.outer_middleware(SendErrorInfoMiddleware())
 

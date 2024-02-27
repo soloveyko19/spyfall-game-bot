@@ -53,7 +53,7 @@ async def callback_voting(call: CallbackQuery):
     lambda call: call.data.startswith("location_option="),
     StateFilter(LocationStates.option),
 )
-async def callback_location(call: CallbackQuery, state: FSMContext):
+async def callback_location(call: CallbackQuery, state: FSMContext, db_user: User):
     try:
         option = call.data.split("=")[1]
     except IndexError:
@@ -74,8 +74,7 @@ async def callback_location(call: CallbackQuery, state: FSMContext):
             parse_mode="MarkdownV2",
         )
     elif option == "add":
-        user = await User.get(tg_id=call.from_user.id)
-        if user.is_admin:
+        if db_user.is_admin:
             await call.message.delete()
             await call.message.answer(
                 text="*Давайте добавим локацию\\!*\n_Отправьте название локации в формате перечисления через комму\\._",
