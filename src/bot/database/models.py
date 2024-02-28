@@ -1,6 +1,6 @@
 import uuid
 from config import conf
-from typing import Optional, List, Sequence, Iterable
+from typing import Optional, List, Sequence, Iterable, Coroutine
 
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
@@ -67,6 +67,13 @@ class User(Base):
             query = select(func.count()).select_from(User)
             res = await session.execute(query)
             return res.scalar()
+
+    @classmethod
+    async def get_all(cls) -> Iterable["User"]:
+        async with async_session() as session:
+            query = select(User).order_by(User.id)
+            res = await session.execute(query)
+            return res.scalars().all()
 
     async def save(self):
         async with async_session() as session:

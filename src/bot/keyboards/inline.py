@@ -1,3 +1,5 @@
+from aiogram.filters import callback_data
+
 from database.models import Player
 
 from typing import List
@@ -73,5 +75,39 @@ def location_options_keyboard():
                     callback_data="location_option=add",
                 )
             ],
+        ]
+    )
+
+
+def add_buttons_to_mailing_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="Добавить ✅",
+                    callback_data="true"
+                ),
+                InlineKeyboardButton(
+                    text="Продолжить без кнопки ❎",
+                    callback_data="false"
+                )
+            ],
+        ],
+    )
+
+
+def confirm_mailing_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="Подтвердить ✅",
+                    callback_data="confirm"
+                ),
+                InlineKeyboardButton(
+                    text="Отменить ❌",
+                    callback_data="cancel"
+                )
+            ]
         ]
     )

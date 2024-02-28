@@ -14,7 +14,7 @@ from utils.messages import (
     discussion_message,
     escape_markdown_v2,
 )
-from utils.states import LocationStates, FeedbackStates, AdminStates
+from utils.states import LocationStates, FeedbackStates, AdminStates, MailingStates
 from filters.chat import ChatTypeFilter
 
 import asyncio
@@ -366,3 +366,13 @@ async def command_statistics(message: types.Message):
     await message.answer(
         text=f"*Статистика 📈*\n\nКол\\-во пользователей: {users_count}\nОбщее кол\\-во игр: {games_count}\nКол\\-во активных игр: {active_games_count}",
     )
+
+
+@router.message(Command("mailing"), ChatTypeFilter("private"), AdminFilter())
+async def command_mailing(message: types.Message, state: FSMContext):
+    await message.delete()
+    await message.answer(
+        text="*Вы собираетесь сделать рассылку\\!*\nОтправьте сообщение которое вы хотите разослать\\.",
+        reply_markup=cancel_keyboard()
+    )
+    await state.set_state(MailingStates.message)

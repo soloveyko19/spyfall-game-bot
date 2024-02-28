@@ -51,6 +51,7 @@ commands_admins = [
         description="Дать права администратора другому пользователю",
     ),
     BotCommand(command="stats", description="Получить статистику"),
+    BotCommand(command="mailing", description="Создать рассылку")
 ]
 
 commands_admins.extend(commands_private_chats)

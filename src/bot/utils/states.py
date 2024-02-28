@@ -12,3 +12,11 @@ class FeedbackStates(StatesGroup):
 
 class AdminStates(StatesGroup):
     message_user = State()
+
+
+class MailingStates(StatesGroup):
+    message = State()
+    button = State()
+    button_url = State()
+    button_text = State()
+    confirm = State()

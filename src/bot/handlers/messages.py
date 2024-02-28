@@ -1,8 +1,8 @@
-from aiogram.types import ReplyKeyboardRemove
+from aiogram.types import ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
 
-from utils.states import LocationStates, FeedbackStates, AdminStates
+from utils.states import LocationStates, FeedbackStates, AdminStates, MailingStates
 from database.models import Location, User, Feedback
-from keyboards.inline import cancel_keyboard
+from keyboards.inline import cancel_keyboard, add_buttons_to_mailing_keyboard, confirm_mailing_keyboard
 from utils.messages import escape_markdown_v2
 from utils.commands import set_admin_commands
 
@@ -74,3 +74,50 @@ async def message_admin_user(message: types.Message, state: FSMContext, db_user:
         await message.answer(
             text="*Некоректный ввод\\(*_Пожалйста, поделитесь пользователем через клавиатуру 👇_"
         )
+
+
+@router.message(StateFilter(MailingStates.message))
+async def message_mailing_message(message: types.Message, state: FSMContext):
+    await state.update_data(message_id=message.message_id, chat_id=message.chat.id)
+    await message.answer(
+        text="*Принято\\!*\nДобавим кнопку со ссылкой?",
+        reply_markup=add_buttons_to_mailing_keyboard()
+    )
+    await state.set_state(MailingStates.button)
+
+
+@router.message(StateFilter(MailingStates.button_text))
+async def message_mailing_button_url(message: types.Message, state: FSMContext):
+    await state.update_data(button_text=message.text)
+    await message.answer(
+        text="*Отправьте ссылку которую хотите поместить в кнопку\\.*",
+        reply_markup=cancel_keyboard()
+    )
+    await state.set_state(MailingStates.button_url)
+
+
+@router.message(StateFilter(MailingStates.button_url))
+async def message_mailing_button_text(message: types.Message, state: FSMContext):
+    if not message.text.startswith("https://") and not message.text.startswith("http://"):
+        return await message.answer(
+            text="*Некоректный формат ссылки\\, попробуйте еще раз*"
+        )
+    await state.update_data(button_url=message.text)
+    data = await state.get_data()
+    await message.bot.copy_message(
+        chat_id=message.from_user.id,
+        from_chat_id=data.get("chat_id"),
+        message_id=data.get("message_id"),
+        reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(url=data.get("button_url"), text=data.get("button_text"))
+                    ]
+                ]
+            ) if data.get("add_button") else None
+    )
+    await state.set_state(MailingStates.confirm)
+    await message.answer(
+        text="*Подтвердите что хотите разослать это сообщение\\.*",
+        reply_markup=confirm_mailing_keyboard()
+    )
