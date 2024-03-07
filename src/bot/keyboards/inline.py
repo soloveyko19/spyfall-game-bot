@@ -1,10 +1,11 @@
-from aiogram.filters import callback_data
-
 from database.models import Player
 
 from typing import List
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.i18n import gettext as _
+
+from utils.messages import LANGUAGES
 
 
 def join_game_keyboard(join_key: str, bot_username: str):
@@ -12,7 +13,7 @@ def join_game_keyboard(join_key: str, bot_username: str):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Присоединиться!",
+                    text=_("Присоединиться!"),
                     url=f"https://t.me/{bot_username}?start={join_key}",
                 )
             ]
@@ -25,7 +26,7 @@ def cancel_keyboard():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Отменить! ❌",
+                    text=_("Отменить! ❌"),
                     callback_data="cancel",
                 )
             ]
@@ -38,7 +39,7 @@ def link_to_bot_keyboard(bot_username: str):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="➡️ Перейти к боту ⬅️",
+                    text=_("➡️ Перейти к боту ⬅️"),
                     url=f"https://t.me/{bot_username}",
                 )
             ]
@@ -65,13 +66,13 @@ def location_options_keyboard():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Список всех локаций 📋",
+                    text=_("Список всех локаций 📋"),
                     callback_data="location_option=list",
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="Добавить локацию (для админов)",
+                    text=_("Добавить локацию (для админов)"),
                     callback_data="location_option=add",
                 )
             ],
@@ -84,13 +85,11 @@ def add_buttons_to_mailing_keyboard():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Добавить ✅",
-                    callback_data="true"
+                    text=_("Добавить ✅"), callback_data="true"
                 ),
                 InlineKeyboardButton(
-                    text="Продолжить без кнопки ❎",
-                    callback_data="false"
-                )
+                    text=_("Продолжить без кнопки ❎"), callback_data="false"
+                ),
             ],
         ],
     )
@@ -101,12 +100,26 @@ def confirm_mailing_keyboard():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Подтвердить ✅",
-                    callback_data="confirm"
+                    text=_("Подтвердить ✅"), callback_data="confirm"
                 ),
                 InlineKeyboardButton(
-                    text="Отменить ❌",
-                    callback_data="cancel"
+                    text=_("Отменить ❌"), callback_data="cancel"
+                ),
+            ]
+        ]
+    )
+
+
+def languages_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=language, callback_data=locale)]
+            for locale, language in LANGUAGES.items()
+        ]
+        + [
+            [
+                InlineKeyboardButton(
+                    text=_("Отменить ❌"), callback_data="cancel"
                 )
             ]
         ]

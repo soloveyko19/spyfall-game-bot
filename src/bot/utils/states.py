@@ -20,3 +20,8 @@ class MailingStates(StatesGroup):
     button_url = State()
     button_text = State()
     confirm = State()
+
+
+class LanguageStates(StatesGroup):
+    user_locale = State()
+    group_locale = State()

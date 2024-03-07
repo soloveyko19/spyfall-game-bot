@@ -13,45 +13,47 @@ from database.models import User
 
 # Group chats
 commands_group_chats = [
-    BotCommand(command="game", description="Начало новой игры"),
+    BotCommand(command="game", description="Start the game"),
     BotCommand(
         command="skip",
-        description="Пропустить этап игры",
+        description="Skip part of the game",
     ),
-    BotCommand(command="stop", description="Отмена игры"),
-    BotCommand(command="start", description="Запустить бота"),
-    BotCommand(command="help", description="Правила игры"),
-    BotCommand(command="extend", description="Продлить регистрацию"),
+    BotCommand(command="stop", description="Cancel game"),
+    BotCommand(command="start", description="Start the bot"),
+    BotCommand(command="help", description="Rules of the game"),
+    BotCommand(command="extend", description="Add 30 seconds to the "),
+    BotCommand(command="language", description="Change the group language")
 ]
 
 # Private chats
 commands_private_chats = [
     BotCommand(
         command="location",
-        description="Просмотр или добавление локаций",
+        description="See or add new locations",
     ),
-    BotCommand(command="cancel", description="Отмена действия"),
-    BotCommand(command="start", description="Запустить бота"),
-    BotCommand(command="help", description="Правила игры"),
+    BotCommand(command="cancel", description="Cancel action"),
+    BotCommand(command="start", description="Start the bot"),
+    BotCommand(command="help", description="Rules of the game"),
     BotCommand(
         command="feedback",
-        description="Написать комментарий разработчику",
+        description="Write feedback for developers",
     ),
+    BotCommand(command="language", description="Change the language"),
 ]
 
 # Additional commands in chats only for admins
 commands_admins = [
     BotCommand(
         command="get_feedback",
-        description="Отобразить последние фидбэки",
+        description="Show last feedbacks",
     ),
-    BotCommand(command="error", description="Вызвать ошибку"),
+    BotCommand(command="error", description="Raise error"),
     BotCommand(
         command="admin",
-        description="Дать права администратора другому пользователю",
+        description="Provide the administrator rights for another user",
     ),
-    BotCommand(command="stats", description="Получить статистику"),
-    BotCommand(command="mailing", description="Создать рассылку")
+    BotCommand(command="stats", description="Show statistics"),
+    BotCommand(command="mailing", description="Make mailing"),
 ]
 
 commands_admins.extend(commands_private_chats)
@@ -70,7 +72,7 @@ async def get_commands(bot: Bot):
             commands_admins,
             scope=BotCommandScopeChat(chat_id=user.tg_id),
         )
-        await asyncio.sleep(.05)
+        await asyncio.sleep(0.05)
 
 
 async def set_admin_commands(bot: Bot, user: User):

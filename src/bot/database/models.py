@@ -1,6 +1,6 @@
 import uuid
 from config import conf
-from typing import Optional, List, Sequence, Iterable, Coroutine
+from typing import Optional, List, Sequence, Iterable
 
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
@@ -38,6 +38,8 @@ class User(Base):
     tg_id = Column(BigInteger, index=True, nullable=False, unique=True)
     full_name = Column(String(200), nullable=False)
     is_admin = Column(Boolean, nullable=False, default=False)
+    locale = Column(String(2), nullable=False, server_default="en")
+
     players = relationship("Player", back_populates="user")
     feedbacks = relationship("Feedback", back_populates="user")
 
@@ -151,7 +153,9 @@ class GameState(Base):
             return bool(res.unique().scalar_one_or_none())
 
     @classmethod
-    async def add_many(cls, instances: List["GameState"]) -> List["GameState"]:
+    async def add_many(
+        cls, instances: List["GameState"]
+    ) -> List["GameState"]:
         async with async_session() as session:
             session.add_all(instances)
             await session.commit()
@@ -164,7 +168,10 @@ class Game(Base):
     group_tg_id = Column(BigInteger, index=True, nullable=False)
     join_key = Column(String, index=True, unique=True)
     join_message_tg_id = Column(Integer, index=True)
-    extend = Column(Integer, nullable=False, server_default=DefaultClause("0"))
+    extend = Column(
+        Integer, nullable=False, server_default=DefaultClause("0")
+    )
+    locale = Column(String(2), nullable=False, server_default="en")
     location_id = Column(
         Integer, ForeignKey("locations.id", ondelete="SET NULL")
     )

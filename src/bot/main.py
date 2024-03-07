@@ -11,10 +11,12 @@ from utils.database import load_fixtures
 from middlewares.outer_middlewares import (
     ManageGameChatMiddleware,
     SendErrorInfoMiddleware,
-    DatabaseContextMiddleware
+    DatabaseContextMiddleware,
+    DatabaseI18nMiddleware,
 )
 
 from aiogram import Bot, Dispatcher
+from aiogram.utils.i18n import I18n, ConstI18nMiddleware
 
 
 def register_handlers(dp: Dispatcher):
@@ -30,6 +32,7 @@ def set_middlewares(dp: Dispatcher):
     dp.update.outer_middleware(DatabaseContextMiddleware())
     dp.update.outer_middleware(ManageGameChatMiddleware())
     dp.update.outer_middleware(SendErrorInfoMiddleware())
+    dp.update.outer_middleware(DatabaseI18nMiddleware(i18n=dp.get("i18n")))
 
 
 async def aiogram_on_startup(bot: Bot):
@@ -46,8 +49,13 @@ def set_bot_options(dp: Dispatcher):
 def main() -> None:
     logging.basicConfig(level=conf.LOG_LEVEL)
 
+    i18n = I18n(
+        path=conf.WORKDIR / "locales", default_locale="ru", domain="messages"
+    )
     bot = Bot(token=conf.TELEGRAM_BOT_TOKEN, parse_mode="MarkdownV2")
     dp = Dispatcher()
+
+    dp["i18n"] = i18n
 
     set_bot_options(dp)
     asyncio.run(dp.start_polling(bot))

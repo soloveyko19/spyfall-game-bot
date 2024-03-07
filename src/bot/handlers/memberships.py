@@ -1,3 +1,5 @@
+from database.models import Game
+
 from aiogram import Router, types
 from aiogram.filters import (
     ChatMemberUpdatedFilter,
@@ -6,8 +8,8 @@ from aiogram.filters import (
     MEMBER,
     ADMINISTRATOR,
 )
+from aiogram.utils.i18n import gettext as _
 
-from database.models import Game
 
 router = Router()
 
@@ -21,7 +23,9 @@ async def bot_joined(message: types.ChatMemberUpdated, game: Game):
             game.is_allowed = False
         await game.save()
         await message.answer(
-            text="*Привет\\! 👋*\n*Чтобы начать игру предоставьте мне следующие права администратора:*\n\\- Удалять сообщения\n\\- Блокировать пользователей\n\\- Закреплять сообщения",
+            text=_(
+                "*Привет\\! 👋*\n*Чтобы начать игру предоставьте мне следующие права администратора:*\n\\- Удалять сообщения\n\\- Блокировать пользователей\n\\- Закреплять сообщения",
+            )
         )
 
 
@@ -39,7 +43,9 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
             game.is_allowed = True
             await game.save()
             await message.answer(
-                text="*Отлично\\! ✅\nВсе права предоставлены\\!* 😎\nМожем начнать игру /game"
+                text=_(
+                    "*Отлично\\! ✅\nВсе права предоставлены\\!* 😎\nМожем начнать игру /game"
+                )
             )
         else:
             if game.state_id != 1:
@@ -47,7 +53,13 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
             game.is_allowed = False
             await game.save()
             await message.answer(
-                text=f"*Предоставлены не все необходимые права администратора\\:*\n{'✅' if rights[0] else '❌'} \\- Удалять сообщения\n{'✅' if rights[1] else '❌'} \\- Блокировать пользователей\n{'✅' if rights[2] else '❌'} \\- Закреплять сообщения"
+                text=_(
+                    "*Предоставлены не все необходимые права администратора\\:*\n{rule_1} \\- Удалять сообщения\n{rule_2} \\- Блокировать пользователей\n{rule_3} \\- Закреплять сообщения"
+                ).format(
+                    rule_1="✅" if rights[0] else "❌",
+                    rule_2="✅" if rights[1] else "❌",
+                    rule_3="✅" if rights[2] else "❌",
+                )
             )
 
 

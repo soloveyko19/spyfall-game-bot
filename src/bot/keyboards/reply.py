@@ -3,6 +3,7 @@ from aiogram.types import (
     KeyboardButton,
     KeyboardButtonRequestUser,
 )
+from aiogram.utils.i18n import gettext as _
 
 
 def request_contact_keyboard() -> ReplyKeyboardMarkup:
@@ -10,13 +11,13 @@ def request_contact_keyboard() -> ReplyKeyboardMarkup:
         keyboard=[
             [
                 KeyboardButton(
-                    text="Выбрать пользователя 👤",
+                    text=_("Выбрать пользователя 👤"),
                     request_user=KeyboardButtonRequestUser(
                         user_is_bot=False, request_id=0
                     ),
                 ),
                 KeyboardButton(
-                    text="Отменить! ❌",
+                    text=_("Отменить! ❌"),
                 ),
             ]
         ],
