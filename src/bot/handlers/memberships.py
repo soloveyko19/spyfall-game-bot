@@ -10,6 +10,7 @@ from aiogram.filters import (
 )
 from aiogram.utils.i18n import gettext as _
 
+from utils.messages import LANGUAGES
 
 router = Router()
 
@@ -18,13 +19,19 @@ router = Router()
 async def bot_joined(message: types.ChatMemberUpdated, game: Game):
     if message.new_chat_member.user.id == message.bot.id:
         if not game:
-            game = Game(group_tg_id=message.chat.id, state_id=1)
+            locale = message.from_user.language_code
+            game = Game(
+                group_tg_id=message.chat.id,
+                state_id=1,
+                locale=locale if locale in LANGUAGES.keys() else "en"
+            )
         else:
             game.is_allowed = False
         await game.save()
         await message.answer(
             text=_(
                 "*Привет\\! 👋*\n*Чтобы начать игру предоставьте мне следующие права администратора:*\n\\- Удалять сообщения\n\\- Блокировать пользователей\n\\- Закреплять сообщения",
+                locale=game.locale
             )
         )
 

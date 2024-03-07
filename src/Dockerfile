@@ -13,5 +13,6 @@ ENV PYTHONPATH=/src/bot
 
 WORKDIR /src/bot
 
-CMD python3 -m alembic upgrade head && \
+CMD pybabel compile -d ./locales && \
+    python3 -m alembic upgrade head && \
     python3 main.py
