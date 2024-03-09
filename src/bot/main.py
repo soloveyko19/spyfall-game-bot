@@ -2,10 +2,6 @@ import logging
 import asyncio
 
 from config import conf
-from handlers.commands import router as command_router
-from handlers.messages import router as message_router
-from handlers.callbacks import router as callback_router
-from handlers.memberships import router as membership_router
 from utils.commands import get_commands
 from utils.database import load_fixtures
 from middlewares.outer_middlewares import (
@@ -20,11 +16,15 @@ from aiogram.utils.i18n import I18n, ConstI18nMiddleware
 
 
 def register_handlers(dp: Dispatcher):
+    from handlers import commands, callbacks, messages, memberships
     dp.include_routers(
-        command_router,
-        callback_router,
-        message_router,
-        membership_router,
+        commands.admins.router,
+        commands.groups.router,
+        commands.private_chats.router,
+        commands.general.router,
+        callbacks.router,
+        messages.router,
+        memberships.router
     )
 
 

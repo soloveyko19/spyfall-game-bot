@@ -19,7 +19,6 @@ commands_group_chats = [
         description="Skip part of the game",
     ),
     BotCommand(command="stop", description="Cancel game"),
-    BotCommand(command="start", description="Start the bot"),
     BotCommand(command="help", description="Rules of the game"),
     BotCommand(command="extend", description="Add 30 seconds to the "),
     BotCommand(command="language", description="Change the group language")
