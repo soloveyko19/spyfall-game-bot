@@ -115,7 +115,7 @@ async def command_game(message: types.Message, game: Game):
         return await message.answer(text=_("*Игра уже запущена\\!* ⛔️"))
     elif not game.is_allowed:
         return await message.answer(
-            text=_("*Вы не предоставили необходимые права администратора\\!*,")
+            text=_("*Вы не предоставили необходимые права администратора\\!*")
         )
     await message.delete()
     async with game:
@@ -313,7 +313,7 @@ async def command_game(message: types.Message, game: Game):
         await message.answer(text=res_msg)
 
 
-@router.message(Command("location"), ChatTypeFilter("private"))
+@router.message(Command("location"), ChatTypeFilter("private"), AdminFilter())
 async def command_location(message: types.Message, state: FSMContext):
     await message.delete()
     await message.answer(

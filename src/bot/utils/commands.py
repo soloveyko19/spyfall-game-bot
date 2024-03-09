@@ -27,10 +27,6 @@ commands_group_chats = [
 
 # Private chats
 commands_private_chats = [
-    BotCommand(
-        command="location",
-        description="See or add new locations",
-    ),
     BotCommand(command="cancel", description="Cancel action"),
     BotCommand(command="start", description="Start the bot"),
     BotCommand(command="help", description="Rules of the game"),
@@ -54,6 +50,10 @@ commands_admins = [
     ),
     BotCommand(command="stats", description="Show statistics"),
     BotCommand(command="mailing", description="Make mailing"),
+    BotCommand(
+        command="location",
+        description="See or add new locations",
+    ),
 ]
 
 commands_admins.extend(commands_private_chats)

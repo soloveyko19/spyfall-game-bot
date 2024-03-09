@@ -72,7 +72,7 @@ async def callback_voting(call: CallbackQuery):
     StateFilter(LocationStates.option),
 )
 async def callback_location(
-        call: CallbackQuery, state: FSMContext, db_user: User
+        call: CallbackQuery, state: FSMContext
 ):
     try:
         option = call.data.split("=")[1]
@@ -92,20 +92,19 @@ async def callback_location(
             reply_markup=location_options_keyboard(),
         )
     elif option == "add":
-        if db_user.is_admin:
-            await call.message.delete()
-            await call.message.answer(
-                text=_(
-                    "*Давайте добавим локацию\\!*\n_Отправьте название локации в формате перечисления через комму\\._"
-                ),
-                reply_markup=cancel_keyboard(),
-            )
-            await state.set_state(LocationStates.location)
-        else:
-            await call.answer(
-                text=_("У вас нет доступа к этой функции"),
-                show_alert=True,
-            )
+        await call.message.delete()
+        await call.message.answer(
+            text=_(
+                "*Давайте добавим локацию\\!*\n_Отправьте название локации в формате перечисления через комму\\._"
+            ),
+            reply_markup=cancel_keyboard(),
+        )
+        await state.set_state(LocationStates.location)
+    else:
+        await call.answer(
+            text=_("У вас нет доступа к этой функции"),
+            show_alert=True,
+        )
 
 
 @router.callback_query(StateFilter(MailingStates.button))
