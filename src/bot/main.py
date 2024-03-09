@@ -12,16 +12,17 @@ from middlewares.outer_middlewares import (
 )
 
 from aiogram import Bot, Dispatcher
-from aiogram.utils.i18n import I18n, ConstI18nMiddleware
+from aiogram.utils.i18n import I18n
 
 
 def register_handlers(dp: Dispatcher):
-    from handlers import commands, callbacks, messages, memberships
+    from handlers import callbacks, messages, memberships
+    from handlers.commands import admins, private_chats, general, groups
     dp.include_routers(
-        commands.admins.router,
-        commands.groups.router,
-        commands.private_chats.router,
-        commands.general.router,
+        admins.router,
+        groups.router,
+        private_chats.router,
+        general.router,
         callbacks.router,
         messages.router,
         memberships.router
