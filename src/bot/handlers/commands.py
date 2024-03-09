@@ -11,6 +11,7 @@ from keyboards.inline import (
 )
 from database.models import User, Game, Player, Feedback
 from keyboards.reply import request_contact_keyboard
+from utils.i18n import translate_request
 from utils.messages import (
     join_message,
     delete_all_messages,
@@ -114,7 +115,7 @@ async def command_game(message: types.Message, game: Game):
         return await message.answer(text=_("*Игра уже запущена\\!* ⛔️"))
     elif not game.is_allowed:
         return await message.answer(
-            text=_("*Вы не предоставили необходимые права администратора\\!*,")
+            text=_("*Вы не предоставили необходимые права администратора\\!*")
         )
     await message.delete()
     async with game:
@@ -178,6 +179,16 @@ async def command_game(message: types.Message, game: Game):
         spies_count = 1
         game.state_id = 3
         await game.save()
+
+        if game.locale != "ru":
+            translated_location = await translate_request(
+                text=game.location.name,
+                source_lang="ru",
+                target_lang="en"
+            )
+        else:
+            translated_location = game.location.name
+
         await message.answer(
             text=discussion_message(game.players),
             reply_markup=link_to_bot_keyboard(bot_username=bot.username),
@@ -208,7 +219,7 @@ async def command_game(message: types.Message, game: Game):
                             "*Вы НЕ Шпион\\! 👨*\nЛокация: *{location}*\n_Вычислите шпиона\\!_"
                         ).format(
                             location=escape_markdown_v2(
-                                game.location.name.capitalize()
+                                translated_location
                             )
                         ),
                     )
@@ -302,7 +313,7 @@ async def command_game(message: types.Message, game: Game):
         await message.answer(text=res_msg)
 
 
-@router.message(Command("location"), ChatTypeFilter("private"))
+@router.message(Command("location"), ChatTypeFilter("private"), AdminFilter())
 async def command_location(message: types.Message, state: FSMContext):
     await message.delete()
     await message.answer(

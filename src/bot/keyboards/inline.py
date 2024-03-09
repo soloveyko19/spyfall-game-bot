@@ -72,7 +72,7 @@ def location_options_keyboard():
             ],
             [
                 InlineKeyboardButton(
-                    text=_("Добавить локацию (для админов)"),
+                    text=_("Добавить локацию 🆕"),
                     callback_data="location_option=add",
                 )
             ],
