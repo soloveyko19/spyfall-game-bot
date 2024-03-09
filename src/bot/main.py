@@ -17,7 +17,7 @@ from aiogram.utils.i18n import I18n
 
 def register_handlers(dp: Dispatcher):
     from handlers import callbacks, messages, memberships
-    from handlers.commands import admins, private_chats, general, groups
+    from handlers.commands import groups, private_chats, general, admins
     dp.include_routers(
         admins.router,
         groups.router,
