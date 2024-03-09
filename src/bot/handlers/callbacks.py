@@ -50,7 +50,7 @@ async def callback_voting(call: CallbackQuery):
             text=_(
                 "*Вы отдали свой голос за [{name}](tg://user?id={tg_id})\\!*"
             ).format(
-                name={escape_markdown_v2(spy_player.user.full_name)},
+                name=escape_markdown_v2(spy_player.user.full_name),
                 tg_id=spy_player.user.tg_id,
             )
         )
