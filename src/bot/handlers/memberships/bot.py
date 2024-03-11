@@ -1,4 +1,5 @@
 from database.models import Game
+from utils.messages import LANGUAGES
 
 from aiogram import Router, types
 from aiogram.filters import (
@@ -10,7 +11,6 @@ from aiogram.filters import (
 )
 from aiogram.utils.i18n import gettext as _
 
-from utils.messages import LANGUAGES
 
 router = Router()
 

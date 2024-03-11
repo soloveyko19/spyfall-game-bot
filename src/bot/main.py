@@ -18,13 +18,24 @@ from aiogram.utils.i18n import I18n
 def register_handlers(dp: Dispatcher):
     from handlers import commands, callbacks, messages, memberships
     dp.include_routers(
+        # Command handlers
         commands.admins.router,
         commands.groups.router,
         commands.private_chats.router,
         commands.general.router,
-        callbacks.router,
-        messages.router,
-        memberships.router
+        # Callback handlers
+        callbacks.mailing.router,
+        callbacks.voting.router,
+        callbacks.location.router,
+        callbacks.language.router,
+        callbacks.general.router,
+        # Message handlers
+        messages.feedback.router,
+        messages.mailing.router,
+        messages.admin.router,
+        messages.location.router,
+        # Membership handlers
+        memberships.bot.router
     )
 
 
