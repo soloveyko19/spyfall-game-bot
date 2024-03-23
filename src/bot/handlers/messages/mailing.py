@@ -1,5 +1,6 @@
 from utils.states import MailingStates
-from keyboards.inline import add_buttons_to_mailing_keyboard, cancel_keyboard, confirm_mailing_keyboard
+from keyboards.inline import add_buttons_to_mailing_keyboard, cancel_keyboard, confirm_mailing_keyboard, \
+    languages_keyboard
 
 from aiogram import Router, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -46,28 +47,8 @@ async def message_mailing_button_text(
             text=_("*Некоректный формат ссылки\\, попробуйте еще раз*")
         )
     await state.update_data(button_url=message.text)
-    data = await state.get_data()
-    await message.bot.copy_message(
-        chat_id=message.from_user.id,
-        from_chat_id=data.get("chat_id"),
-        message_id=data.get("message_id"),
-        reply_markup=(
-            InlineKeyboardMarkup(
-                inline_keyboard=[
-                    [
-                        InlineKeyboardButton(
-                            url=data.get("button_url"),
-                            text=data.get("button_text"),
-                        )
-                    ]
-                ]
-            )
-            if data.get("add_button")
-            else None
-        ),
-    )
-    await state.set_state(MailingStates.confirm)
+    await state.set_state(MailingStates.locale)
     await message.answer(
-        text=_("*Подтвердите что хотите разослать это сообщение\\.*"),
-        reply_markup=confirm_mailing_keyboard(),
+        text=_("*Какой язык рассылки\?*"),
+        reply_markup=languages_keyboard()
     )

@@ -71,9 +71,9 @@ class User(Base):
             return res.scalar()
 
     @classmethod
-    async def get_all(cls) -> Iterable["User"]:
+    async def get_all(cls, locale: str = "en") -> Iterable["User"]:
         async with async_session() as session:
-            query = select(User).order_by(User.id)
+            query = select(User).filter(User.locale == locale).order_by(User.id)
             res = await session.execute(query)
             return res.scalars().all()
 

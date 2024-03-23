@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-23 19:33+0000\n"
-"PO-Revision-Date: 2024-03-23 19:39+0000\n"
+"POT-Creation-Date: 2024-03-23 20:20+0000\n"
+"PO-Revision-Date: 2024-03-23 20:23+0000\n"
 "Last-Translator: \n"
 "Language-Team: en <LL@li.org>\n"
 "Language: en\n"
@@ -59,9 +59,17 @@ msgstr "You do not have access to this feature"
 msgid "*Напишите какой текст будет на кнопке*"
 msgstr "*Write what text will be on the button*"
 
-#: handlers/callbacks/mailing.py:34 handlers/messages/mailing.py:71
-msgid "*Подтвердите что хотите разослать это сообщение\\.*"
-msgstr "*Confirm that you want to make a mailing with this message\\.*"
+#: handlers/callbacks/mailing.py:29 handlers/messages/mailing.py:52
+msgid "*Какой язык рассылки\\?*"
+msgstr "*What language of the broadcast\\?*"
+
+#: handlers/callbacks/mailing.py:61
+msgid ""
+"*Подтвердите что хотите разослать это сообщение\\.*\n"
+"Язык рассылки: {language}"
+msgstr ""
+"*Confirm that you want to make a mailing with this message\\.*\n"
+"Broadcast language: {language}"
 
 #: handlers/callbacks/voting.py:28
 msgid "*Вы отдали свой голос за [{name}](tg://user?id={tg_id})\\!*"
@@ -443,7 +451,7 @@ msgstr ""
 "\n"
 "*Shall we add more\\?*"
 
-#: handlers/messages/mailing.py:20
+#: handlers/messages/mailing.py:21
 msgid ""
 "*Принято\\!*\n"
 "Добавим кнопку со ссылкой?"
@@ -451,11 +459,11 @@ msgstr ""
 "*Got it\\!*\n"
 "Shall we add a button with a link?"
 
-#: handlers/messages/mailing.py:32
+#: handlers/messages/mailing.py:33
 msgid "*Отправьте ссылку которую хотите поместить в кнопку\\.*"
 msgstr "*Send the link you want to place in the button\\.*"
 
-#: handlers/messages/mailing.py:46
+#: handlers/messages/mailing.py:47
 msgid "*Некоректный формат ссылки\\, попробуйте еще раз*"
 msgstr "*Invalid link format\\, please try again*"
 
@@ -545,11 +553,11 @@ msgstr ""
 "\n"
 "_Total {players_count} players\\. 👤_"
 
-#: utils/messages.py:94
+#: utils/messages.py:95
 msgid "*Рассылка начата\\!*"
 msgstr "*Mailing has begun\\!*"
 
-#: utils/messages.py:108
+#: utils/messages.py:109
 msgid ""
 "*Рассылка закончена\\!*\n"
 "Всего разослано для _{count}_ пользователей\\."

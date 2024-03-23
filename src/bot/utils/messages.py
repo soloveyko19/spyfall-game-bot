@@ -88,9 +88,10 @@ async def mailing_everyone(
     from_chat_id: int,
     message_id: int,
     admin_id: int,
+    locale: str,
     reply_markup=None,
 ):
-    users = await User.get_all()
+    users = await User.get_all(locale=locale)
     await bot.send_message(chat_id=admin_id, text=_("*Рассылка начата\\!*"))
     count = 0
     for user in users:
