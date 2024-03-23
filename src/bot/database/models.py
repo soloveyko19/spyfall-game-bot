@@ -349,7 +349,7 @@ class Player(Base):
             if _id:
                 query = query.filter(Player.id == _id)
             res = await session.execute(query)
-            return res.unique().scalar_one_or_none()
+            return res.scalar()
 
 
 class Vote(Base):
