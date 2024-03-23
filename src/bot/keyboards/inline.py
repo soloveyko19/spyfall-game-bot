@@ -124,3 +124,16 @@ def languages_keyboard():
             ]
         ]
     )
+
+
+def buy_me_a_coffee_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=_("Купить кофе разработчику"),
+                    url="https://www.buymeacoffee.com/soloveyko19"
+                )
+            ]
+        ]
+    )

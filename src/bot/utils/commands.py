@@ -34,6 +34,7 @@ commands_private_chats = [
         description="Write feedback for developers",
     ),
     BotCommand(command="language", description="Change the language"),
+    BotCommand(command="coffee", description="Buy a coffee for developer")
 ]
 
 # Additional commands in chats only for admins

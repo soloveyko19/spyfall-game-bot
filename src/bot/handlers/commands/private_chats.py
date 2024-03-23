@@ -1,14 +1,19 @@
+import os
+
+import aiofiles
+
 from filters.chat import ChatTypeFilter
 from database.models import User, Player, Game
 from utils.messages import LANGUAGES, join_message, language_by_locale
 from utils.states import LanguageStates, FeedbackStates
-from keyboards.inline import join_game_keyboard, cancel_keyboard, languages_keyboard
+from keyboards.inline import join_game_keyboard, cancel_keyboard, languages_keyboard, buy_me_a_coffee_keyboard
 
 from aiogram import Router, types
 from aiogram.filters import Command, CommandObject
 from aiogram.utils.i18n import gettext as _
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
+from aiogram.types.input_file import FSInputFile
 
 
 router = Router()
@@ -98,4 +103,15 @@ async def command_language(
             language=language_by_locale(db_user.locale)
         ),
         reply_markup=languages_keyboard(),
+    )
+
+
+@router.message(Command("coffee"), ChatTypeFilter("private"))
+async def command_coffee(message: types.Message):
+    await message.delete()
+    pic_file_path = os.path.join("static", "img", "coffee.png")
+    await message.answer_photo(
+        photo=FSInputFile(path=pic_file_path),
+        caption=_("Этот проект полностью лежит на плечах одного разработчика\\, который оплачивает хостинг для этого бота и уделяет большое кол\\-во времени на его поддержку\\. Так что при желании у вас есть возможность поблагодарить его угостив чашечкой кофе по ссылке ниже либо отсканировав QR\\-код :\\)"),
+        reply_markup=buy_me_a_coffee_keyboard(),
     )
