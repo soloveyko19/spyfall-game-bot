@@ -6,7 +6,8 @@ from filters.chat import ChatTypeFilter
 from database.models import User, Player, Game
 from utils.messages import LANGUAGES, join_message, language_by_locale
 from utils.states import LanguageStates, FeedbackStates
-from keyboards.inline import join_game_keyboard, cancel_keyboard, languages_keyboard, buy_me_a_coffee_keyboard
+from keyboards.inline import join_game_keyboard, cancel_keyboard, languages_keyboard, buy_me_a_coffee_keyboard, \
+    menu_keyboard
 
 from aiogram import Router, types
 from aiogram.filters import Command, CommandObject
@@ -23,6 +24,7 @@ router = Router()
 async def command_start(
     message: types.Message, command: CommandObject, db_user: User
 ):
+    bot = await message.bot.get_me()
     if not db_user:
         lang = message.from_user.language_code
         db_user = User(
@@ -39,6 +41,7 @@ async def command_start(
             text=_(
                 "*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"
             ),
+            reply_markup=menu_keyboard(bot.username)
         )
     game = await Game.get(join_key=command.args)
     if not game:
@@ -56,7 +59,6 @@ async def command_start(
     except ValueError:
         return await message.answer(text=_("*Вы уже в игре\\!* ⛔️"))
     await game.refresh()
-    bot = await message.bot.get_me()
     await message.bot.edit_message_text(
         message_id=game.join_message_tg_id,
         chat_id=game.group_tg_id,
@@ -96,9 +98,8 @@ async def command_feedback(message: types.Message, state: FSMContext):
 async def command_language(
     message: types.Message, state: FSMContext, db_user: User
 ):
-    await message.delete()
     await state.set_state(LanguageStates.user_locale)
-    await message.answer(
+    await message.edit_text(
         text=_("*Сейчас ваш язык: {language}\nВыберите язык *").format(
             language=language_by_locale(db_user.locale)
         ),

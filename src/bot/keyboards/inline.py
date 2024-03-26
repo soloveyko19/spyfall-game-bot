@@ -1,11 +1,10 @@
-from database.models import Player
-
 from typing import List
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.utils.i18n import gettext as _
-
+from database.models import Player
 from utils.messages import LANGUAGES
+
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, SwitchInlineQueryChosenChat
+from aiogram.utils.i18n import gettext as _
 
 
 def join_game_keyboard(join_key: str, bot_username: str):
@@ -133,6 +132,54 @@ def buy_me_a_coffee_keyboard():
                 InlineKeyboardButton(
                     text=_("Купить кофе разработчику"),
                     url="https://www.buymeacoffee.com/soloveyko19"
+                ),
+            ],
+            [
+                InlineKeyboardButton(
+                    text=_("Меню") + " ↩️",
+                    callback_data="cancel"
+                )
+            ]
+        ]
+    )
+
+
+def menu_keyboard(bot_username: str):
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=_("Начать игру в новом чате"),
+                    url=f"https://t.me/{bot_username}?startgroup=true"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text=_("Язык") + " / Language 🌍",
+                    callback_data="menu_option=language"
+                ),
+                InlineKeyboardButton(
+                    text=_("Правила") + " 📋",
+                    callback_data="menu_option=rules",
+                ),
+            ],
+            [
+                InlineKeyboardButton(
+                    text=_("Купить кофе разработчику") + " ☕️",
+                    callback_data="menu_option=coffee"
+                )
+            ]
+        ]
+    )
+
+
+def back_to_menu_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=_("Меню ↩️"),
+                    callback_data="cancel"
                 )
             ]
         ]

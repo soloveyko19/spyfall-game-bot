@@ -1,1 +1,1 @@
-from . import language, location, voting, mailing, general
+from . import menu, language, location, voting, mailing, general

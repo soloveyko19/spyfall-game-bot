@@ -1,5 +1,7 @@
 import asyncio
 
+from database.models import User
+
 from aiogram import Bot
 from aiogram.types import (
     BotCommand,
@@ -8,7 +10,6 @@ from aiogram.types import (
     BotCommandScopeChat,
 )
 
-from database.models import User
 
 
 # Group chats

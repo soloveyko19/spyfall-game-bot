@@ -1,4 +1,5 @@
 from database.models import User
+from keyboards.inline import menu_keyboard
 from utils.messages import language_by_locale
 from utils.states import LanguageStates
 
@@ -21,10 +22,15 @@ async def callback_user_locale(
         db_user.locale = call.data
         await db_user.save()
         await state.clear()
-        return await call.message.answer(
+        await call.message.answer(
             text=_(
                 "*Ваш язык изменен на: {language}*", locale=db_user.locale
             ).format(language=language_by_locale(db_user.locale))
+        )
+        bot = await call.bot.get_me()
+        await call.message.answer(
+            text=_("*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"),
+            reply_markup=menu_keyboard(bot.username)
         )
 
 

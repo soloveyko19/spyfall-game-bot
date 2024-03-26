@@ -24,6 +24,7 @@ def register_handlers(dp: Dispatcher):
         commands.private_chats.router,
         commands.general.router,
         # Callback handlers
+        callbacks.menu.router,
         callbacks.mailing.router,
         callbacks.voting.router,
         callbacks.location.router,
