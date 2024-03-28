@@ -1,7 +1,7 @@
 from database.models import Feedback, User, Game
 from filters.user import AdminFilter
 from filters.chat import ChatTypeFilter
-from utils.messages import escape_markdown_v2
+from utils.messages import get_feedback_message
 from utils.states import AdminStates, MailingStates, LocationStates
 from keyboards.reply import request_contact_keyboard
 from keyboards.inline import cancel_keyboard, location_options_keyboard
@@ -40,13 +40,7 @@ async def command_get_feedback(
             )
     feedbacks = await Feedback.get_last(limit)
     await message.answer(
-        text=_("Вот последние отзывы:\n\n")
-        + "\n\n".join(
-            [
-                f"\\[\\#{feedback.id}\\] [{escape_markdown_v2(feedback.user.full_name)}](tg://user?id={feedback.user.tg_id}): {escape_markdown_v2(feedback.message)}"
-                for feedback in feedbacks
-            ]
-        ),
+        text=get_feedback_message(feedbacks=feedbacks)
     )
 
 
@@ -89,6 +83,7 @@ async def command_mailing(message: types.Message, state: FSMContext):
         reply_markup=cancel_keyboard(),
     )
     await state.set_state(MailingStates.message)
+
 
 @router.message(Command("location"), ChatTypeFilter("private"), AdminFilter())
 async def command_location(message: types.Message, state: FSMContext):

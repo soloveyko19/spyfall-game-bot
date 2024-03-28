@@ -29,8 +29,8 @@ async def callback_user_locale(
         )
         bot = await call.bot.get_me()
         await call.message.answer(
-            text=_("*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"),
-            reply_markup=menu_keyboard(bot.username)
+            text=_("*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!", locale=db_user.locale),
+            reply_markup=menu_keyboard(bot.username, locale=db_user.locale, for_admins=db_user.is_admin)
         )
 
 

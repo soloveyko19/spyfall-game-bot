@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-23 20:20+0000\n"
-"PO-Revision-Date: 2024-03-23 20:23+0000\n"
+"POT-Creation-Date: 2024-03-27 23:29+0000\n"
+"PO-Revision-Date: 2024-03-27 23:37+0000\n"
 "Last-Translator: \n"
 "Language-Team: en <LL@li.org>\n"
 "Language: en\n"
@@ -19,15 +19,20 @@ msgstr ""
 "Generated-By: Babel 2.14.0\n"
 "X-Generator: Poedit 3.0.1\n"
 
-#: handlers/callbacks/general.py:14
-msgid "*Отмена\\!*"
-msgstr "*Canceled\\!*"
-
-#: handlers/callbacks/language.py:25
+#: handlers/callbacks/language.py:26
 msgid "*Ваш язык изменен на: {language}*"
 msgstr "*Your language changed to {language}*"
 
-#: handlers/callbacks/language.py:41
+#: handlers/callbacks/language.py:32 handlers/callbacks/menu.py:128
+#: handlers/callbacks/menu.py:136 handlers/commands/private_chats.py:41
+msgid ""
+"*Привет\\!* 👋\n"
+"Добавь меня в группу где будем играть\\!"
+msgstr ""
+"*Hello\\!* 👋\n"
+"Invite me to the group where you are going to play\\!"
+
+#: handlers/callbacks/language.py:47
 msgid "*Язык группы изменен на: {language}*"
 msgstr "*Group language changed to {language}*"
 
@@ -39,7 +44,8 @@ msgstr ""
 "*All available locations:*\n"
 "\n"
 
-#: handlers/callbacks/location.py:37 handlers/commands/admins.py:97
+#: handlers/callbacks/location.py:37 handlers/callbacks/menu.py:118
+#: handlers/commands/admins.py:92
 msgid "*Выберите опцию:*"
 msgstr "*Please choose an option:*"
 
@@ -71,27 +77,47 @@ msgstr ""
 "*Confirm that you want to make a mailing with this message\\.*\n"
 "Broadcast language: {language}"
 
-#: handlers/callbacks/voting.py:28
-msgid "*Вы отдали свой голос за [{name}](tg://user?id={tg_id})\\!*"
-msgstr "*You voted for [{name}](tg://user?id={tg_id})*"
-
-#: handlers/callbacks/voting.py:37
-msgid "*[{name}](tg://user?id={tg_id}) проголосовал\\(\\-а\\)\\!*"
-msgstr "*[{name}](tg://user?id={tg_id}) voted\\!*"
-
-#: handlers/commands/admins.py:37
-msgid "*Ошибка значения\\, лимит должен быть указан в числовом значении\\!*"
-msgstr "*Value error\\, the limit must be specified as a numerical value\\!*"
-
-#: handlers/commands/admins.py:43
+#: handlers/callbacks/menu.py:28 handlers/commands/private_chats.py:103
 msgid ""
-"Вот последние отзывы:\n"
-"\n"
+"*Сейчас ваш язык: {language}\n"
+"Выберите язык *"
 msgstr ""
-"Here are the latest reviews:\n"
-"\n"
+"*Now your language is {language}\n"
+"Select new language*"
 
-#: handlers/commands/admins.py:57
+#: handlers/callbacks/menu.py:41 handlers/commands/private_chats.py:116
+msgid ""
+"Этот проект полностью лежит на плечах одного разработчика\\, который "
+"оплачивает хостинг для этого бота и уделяет большое кол\\-во времени на его "
+"поддержку\\. Так что при желании у вас есть возможность поблагодарить его "
+"угостив чашечкой кофе по ссылке ниже либо отсканировав QR\\-код :\\)"
+msgstr ""
+"This project is entirely supported by a single developer who pays for the "
+"hosting of this bot and devotes a considerable amount of time to its "
+"maintenance\\. So if you feel inclined\\, you have the opportunity to thank "
+"them by treating them to a cup of coffee via the link below or by scanning "
+"the QR code :\\)"
+
+#: handlers/callbacks/menu.py:48 handlers/commands/private_chats.py:89
+msgid ""
+"*Чтобы обратиться к разработчику напишите свой комментарий ниже\\. 👇*\n"
+"_Напоминаем что это не коммерческий продукт и каждый ваш отзыв помогает "
+"улучшить его\\._"
+msgstr ""
+"*To contact the developer, please write your comment below\\. 👇*\n"
+"_Remember, this is not a commercial product, and each of your feedback helps "
+"to improve it\\._"
+
+#: handlers/callbacks/menu.py:56 handlers/callbacks/menu.py:69
+msgid "Для этой функции необходимы права администратора!"
+msgstr "You must have administrator rights to execute this function!"
+
+#: handlers/callbacks/menu.py:60 handlers/callbacks/menu.py:148
+#: handlers/callbacks/menu.py:154
+msgid "*Меню для админов\\! 💅*"
+msgstr "*Menu for admins\\! 💅*"
+
+#: handlers/callbacks/menu.py:88 handlers/commands/admins.py:51
 msgid ""
 "*Вы собираетесь добавить администратора для этого бота\\! 👨‍💻*\n"
 "_Пожалуйста\\, поделитесь контактом пользователя которого вы хотите "
@@ -101,7 +127,7 @@ msgstr ""
 "_Please share the contact of the user you want to appoint as an "
 "administrator below 👇_"
 
-#: handlers/commands/admins.py:72
+#: handlers/callbacks/menu.py:98 handlers/commands/admins.py:66
 msgid ""
 "*Статистика 📈*\n"
 "\n"
@@ -115,7 +141,7 @@ msgstr ""
 "Total number of games: {games_count}\n"
 "Number of active games: {active_games_count}"
 
-#: handlers/commands/admins.py:86
+#: handlers/callbacks/menu.py:110 handlers/commands/admins.py:80
 msgid ""
 "*Вы собираетесь сделать рассылку\\!*\n"
 "Отправьте сообщение которое вы хотите разослать\\."
@@ -123,52 +149,17 @@ msgstr ""
 "*You are about to send a broadcast\\!*\n"
 "Please provide the message you want to send\\."
 
-#: handlers/commands/general.py:12
-msgid ""
-"*Вас приветствует бот для игры в Шпиона\\! 👋*\n"
-"\n"
-"*Правила игры следующие:*\n"
-"Чтобы начать играть\\, вам нужно написать команду /game непосредственно в "
-"группе где планируется игра\\. Минимальное кол\\-во человек для игры \\- "
-"4\\, максимальное \\- 10\\.\n"
-"После завершения набора игроков\\, бот вышлет вам вашу роль на эту игру\\. В "
-"игре есть две роли:\n"
-"*Шпион* \\- задача которого не выдать свою роль до конца игры\\.\n"
-"*Не Шпион* \\- задача которого постараться вычислить шпиона\\.\n"
-"\n"
-"Если ваша роль \\- \"Не Шпион\"\\, то бот скажет локацию для этой игры\\. "
-"Задача всех игроков на протяжении игры \\- задавать вопросы по локации\\, "
-"чтобы вычислить шпиона\\. После завершения игры проводится голосование\\, "
-"все участники игры голосуют за возможного шпиона\\. Если большинство игроков "
-"выбирают неправильного игрока\\, то Шпион побеждает\\. Если же шпиона "
-"вычислили\\, и большинство игроков проголосовало за него\\, то у него еще "
-"есть шанс победить\\, назвав локацию игры которое он понял исходя из "
-"заданных ранее вопросов\\.\n"
-"\n"
-"*Удачной игры\\!*"
-msgstr ""
-"*Welcome to the Spy Game Bot\\! 👋*\n"
-"\n"
-"*The rules of the game are as follows:*\n"
-"To start playing\\, you need to send the command /game directly in the group "
-"where the game is planned\\. The minimum number of people for the game is "
-"4\\, the maximum is 10\\.\n"
-"After the recruitment of players is complete\\, the bot will send you your "
-"role for this game\\. There are two roles in the game:\n"
-"*Spy* \\- whose task is not to reveal their role until the end of the "
-"game\\.\n"
-"*Not Spy* \\- whose task is to try to identify the spy\\.\n"
-"\n"
-"If your role is \"Not Spy\"\\, the bot will provide the location for this "
-"game\\. The task of all players throughout the game is to ask questions "
-"about the location to identify the spy\\. After the game ends\\, there is a "
-"voting session where all participants vote for the possible spy\\. If the "
-"majority of players choose the wrong player\\, the Spy wins\\. However\\, if "
-"the spy is identified and the majority of players vote for them\\, the spy "
-"still has a chance to win by naming the location of the game based on the "
-"questions asked earlier\\.\n"
-"\n"
-"*Good luck playing\\!*"
+#: handlers/callbacks/voting.py:28
+msgid "*Вы отдали свой голос за [{name}](tg://user?id={tg_id})\\!*"
+msgstr "*You voted for [{name}](tg://user?id={tg_id})*"
+
+#: handlers/callbacks/voting.py:37
+msgid "*[{name}](tg://user?id={tg_id}) проголосовал\\(\\-а\\)\\!*"
+msgstr "*[{name}](tg://user?id={tg_id}) voted\\!*"
+
+#: handlers/commands/admins.py:37
+msgid "*Ошибка значения\\, лимит должен быть указан в числовом значении\\!*"
+msgstr "*Value error\\, the limit must be specified as a numerical value\\!*"
 
 #: handlers/commands/groups.py:26
 msgid ""
@@ -286,15 +277,7 @@ msgstr ""
 "*Now group language is {language}\n"
 "Select new language*"
 
-#: handlers/commands/private_chats.py:39
-msgid ""
-"*Привет\\!* 👋\n"
-"Добавь меня в группу где будем играть\\!"
-msgstr ""
-"*Hello\\!* 👋\n"
-"Invite me to the group where you are going to play\\!"
-
-#: handlers/commands/private_chats.py:46
+#: handlers/commands/private_chats.py:49
 msgid ""
 "*Ошибка ❗️*\n"
 "_Такой игры не существует либо она уже была окончена\\._"
@@ -302,7 +285,7 @@ msgstr ""
 "*Error ❗️*\n"
 "_There are no such game or it is already ended\\._"
 
-#: handlers/commands/private_chats.py:52
+#: handlers/commands/private_chats.py:55
 msgid ""
 "*Ошибка ❗️*\n"
 "Набор в игру уже окончен\\!"
@@ -310,52 +293,21 @@ msgstr ""
 "*Error ❗️*\n"
 "The recruitment for the game has already concluded\\!"
 
-#: handlers/commands/private_chats.py:57
+#: handlers/commands/private_chats.py:60
 msgid "*Вы уже в игре\\!* ⛔️"
 msgstr "*You are already in the game\\!* ⛔️"
 
-#: handlers/commands/private_chats.py:69
+#: handlers/commands/private_chats.py:71
 msgid "*Вы присоединились к игре в Шпиона\\! ✅*"
 msgstr "*You\\'ve joined the Spy Game\\! ✅*"
 
-#: handlers/commands/private_chats.py:78
+#: handlers/commands/private_chats.py:80
 msgid ""
 "*Отмена\\! ❌*\n"
 "Все состояния сняты\\!"
 msgstr ""
 "*Canceled\\! ❌*\n"
 "All states are lifted\\!"
-
-#: handlers/commands/private_chats.py:87
-msgid ""
-"*Чтобы обратиться к разработчику напишите свой комментарий ниже\\. 👇*\n"
-"_Напоминаем что это не коммерческий продукт и каждый ваш отзыв помогает "
-"улучшить его\\._"
-msgstr ""
-"*To contact the developer, please write your comment below\\. 👇*\n"
-"_Remember, this is not a commercial product, and each of your feedback helps "
-"to improve it\\._"
-
-#: handlers/commands/private_chats.py:102
-msgid ""
-"*Сейчас ваш язык: {language}\n"
-"Выберите язык *"
-msgstr ""
-"*Now your language is {language}\n"
-"Select new language*"
-
-#: handlers/commands/private_chats.py:115
-msgid ""
-"Этот проект полностью лежит на плечах одного разработчика\\, который "
-"оплачивает хостинг для этого бота и уделяет большое кол\\-во времени на его "
-"поддержку\\. Так что при желании у вас есть возможность поблагодарить его "
-"угостив чашечкой кофе по ссылке ниже либо отсканировав QR\\-код :\\)"
-msgstr ""
-"This project is entirely supported by a single developer who pays for the "
-"hosting of this bot and devotes a considerable amount of time to its "
-"maintenance\\. So if you feel inclined\\, you have the opportunity to thank "
-"them by treating them to a cup of coffee via the link below or by scanning "
-"the QR code :\\)"
 
 #: handlers/memberships/bot.py:32
 msgid ""
@@ -393,7 +345,7 @@ msgstr ""
 "{rule_2} \\- Block users\n"
 "{rule_3} \\- Pin messages"
 
-#: handlers/messages/admin.py:19 keyboards/inline.py:29 keyboards/reply.py:20
+#: handlers/messages/admin.py:19 keyboards/inline.py:28 keyboards/reply.py:20
 msgid "Отменить! ❌"
 msgstr "Cancel! ❌"
 
@@ -467,41 +419,101 @@ msgstr "*Send the link you want to place in the button\\.*"
 msgid "*Некоректный формат ссылки\\, попробуйте еще раз*"
 msgstr "*Invalid link format\\, please try again*"
 
-#: keyboards/inline.py:16
+#: keyboards/inline.py:15
 msgid "Присоединиться!"
 msgstr "Join!"
 
-#: keyboards/inline.py:42
+#: keyboards/inline.py:41
 msgid "➡️ Перейти к боту ⬅️"
 msgstr "➡️ Go to the bot ⬅️"
 
-#: keyboards/inline.py:69
+#: keyboards/inline.py:68
 msgid "Список всех локаций 📋"
 msgstr "List of all locations 📋"
 
-#: keyboards/inline.py:75
+#: keyboards/inline.py:74
 msgid "Добавить локацию 🆕"
 msgstr "Add a location 🆕"
 
-#: keyboards/inline.py:88
+#: keyboards/inline.py:80 keyboards/inline.py:241 keyboards/inline.py:254
+msgid "Меню ↩️"
+msgstr "Menu ↩️"
+
+#: keyboards/inline.py:93
 msgid "Добавить ✅"
 msgstr "Add ✅"
 
-#: keyboards/inline.py:91
+#: keyboards/inline.py:96
 msgid "Продолжить без кнопки ❎"
 msgstr "Continue without the button ❎"
 
-#: keyboards/inline.py:103
+#: keyboards/inline.py:108
 msgid "Подтвердить ✅"
 msgstr "Confirm ✅"
 
-#: keyboards/inline.py:106 keyboards/inline.py:122
+#: keyboards/inline.py:111 keyboards/inline.py:127
 msgid "Отменить ❌"
 msgstr "Cancel ❌"
 
-#: keyboards/inline.py:134
+#: keyboards/inline.py:139
 msgid "Купить кофе разработчику"
 msgstr "Buy coffee for the developer"
+
+#: keyboards/inline.py:145
+msgid "Меню"
+msgstr "Menu"
+
+#: keyboards/inline.py:158
+msgid "Начать игру в новом чате ➕"
+msgstr "Start the game in a new chat ➕"
+
+#: keyboards/inline.py:164
+msgid "Язык"
+msgstr "Language"
+
+#: keyboards/inline.py:168
+msgid "Правила 📋"
+msgstr "Rules 📋"
+
+#: keyboards/inline.py:174
+msgid "Купить кофе ☕️"
+msgstr "Buy coffee ☕️"
+
+#: keyboards/inline.py:178
+msgid "Фидбэк 💬"
+msgstr "Feedback 💬"
+
+#: keyboards/inline.py:184
+msgid "Меню для админов ➡️"
+msgstr "Menu for admins ➡️"
+
+#: keyboards/inline.py:197
+msgid "Фидбэки 💬"
+msgstr "Feedbacks 💬"
+
+#: keyboards/inline.py:201
+msgid "Ошибка ❗️"
+msgstr "Error ❗️"
+
+#: keyboards/inline.py:207
+msgid "Назначить админа 🙎‍♂️"
+msgstr "Add admin 🙎‍♂️"
+
+#: keyboards/inline.py:211
+msgid "Статистика 📈"
+msgstr "Statistics 📈"
+
+#: keyboards/inline.py:217
+msgid "Создать рассылку 🔊"
+msgstr "Make mailing 🔊"
+
+#: keyboards/inline.py:221
+msgid "Локации 📌"
+msgstr "Locations 📌"
+
+#: keyboards/inline.py:227
+msgid "Обычное меню ⬅️"
+msgstr "Basic menu ⬅️"
 
 #: keyboards/reply.py:14
 msgid "Выбрать пользователя 👤"
@@ -553,17 +565,75 @@ msgstr ""
 "\n"
 "_Total {players_count} players\\. 👤_"
 
-#: utils/messages.py:95
+#: utils/messages.py:50
+msgid ""
+"*Вас приветствует бот для игры в Шпиона\\! 👋*\n"
+"\n"
+"*Правила игры следующие:*\n"
+"Чтобы начать играть\\, вам нужно написать команду /game непосредственно в "
+"группе где планируется игра\\. Минимальное кол\\-во человек для игры \\- "
+"4\\, максимальное \\- 10\\.\n"
+"После завершения набора игроков\\, бот вышлет вам вашу роль на эту игру\\. В "
+"игре есть две роли:\n"
+"*Шпион* \\- задача которого не выдать свою роль до конца игры\\.\n"
+"*Не Шпион* \\- задача которого постараться вычислить шпиона\\.\n"
+"\n"
+"Если ваша роль \\- \"Не Шпион\"\\, то бот скажет локацию для этой игры\\. "
+"Задача всех игроков на протяжении игры \\- задавать вопросы по локации\\, "
+"чтобы вычислить шпиона\\. После завершения игры проводится голосование\\, "
+"все участники игры голосуют за возможного шпиона\\. Если большинство игроков "
+"выбирают неправильного игрока\\, то Шпион побеждает\\. Если же шпиона "
+"вычислили\\, и большинство игроков проголосовало за него\\, то у него еще "
+"есть шанс победить\\, назвав локацию игры которое он понял исходя из "
+"заданных ранее вопросов\\.\n"
+"\n"
+"*Удачной игры\\!*"
+msgstr ""
+"*Welcome to the Spy Game Bot\\! 👋*\n"
+"\n"
+"*The rules of the game are as follows:*\n"
+"To start playing\\, you need to send the command /game directly in the group "
+"where the game is planned\\. The minimum number of people for the game is "
+"4\\, the maximum is 10\\.\n"
+"After the recruitment of players is complete\\, the bot will send you your "
+"role for this game\\. There are two roles in the game:\n"
+"*Spy* \\- whose task is not to reveal their role until the end of the "
+"game\\.\n"
+"*Not Spy* \\- whose task is to try to identify the spy\\.\n"
+"\n"
+"If your role is \"Not Spy\"\\, the bot will provide the location for this "
+"game\\. The task of all players throughout the game is to ask questions "
+"about the location to identify the spy\\. After the game ends\\, there is a "
+"voting session where all participants vote for the possible spy\\. If the "
+"majority of players choose the wrong player\\, the Spy wins\\. However\\, if "
+"the spy is identified and the majority of players vote for them\\, the spy "
+"still has a chance to win by naming the location of the game based on the "
+"questions asked earlier\\.\n"
+"\n"
+"*Good luck playing\\!*"
+
+#: utils/messages.py:54
+msgid ""
+"Вот последние отзывы:\n"
+"\n"
+msgstr ""
+"Here are the latest reviews:\n"
+"\n"
+
+#: utils/messages.py:108
 msgid "*Рассылка начата\\!*"
 msgstr "*Mailing has begun\\!*"
 
-#: utils/messages.py:109
+#: utils/messages.py:122
 msgid ""
 "*Рассылка закончена\\!*\n"
 "Всего разослано для _{count}_ пользователей\\."
 msgstr ""
 "*Mailing completed\\!*\n"
 "Sent to a total of _{count}_ users\\."
+
+#~ msgid "*Отмена\\!*"
+#~ msgstr "*Canceled\\!*"
 
 #~ msgid "*Чтобы начать игру введите команду /game*"
 #~ msgstr "*To start the game\\, enter the command /game*"

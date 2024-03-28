@@ -1,3 +1,4 @@
+from keyboards.inline import menu_keyboard
 from utils.commands import set_admin_commands
 from utils.messages import escape_markdown_v2
 from utils.states import AdminStates
@@ -21,7 +22,13 @@ async def message_admin_user(
         await message.answer(
             text=_("Отменено\\!"), reply_markup=ReplyKeyboardRemove()
         )
-        return
+        bot = await message.bot.get_me()
+        return await message.answer(
+            text=_(
+                "*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"
+            ),
+            reply_markup=menu_keyboard(bot_username=bot.username, for_admins=db_user.is_admin)
+        )
     elif message.user_shared:
         if db_user:
             db_user.is_admin = True

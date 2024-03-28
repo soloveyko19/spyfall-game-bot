@@ -41,7 +41,7 @@ async def command_start(
             text=_(
                 "*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"
             ),
-            reply_markup=menu_keyboard(bot.username)
+            reply_markup=menu_keyboard(bot_username=bot.username, for_admins=db_user.is_admin)
         )
     game = await Game.get(join_key=command.args)
     if not game:

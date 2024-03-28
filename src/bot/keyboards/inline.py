@@ -75,6 +75,12 @@ def location_options_keyboard():
                     callback_data="location_option=add",
                 )
             ],
+            [
+                InlineKeyboardButton(
+                    text=_("Меню ↩️"),
+                    callback_data="cancel_admin"
+                )
+            ]
         ]
     )
 
@@ -144,33 +150,87 @@ def buy_me_a_coffee_keyboard():
     )
 
 
-def menu_keyboard(bot_username: str):
+def menu_keyboard(bot_username: str, for_admins: bool = False, locale: str = None):
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text=_("Начать игру в новом чате"),
+                    text=_("Начать игру в новом чате ➕", locale=locale),
                     url=f"https://t.me/{bot_username}?startgroup=true"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text=_("Язык") + " / Language 🌍",
+                    text=_("Язык", locale=locale) + " / Language 🌍",
                     callback_data="menu_option=language"
                 ),
                 InlineKeyboardButton(
-                    text=_("Правила") + " 📋",
+                    text=_("Правила 📋", locale=locale),
                     callback_data="menu_option=rules",
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text=_("Купить кофе разработчику") + " ☕️",
+                    text=_("Купить кофе ☕️", locale=locale),
                     callback_data="menu_option=coffee"
+                ),
+                InlineKeyboardButton(
+                    text=_("Фидбэк 💬", locale=locale),
+                    callback_data="menu_option=feedback"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text=_("Меню для админов ➡️", locale=locale),
+                    callback_data="menu_option=admin_menu"
+                )
+            ] if for_admins else []
+        ]
+    )
+
+
+def admin_menu_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=_("Фидбэки 💬"),
+                    callback_data="admin_menu_option=get_feedback"
+                ),
+                InlineKeyboardButton(
+                    text=_("Ошибка ❗️"),
+                    callback_data="admin_menu_option=error"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text=_("Назначить админа 🙎‍♂️"),
+                    callback_data="admin_menu_option=admin"
+                ),
+                InlineKeyboardButton(
+                    text=_("Статистика 📈"),
+                    callback_data="admin_menu_option=stats"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text=_("Создать рассылку 🔊"),
+                    callback_data="admin_menu_option=mailing"
+                ),
+                InlineKeyboardButton(
+                    text=_("Локации 📌"),
+                    callback_data="admin_menu_option=location"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text=_("Обычное меню ⬅️"),
+                    callback_data="cancel"
                 )
             ]
         ]
     )
+
 
 
 def back_to_menu_keyboard():
@@ -180,6 +240,19 @@ def back_to_menu_keyboard():
                 InlineKeyboardButton(
                     text=_("Меню ↩️"),
                     callback_data="cancel"
+                )
+            ]
+        ]
+    )
+
+
+def back_to_admin_menu_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=_("Меню ↩️"),
+                    callback_data="cancel_admin"
                 )
             ]
         ]

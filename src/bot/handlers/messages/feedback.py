@@ -1,4 +1,5 @@
 from database.models import User, Feedback
+from keyboards.inline import back_to_menu_keyboard
 from utils.states import FeedbackStates
 
 from aiogram import Router, types
@@ -19,6 +20,7 @@ async def message_feedback(
     await state.clear()
     await message.answer(
         text=_(
-            "*Спасибо за фидбэк\\! ❤️*\n_Ваше сообщение отправлено и будет принято во внимание разработчиками\\!_"
-        )
+            "*Спасибо за фидбэк\\! ❤️*\n_Ваше сообщение отправлено и будет принято во внимание разработчиками\\!_",
+        ),
+        reply_markup=back_to_menu_keyboard()
     )
