@@ -29,7 +29,7 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-url = f"postgresql://{conf.DB_USERNAME}:{conf.DB_PASSWORD}@{conf.DB_HOST}:5432/telegram_bot"
+url = f"postgresql://{conf.POSTGRES_USERNAME}:{conf.POSTGRES_PASSWORD}@{conf.POSTGRES_HOST}:5432/telegram_bot"
 config.set_main_option("sqlalchemy.url", url)
 
 

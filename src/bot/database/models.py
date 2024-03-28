@@ -24,7 +24,7 @@ from sqlalchemy import func
 from sqlalchemy.schema import DefaultClause
 
 
-db_url = f"postgresql+asyncpg://{conf.DB_USERNAME}:{conf.DB_PASSWORD}@{conf.DB_HOST}:5432/telegram_bot"
+db_url = f"postgresql+asyncpg://{conf.POSTGRES_USERNAME}:{conf.POSTGRES_PASSWORD}@{conf.POSTGRES_HOST}:5432/telegram_bot"
 engine = create_async_engine(url=db_url)
 async_session = async_sessionmaker(
     bind=engine, class_=AsyncSession, expire_on_commit=False

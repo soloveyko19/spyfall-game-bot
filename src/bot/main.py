@@ -10,6 +10,7 @@ from middlewares.outer_middlewares import (
     DatabaseContextMiddleware,
     DatabaseI18nMiddleware,
 )
+from database.redis import storage
 
 from aiogram import Bot, Dispatcher
 from aiogram.utils.i18n import I18n
@@ -65,7 +66,7 @@ def main() -> None:
         path=conf.WORKDIR / "locales", default_locale="ru", domain="messages"
     )
     bot = Bot(token=conf.TELEGRAM_BOT_TOKEN, parse_mode="MarkdownV2")
-    dp = Dispatcher()
+    dp = Dispatcher(storage=storage)
 
     dp["i18n"] = i18n
 
