@@ -1,3 +1,4 @@
+import asyncio
 from typing import Callable, Dict, Any, Awaitable
 import traceback
 
@@ -17,10 +18,12 @@ class DatabaseContextMiddleware(BaseMiddleware):
         data: Dict[str, Any],
     ):
         tg_user = data.get("event_from_user")
-        db_user = await User.get(tg_user.id)
-        data["db_user"] = db_user
 
-        game = await Game.get(group_tg_id=data.get("event_chat").id)
+        db_user, game = await asyncio.gather(
+            User.get(tg_user.id),
+            Game.get(group_tg_id=data.get("event_chat").id)
+        )
+        data["db_user"] = db_user
         data["game"] = game
         await handler(event, data)
 
