@@ -1,3 +1,5 @@
+from aiogram.enums import ChatMemberStatus
+
 from database.models import Game
 from utils.messages import LANGUAGES
 
@@ -8,6 +10,7 @@ from aiogram.filters import (
     LEAVE_TRANSITION,
     MEMBER,
     ADMINISTRATOR,
+    RESTRICTED
 )
 from aiogram.utils.i18n import gettext as _
 
@@ -37,14 +40,25 @@ async def bot_joined(message: types.ChatMemberUpdated, game: Game):
 
 
 @router.my_chat_member(
-    ChatMemberUpdatedFilter((MEMBER | ADMINISTRATOR) >> ADMINISTRATOR)
+    ChatMemberUpdatedFilter((MEMBER | ADMINISTRATOR | RESTRICTED) >> (MEMBER | ADMINISTRATOR | RESTRICTED))
 )
 async def check_promoted(message: types.ChatMemberUpdated, game: Game):
     if message.new_chat_member.user.id == message.bot.id:
+        bot_member = message.new_chat_member
+        if bot_member.status == ChatMemberStatus.RESTRICTED:
+            if bot_member.can_send_messages:
+                await message.answer(
+                    _("*Вы ограничили права бота\\!*\n_Для начала игры предоставьте мне необходимые права администратора_")
+                )
+            if game:
+                game.state_id = 1
+                game.is_allowed = False
+                await game.save()
+            return
         rights = [
             message.new_chat_member.can_delete_messages,
             message.new_chat_member.can_restrict_members,
-            message.new_chat_member.can_pin_messages,
+            message.new_chat_member.can_pin_messages
         ]
         if all(rights):
             game.is_allowed = True
@@ -55,8 +69,7 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
                 )
             )
         else:
-            if game.state_id != 1:
-                game.state_id = 1
+            game.state_id = 1
             game.is_allowed = False
             await game.save()
             await message.answer(
@@ -72,11 +85,8 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
 
 @router.my_chat_member(ChatMemberUpdatedFilter(LEAVE_TRANSITION))
 async def bot_leaved(message: types.ChatMemberUpdated, game: Game):
-    if message.new_chat_member.user.id != message.bot.id:
+    if message.new_chat_member.user.id != message.bot.id or not game:
         return
-    if not game:
-        return
-    elif game.state_id != 1:
-        game.state_id = 1
+    game.state_id = 1
     game.is_allowed = False
     await game.save()

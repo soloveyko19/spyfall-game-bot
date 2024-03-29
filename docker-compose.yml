@@ -43,8 +43,11 @@ services:
     restart: always
     networks:
       - redis_access
-    ports:
-      - 6379:6379 # Only for developing (DO NOT USE IT IN PRODUCTION)
+#    volumes:
+#      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+#    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+#    ports:
+#      - 6379:6379 # Only for developing (DO NOT USE IT IN PRODUCTION)
 
 networks:
   postgres_access:

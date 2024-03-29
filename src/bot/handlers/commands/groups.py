@@ -1,3 +1,5 @@
+from aiogram.enums import ChatMemberStatus
+
 from filters.chat import ChatTypeFilter
 from database.models import Game
 from keyboards.inline import join_game_keyboard, link_to_bot_keyboard, vote_players_keyboard, languages_keyboard
@@ -22,17 +24,18 @@ async def command_game(message: types.Message, game: Game):
     if not game:
         game = Game(group_id=message.chat.id, state_id=1)
         await game.save()
-        return await message.answer(
-            text=_(
-                "*Пожалуйста\\, обновите мне права администратора*\n_Извините за неудобства\\(_",
-            ),
+    elif not game.is_allowed:
+        bot_member = await message.bot.get_chat_member(
+            chat_id=message.chat.id,
+            user_id=message.bot.id
         )
+        if bot_member.status != ChatMemberStatus.RESTRICTED or bot_member.can_send_messages:
+            await message.answer(
+                _("*Для начала игры предоставьте мне необходимые права администратора\\!*")
+            )
+        return
     elif game.state_id != 1:
         return await message.answer(text=_("*Игра уже запущена\\!* ⛔️"))
-    elif not game.is_allowed:
-        return await message.answer(
-            text=_("*Вы не предоставили необходимые права администратора\\!*")
-        )
     await message.delete()
     async with game:
         bot = await message.bot.get_me()
@@ -50,7 +53,7 @@ async def command_game(message: types.Message, game: Game):
         while sec != 0:
             await asyncio.gather(asyncio.sleep(1), game.refresh())
             if game.state_id == 1:
-                return
+                return await delete_all_messages(reg_messages)
             elif game.state_id == 3:
                 break
             elif game.extend != 0:
@@ -267,7 +270,7 @@ async def command_language_group(message: types.Message, game: Game, state: FSMC
     storage_key = StorageKey(bot_id=message.bot.id, chat_id=message.from_user.id, user_id=message.from_user.id)
     new_state = FSMContext(storage=state.storage, key=storage_key)
     await new_state.set_state(LanguageStates.group_locale)
-    await new_state.update_data(game=game)
+    await new_state.update_data(group_tg_id=message.chat.id)
     await message.bot.send_message(
         chat_id=message.from_user.id,
         text=_("*Сейчас язык группы: {language}\nВыберите язык*")

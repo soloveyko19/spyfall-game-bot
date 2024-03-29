@@ -4,7 +4,7 @@ import asyncio
 from typing import List
 
 from aiogram import types, Bot
-from aiogram.exceptions import TelegramRetryAfter
+from aiogram.exceptions import TelegramRetryAfter, TelegramBadRequest
 from aiogram.utils.i18n import gettext as _
 
 
@@ -60,7 +60,10 @@ def get_feedback_message(feedbacks: List[Feedback]) -> str:
 
 
 async def delete_message(message: types.Message):
-    await message.delete()
+    try:
+        await message.delete()
+    except TelegramBadRequest:
+        return
 
 
 async def delete_all_messages(messages: List[types.Message]):

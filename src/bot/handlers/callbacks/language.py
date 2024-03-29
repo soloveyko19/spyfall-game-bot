@@ -1,4 +1,4 @@
-from database.models import User
+from database.models import User, Game
 from keyboards.inline import menu_keyboard
 from utils.messages import language_by_locale
 from utils.states import LanguageStates
@@ -39,7 +39,8 @@ async def callback_group_locale(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
     if call.data:
         data = await state.get_data()
-        game = data.get("game")
+        group_tg_id = data.get("group_tg_id")
+        game = await Game.get(group_tg_id=group_tg_id)
         game.locale = call.data
         await game.save()
         await state.clear()
