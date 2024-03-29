@@ -99,7 +99,8 @@ async def command_language(
     message: types.Message, state: FSMContext, db_user: User
 ):
     await state.set_state(LanguageStates.user_locale)
-    await message.edit_text(
+    await message.delete()
+    await message.answer(
         text=_("*Сейчас ваш язык: {language}\nВыберите язык *").format(
             language=language_by_locale(db_user.locale)
         ),
