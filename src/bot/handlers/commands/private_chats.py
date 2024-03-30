@@ -67,6 +67,9 @@ async def command_start(
             join_key=game.join_key, bot_username=bot.username, locale=game.locale
         ),
     )
+    if len(game.players) == 10:
+        game.state_id += 1
+        await game.save()
     await message.answer(
         text=_("*Вы присоединились к игре в Шпиона\\! ✅*"),
     )
