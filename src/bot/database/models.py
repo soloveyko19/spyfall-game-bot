@@ -64,16 +64,20 @@ class User(Base):
             return res.scalars().all()
 
     @classmethod
-    async def get_count(cls):
+    async def get_count(cls, locale: str = None):
         async with async_session() as session:
             query = select(func.count()).select_from(User)
+            if locale:
+                query = query.filter(User.locale == locale)
             res = await session.execute(query)
             return res.scalar()
 
     @classmethod
     async def get_all(cls, locale: str = "en") -> Iterable["User"]:
         async with async_session() as session:
-            query = select(User).filter(User.locale == locale).order_by(User.id)
+            query = (
+                select(User).filter(User.locale == locale).order_by(User.id)
+            )
             res = await session.execute(query)
             return res.scalars().all()
 
@@ -153,9 +157,7 @@ class GameState(Base):
             return bool(res.unique().scalar_one_or_none())
 
     @classmethod
-    async def add_many(
-        cls, instances: List["GameState"]
-    ) -> List["GameState"]:
+    async def add_many(cls, instances: List["GameState"]) -> List["GameState"]:
         async with async_session() as session:
             session.add_all(instances)
             await session.commit()
@@ -168,9 +170,7 @@ class Game(Base):
     group_tg_id = Column(BigInteger, index=True, nullable=False)
     join_key = Column(String, index=True, unique=True)
     join_message_tg_id = Column(Integer, index=True)
-    extend = Column(
-        Integer, nullable=False, server_default=DefaultClause("0")
-    )
+    extend = Column(Integer, nullable=False, server_default=DefaultClause("0"))
     locale = Column(String(2), nullable=False, server_default="en")
     location_id = Column(
         Integer, ForeignKey("locations.id", ondelete="SET NULL")

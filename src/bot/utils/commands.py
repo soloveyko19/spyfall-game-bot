@@ -11,7 +11,6 @@ from aiogram.types import (
 )
 
 
-
 # Group chats
 commands_group_chats = [
     BotCommand(command="game", description="Start the game"),
@@ -22,7 +21,7 @@ commands_group_chats = [
     BotCommand(command="stop", description="Cancel game"),
     BotCommand(command="help", description="Rules of the game"),
     BotCommand(command="extend", description="Add 30 seconds to the "),
-    BotCommand(command="language", description="Change the group language")
+    BotCommand(command="language", description="Change the group language"),
 ]
 
 # Private chats
@@ -35,7 +34,7 @@ commands_private_chats = [
         description="Write feedback for developers",
     ),
     BotCommand(command="language", description="Change the language"),
-    BotCommand(command="coffee", description="Buy a coffee for developer")
+    BotCommand(command="coffee", description="Buy a coffee for developer"),
 ]
 
 # Additional commands in chats only for admins

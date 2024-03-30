@@ -27,15 +27,11 @@ def upgrade() -> None:
         sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("game_id", sa.Integer(), nullable=False),
         sa.Column("role_id", sa.Integer(), nullable=True),
-        sa.ForeignKeyConstraint(
-            ["game_id"], ["games.id"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["game_id"], ["games.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(
             ["role_id"], ["roles.id"], ondelete="SET NULL"
         ),
-        sa.ForeignKeyConstraint(
-            ["user_id"], ["users.id"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
     # ### end Alembic commands ###

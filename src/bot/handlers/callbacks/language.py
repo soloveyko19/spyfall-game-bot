@@ -15,7 +15,7 @@ router = Router()
 
 @router.callback_query(StateFilter(LanguageStates.user_locale))
 async def callback_user_locale(
-        call: CallbackQuery, db_user: User, state: FSMContext
+    call: CallbackQuery, db_user: User, state: FSMContext
 ):
     await call.message.delete()
     if call.data:
@@ -29,8 +29,15 @@ async def callback_user_locale(
         )
         bot = await call.bot.get_me()
         await call.message.answer(
-            text=_("*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!", locale=db_user.locale),
-            reply_markup=menu_keyboard(bot.username, locale=db_user.locale, for_admins=db_user.is_admin)
+            text=_(
+                "*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!",
+                locale=db_user.locale,
+            ),
+            reply_markup=menu_keyboard(
+                bot.username,
+                locale=db_user.locale,
+                for_admins=db_user.is_admin,
+            ),
         )
 
 

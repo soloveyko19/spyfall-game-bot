@@ -18,6 +18,7 @@ from aiogram.utils.i18n import I18n
 
 def register_handlers(dp: Dispatcher):
     from handlers import commands, callbacks, messages, memberships
+
     dp.include_routers(
         # Command handlers
         commands.admins.router,
@@ -37,7 +38,7 @@ def register_handlers(dp: Dispatcher):
         messages.admin.router,
         messages.location.router,
         # Membership handlers
-        memberships.bot.router
+        memberships.bot.router,
     )
 
 

@@ -21,7 +21,7 @@ class DatabaseContextMiddleware(BaseMiddleware):
 
         db_user, game = await asyncio.gather(
             User.get(tg_user.id),
-            Game.get(group_tg_id=data.get("event_chat").id)
+            Game.get(group_tg_id=data.get("event_chat").id),
         )
         data["db_user"] = db_user
         data["game"] = game

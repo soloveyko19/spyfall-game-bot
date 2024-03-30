@@ -22,5 +22,5 @@ async def message_feedback(
         text=_(
             "*Спасибо за фидбэк\\! ❤️*\n_Ваше сообщение отправлено и будет принято во внимание разработчиками\\!_",
         ),
-        reply_markup=back_to_menu_keyboard()
+        reply_markup=back_to_menu_keyboard(),
     )

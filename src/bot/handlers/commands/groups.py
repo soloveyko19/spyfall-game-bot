@@ -2,8 +2,18 @@ from aiogram.enums import ChatMemberStatus
 
 from filters.chat import ChatTypeFilter
 from database.models import Game
-from keyboards.inline import join_game_keyboard, link_to_bot_keyboard, vote_players_keyboard, languages_keyboard
-from utils.messages import join_message, discussion_message, escape_markdown_v2, language_by_locale
+from keyboards.inline import (
+    join_game_keyboard,
+    link_to_bot_keyboard,
+    vote_players_keyboard,
+    languages_keyboard,
+)
+from utils.messages import (
+    join_message,
+    discussion_message,
+    escape_markdown_v2,
+    language_by_locale,
+)
 from utils.i18n import translate_request
 from utils.states import LanguageStates
 
@@ -26,12 +36,16 @@ async def command_game(message: types.Message, game: Game):
         await game.save()
     elif not game.is_allowed:
         bot_member = await message.bot.get_chat_member(
-            chat_id=message.chat.id,
-            user_id=message.bot.id
+            chat_id=message.chat.id, user_id=message.bot.id
         )
-        if bot_member.status != ChatMemberStatus.RESTRICTED or bot_member.can_send_messages:
+        if (
+            bot_member.status != ChatMemberStatus.RESTRICTED
+            or bot_member.can_send_messages
+        ):
             await message.answer(
-                _("*Для начала игры предоставьте мне необходимые права администратора\\!*")
+                _(
+                    "*Для начала игры предоставьте мне необходимые права администратора\\!*"
+                )
             )
         return
     elif game.state_id != 1:
@@ -55,7 +69,9 @@ async def command_game(message: types.Message, game: Game):
             if game.state_id == 1:
                 return await message.bot.delete_messages(
                     chat_id=game.group_tg_id,
-                    message_ids=[_message.message_id for _message in reg_messages]
+                    message_ids=[
+                        _message.message_id for _message in reg_messages
+                    ],
                 )
             elif game.state_id == 3:
                 break
@@ -83,7 +99,7 @@ async def command_game(message: types.Message, game: Game):
             sec -= 1
         await message.bot.delete_messages(
             chat_id=game.group_tg_id,
-            message_ids=[_message.message_id for _message in reg_messages]
+            message_ids=[_message.message_id for _message in reg_messages],
         )
         if len(game.players) < 4:
             await message.answer(
@@ -107,7 +123,7 @@ async def command_game(message: types.Message, game: Game):
             translated_location = await translate_request(
                 text=game.location.name,
                 source_lang="ru",
-                target_lang=game.locale
+                target_lang=game.locale,
             )
         else:
             translated_location = game.location.name
@@ -267,17 +283,24 @@ async def command_extend(message: types.Message, game: Game):
 
 
 @router.message(Command("language"), ChatTypeFilter("group", "supergroup"))
-async def command_language_group(message: types.Message, game: Game, state: FSMContext):
+async def command_language_group(
+    message: types.Message, game: Game, state: FSMContext
+):
     if not game or game.state_id != 1 or not game.is_allowed:
         return
     await message.delete()
-    storage_key = StorageKey(bot_id=message.bot.id, chat_id=message.from_user.id, user_id=message.from_user.id)
+    storage_key = StorageKey(
+        bot_id=message.bot.id,
+        chat_id=message.from_user.id,
+        user_id=message.from_user.id,
+    )
     new_state = FSMContext(storage=state.storage, key=storage_key)
     await new_state.set_state(LanguageStates.group_locale)
     await new_state.update_data(group_tg_id=message.chat.id)
     await message.bot.send_message(
         chat_id=message.from_user.id,
-        text=_("*Сейчас язык группы: {language}\nВыберите язык*")
-        .format(language=language_by_locale(game.locale)),
-        reply_markup=languages_keyboard()
+        text=_("*Сейчас язык группы: {language}\nВыберите язык*").format(
+            language=language_by_locale(game.locale)
+        ),
+        reply_markup=languages_keyboard(),
     )

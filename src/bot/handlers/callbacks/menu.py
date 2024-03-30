@@ -7,11 +7,31 @@ from aiogram.types import CallbackQuery, FSInputFile
 from aiogram.utils.i18n import gettext as _
 
 from database.models import User, Feedback, Game
-from keyboards.inline import languages_keyboard, buy_me_a_coffee_keyboard, menu_keyboard, back_to_menu_keyboard, \
-    admin_menu_keyboard, back_to_admin_menu_keyboard, cancel_keyboard, location_options_keyboard
+from keyboards.inline import (
+    languages_keyboard,
+    buy_me_a_coffee_keyboard,
+    menu_keyboard,
+    back_to_menu_keyboard,
+    admin_menu_keyboard,
+    back_to_admin_menu_keyboard,
+    cancel_keyboard,
+    location_options_keyboard,
+)
 from keyboards.reply import request_contact_keyboard
-from utils.messages import language_by_locale, rules_message, get_feedback_message
-from utils.states import LanguageStates, AdminStates, MailingStates, FeedbackStates, LocationStates
+from utils.messages import (
+    language_by_locale,
+    rules_message,
+    get_feedback_message,
+    get_stats,
+    stats_message,
+)
+from utils.states import (
+    LanguageStates,
+    AdminStates,
+    MailingStates,
+    FeedbackStates,
+    LocationStates,
+)
 
 router = Router()
 
@@ -25,13 +45,14 @@ async def callback_menu(call: CallbackQuery, db_user: User, state: FSMContext):
     if arg == "language":
         await state.set_state(LanguageStates.user_locale)
         await call.message.edit_text(
-            text=_("*Сейчас ваш язык: {language}\nВыберите язык *").format(language=language_by_locale(db_user.locale)),
-            reply_markup=languages_keyboard()
+            text=_("*Сейчас ваш язык: {language}\nВыберите язык *").format(
+                language=language_by_locale(db_user.locale)
+            ),
+            reply_markup=languages_keyboard(),
         )
     elif arg == "rules":
         await call.message.edit_text(
-            text=rules_message(),
-            reply_markup=back_to_menu_keyboard()
+            text=rules_message(), reply_markup=back_to_menu_keyboard()
         )
     elif arg == "coffee":
         await call.message.delete()
@@ -39,7 +60,8 @@ async def callback_menu(call: CallbackQuery, db_user: User, state: FSMContext):
         await call.message.answer_photo(
             photo=FSInputFile(path=pic_file_path),
             caption=_(
-                "Этот проект полностью лежит на плечах одного разработчика\\, который оплачивает хостинг для этого бота и уделяет большое кол\\-во времени на его поддержку\\. Так что при желании у вас есть возможность поблагодарить его угостив чашечкой кофе по ссылке ниже либо отсканировав QR\\-код :\\)"),
+                "Этот проект полностью лежит на плечах одного разработчика\\, который оплачивает хостинг для этого бота и уделяет большое кол\\-во времени на его поддержку\\. Так что при желании у вас есть возможность поблагодарить его угостив чашечкой кофе по ссылке ниже либо отсканировав QR\\-код :\\)"
+            ),
             reply_markup=buy_me_a_coffee_keyboard(),
         )
     elif arg == "feedback":
@@ -54,20 +76,21 @@ async def callback_menu(call: CallbackQuery, db_user: User, state: FSMContext):
         if not db_user.is_admin:
             return await call.answer(
                 _("Для этой функции необходимы права администратора!"),
-                show_alert=True
+                show_alert=True,
             )
         await call.message.edit_text(
-            _("*Меню для админов\\! 💅*"),
-            reply_markup=admin_menu_keyboard()
+            _("*Меню для админов\\! 💅*"), reply_markup=admin_menu_keyboard()
         )
 
 
 @router.callback_query(lambda call: call.data.startswith("admin_menu_option="))
-async def callback_admin_menu_option(call: CallbackQuery, state: FSMContext, db_user: User):
+async def callback_admin_menu_option(
+    call: CallbackQuery, state: FSMContext, db_user: User
+):
     if not db_user or not db_user.is_admin:
         return await call.answer(
             _("Для этой функции необходимы права администратора!"),
-            show_alert=True
+            show_alert=True,
         )
     try:
         arg = call.data.split("=")[1]
@@ -77,7 +100,7 @@ async def callback_admin_menu_option(call: CallbackQuery, state: FSMContext, db_
         feedbacks = await Feedback.get_last()
         await call.message.edit_text(
             text=get_feedback_message(feedbacks=feedbacks),
-            reply_markup=back_to_admin_menu_keyboard()
+            reply_markup=back_to_admin_menu_keyboard(),
         )
     elif arg == "error":
         return 1 / 0
@@ -91,17 +114,9 @@ async def callback_admin_menu_option(call: CallbackQuery, state: FSMContext, db_
             reply_markup=request_contact_keyboard(),
         )
     elif arg == "stats":
-        users_count = await User.get_count()
-        games_count = await Game.get_count()
-        active_games_count = await Game.get_active_count()
+        stats = await get_stats()
         await call.message.edit_text(
-            text=_(
-                "*Статистика 📈*\n\nКол\\-во пользователей: {users_count}\nОбщее кол\\-во игр: {games_count}\nКол\\-во активных игр: {active_games_count}"
-            ).format(
-                users_count=users_count,
-                games_count=games_count,
-                active_games_count=active_games_count,
-            ),
+            text=stats_message(stats=stats),
             reply_markup=back_to_admin_menu_keyboard(),
         )
     elif arg == "mailing":
@@ -115,28 +130,31 @@ async def callback_admin_menu_option(call: CallbackQuery, state: FSMContext, db_
     elif arg == "location":
         await state.set_state(LocationStates.option)
         await call.message.edit_text(
-            text=_("*Выберите опцию:*"), reply_markup=location_options_keyboard()
+            text=_("*Выберите опцию:*"),
+            reply_markup=location_options_keyboard(),
         )
 
 
 @router.callback_query(lambda call: call.data == "cancel")
-async def callback_cancel(call: CallbackQuery, state: FSMContext, db_user: User):
+async def callback_cancel(
+    call: CallbackQuery, state: FSMContext, db_user: User
+):
     await state.clear()
     bot = await call.bot.get_me()
     try:
         await call.message.edit_text(
-            text=_(
-                "*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"
+            text=_("*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"),
+            reply_markup=menu_keyboard(
+                bot.username, for_admins=db_user.is_admin
             ),
-            reply_markup=menu_keyboard(bot.username, for_admins=db_user.is_admin)
         )
     except TelegramBadRequest:
         await call.message.delete()
         await call.message.answer(
-            text=_(
-                "*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"
+            text=_("*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"),
+            reply_markup=menu_keyboard(
+                bot.username, for_admins=db_user.is_admin
             ),
-            reply_markup=menu_keyboard(bot.username, for_admins=db_user.is_admin)
         )
 
 
@@ -146,11 +164,11 @@ async def callback_cancel_admin(call: CallbackQuery, state: FSMContext):
     try:
         await call.message.edit_text(
             text=_("*Меню для админов\\! 💅*"),
-            reply_markup=admin_menu_keyboard()
+            reply_markup=admin_menu_keyboard(),
         )
     except TelegramBadRequest:
         await call.message.delete()
         await call.message.answer(
             text=_("*Меню для админов\\! 💅*"),
-            reply_markup=admin_menu_keyboard()
+            reply_markup=admin_menu_keyboard(),
         )

@@ -1,10 +1,14 @@
-from database.models import Feedback, User, Game
+from database.models import Feedback
 from filters.user import AdminFilter
 from filters.chat import ChatTypeFilter
-from utils.messages import get_feedback_message
+from utils.messages import get_feedback_message, stats_message, get_stats
 from utils.states import AdminStates, MailingStates, LocationStates
 from keyboards.reply import request_contact_keyboard
-from keyboards.inline import cancel_keyboard, location_options_keyboard
+from keyboards.inline import (
+    cancel_keyboard,
+    location_options_keyboard,
+    back_to_admin_menu_keyboard,
+)
 
 from aiogram import Router, types
 from aiogram.filters import Command, CommandObject
@@ -23,9 +27,7 @@ async def command_error(message: types.Message):
 @router.message(
     Command("get_feedback"), ChatTypeFilter("private"), AdminFilter()
 )
-async def command_get_feedback(
-    message: types.Message, command: CommandObject
-):
+async def command_get_feedback(message: types.Message, command: CommandObject):
     await message.delete()
     if not command.args:
         limit = 10
@@ -39,9 +41,7 @@ async def command_get_feedback(
                 )
             )
     feedbacks = await Feedback.get_last(limit)
-    await message.answer(
-        text=get_feedback_message(feedbacks=feedbacks)
-    )
+    await message.answer(text=get_feedback_message(feedbacks=feedbacks))
 
 
 @router.message(Command("admin"), ChatTypeFilter("private"), AdminFilter())
@@ -59,17 +59,10 @@ async def command_admin(message: types.Message, state: FSMContext):
 @router.message(Command("stats"), ChatTypeFilter("private"), AdminFilter())
 async def command_statistics(message: types.Message):
     await message.delete()
-    users_count = await User.get_count()
-    games_count = await Game.get_count()
-    active_games_count = await Game.get_active_count()
+    stats = await get_stats()
     await message.answer(
-        text=_(
-            "*Статистика 📈*\n\nКол\\-во пользователей: {users_count}\nОбщее кол\\-во игр: {games_count}\nКол\\-во активных игр: {active_games_count}"
-        ).format(
-            users_count=users_count,
-            games_count=games_count,
-            active_games_count=active_games_count,
-        ),
+        text=stats_message(stats=stats),
+        reply_markup=back_to_admin_menu_keyboard(),
     )
 
 

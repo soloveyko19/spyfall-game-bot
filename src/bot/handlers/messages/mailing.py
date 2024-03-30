@@ -1,6 +1,10 @@
 from utils.states import MailingStates
-from keyboards.inline import add_buttons_to_mailing_keyboard, cancel_keyboard, confirm_mailing_keyboard, \
-    languages_keyboard
+from keyboards.inline import (
+    add_buttons_to_mailing_keyboard,
+    cancel_keyboard,
+    confirm_mailing_keyboard,
+    languages_keyboard,
+)
 
 from aiogram import Router, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -40,15 +44,14 @@ async def message_mailing_button_url(
 async def message_mailing_button_text(
     message: types.Message, state: FSMContext
 ):
-    if not message.text.startswith(
-        "https://"
-    ) and not message.text.startswith("http://"):
+    if not message.text.startswith("https://") and not message.text.startswith(
+        "http://"
+    ):
         return await message.answer(
             text=_("*Некоректный формат ссылки\\, попробуйте еще раз*")
         )
     await state.update_data(button_url=message.text)
     await state.set_state(MailingStates.locale)
     await message.answer(
-        text=_("*Какой язык рассылки\?*"),
-        reply_markup=languages_keyboard()
+        text=_("*Какой язык рассылки\?*"), reply_markup=languages_keyboard()
     )

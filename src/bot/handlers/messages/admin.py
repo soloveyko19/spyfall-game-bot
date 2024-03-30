@@ -15,7 +15,7 @@ router = Router()
 
 @router.message(StateFilter(AdminStates.message_user))
 async def message_admin_user(
-        message: types.Message, state: FSMContext, db_user: User
+    message: types.Message, state: FSMContext, db_user: User
 ):
     if message.text == _("Отменить! ❌"):
         await state.clear()
@@ -24,10 +24,10 @@ async def message_admin_user(
         )
         bot = await message.bot.get_me()
         return await message.answer(
-            text=_(
-                "*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"
+            text=_("*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"),
+            reply_markup=menu_keyboard(
+                bot_username=bot.username, for_admins=db_user.is_admin
             ),
-            reply_markup=menu_keyboard(bot_username=bot.username, for_admins=db_user.is_admin)
         )
     elif message.user_shared:
         if db_user:
@@ -67,4 +67,3 @@ async def message_admin_user(
                 "*Некоректный ввод\\(*_Пожалуйста, поделитесь пользователем через клавиатуру 👇_"
             )
         )
-

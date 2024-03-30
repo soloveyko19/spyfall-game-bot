@@ -10,7 +10,7 @@ from aiogram.filters import (
     LEAVE_TRANSITION,
     MEMBER,
     ADMINISTRATOR,
-    RESTRICTED
+    RESTRICTED,
 )
 from aiogram.utils.i18n import gettext as _
 
@@ -26,7 +26,7 @@ async def bot_joined(message: types.ChatMemberUpdated, game: Game):
             game = Game(
                 group_tg_id=message.chat.id,
                 state_id=1,
-                locale=locale if locale in LANGUAGES.keys() else "en"
+                locale=locale if locale in LANGUAGES.keys() else "en",
             )
         else:
             game.is_allowed = False
@@ -34,13 +34,16 @@ async def bot_joined(message: types.ChatMemberUpdated, game: Game):
         await message.answer(
             text=_(
                 "*Привет\\! 👋*\n*Чтобы начать игру предоставьте мне следующие права администратора:*\n\\- Удалять сообщения\n\\- Блокировать пользователей\n\\- Закреплять сообщения",
-                locale=game.locale
+                locale=game.locale,
             )
         )
 
 
 @router.my_chat_member(
-    ChatMemberUpdatedFilter((MEMBER | ADMINISTRATOR | RESTRICTED) >> (MEMBER | ADMINISTRATOR | RESTRICTED))
+    ChatMemberUpdatedFilter(
+        (MEMBER | ADMINISTRATOR | RESTRICTED)
+        >> (MEMBER | ADMINISTRATOR | RESTRICTED)
+    )
 )
 async def check_promoted(message: types.ChatMemberUpdated, game: Game):
     if message.new_chat_member.user.id == message.bot.id:
@@ -48,7 +51,9 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
         if bot_member.status == ChatMemberStatus.RESTRICTED:
             if bot_member.can_send_messages:
                 await message.answer(
-                    _("*Вы ограничили права бота\\!*\n_Для начала игры предоставьте мне необходимые права администратора_")
+                    _(
+                        "*Вы ограничили права бота\\!*\n_Для начала игры предоставьте мне необходимые права администратора_"
+                    )
                 )
             if game:
                 game.state_id = 1
@@ -58,7 +63,7 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
         rights = [
             message.new_chat_member.can_delete_messages,
             message.new_chat_member.can_restrict_members,
-            message.new_chat_member.can_pin_messages
+            message.new_chat_member.can_pin_messages,
         ]
         if all(rights):
             game.is_allowed = True

@@ -3,7 +3,11 @@ from typing import List
 from database.models import Player
 from utils.messages import LANGUAGES
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, SwitchInlineQueryChosenChat
+from aiogram.types import (
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+    SwitchInlineQueryChosenChat,
+)
 from aiogram.utils.i18n import gettext as _
 
 
@@ -77,10 +81,9 @@ def location_options_keyboard():
             ],
             [
                 InlineKeyboardButton(
-                    text=_("Меню ↩️"),
-                    callback_data="cancel_admin"
+                    text=_("Меню ↩️"), callback_data="cancel_admin"
                 )
-            ]
+            ],
         ]
     )
 
@@ -137,32 +140,33 @@ def buy_me_a_coffee_keyboard():
             [
                 InlineKeyboardButton(
                     text=_("Купить кофе разработчику"),
-                    url="https://www.buymeacoffee.com/soloveyko19"
+                    url="https://www.buymeacoffee.com/soloveyko19",
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text=_("Меню") + " ↩️",
-                    callback_data="cancel"
+                    text=_("Меню") + " ↩️", callback_data="cancel"
                 )
-            ]
+            ],
         ]
     )
 
 
-def menu_keyboard(bot_username: str, for_admins: bool = False, locale: str = None):
+def menu_keyboard(
+    bot_username: str, for_admins: bool = False, locale: str = None
+):
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
                     text=_("Начать игру в новом чате ➕", locale=locale),
-                    url=f"https://t.me/{bot_username}?startgroup=true"
+                    url=f"https://t.me/{bot_username}?startgroup=true",
                 )
             ],
             [
                 InlineKeyboardButton(
                     text=_("Язык", locale=locale) + " / Language 🌍",
-                    callback_data="menu_option=language"
+                    callback_data="menu_option=language",
                 ),
                 InlineKeyboardButton(
                     text=_("Правила 📋", locale=locale),
@@ -172,19 +176,23 @@ def menu_keyboard(bot_username: str, for_admins: bool = False, locale: str = Non
             [
                 InlineKeyboardButton(
                     text=_("Купить кофе ☕️", locale=locale),
-                    callback_data="menu_option=coffee"
+                    callback_data="menu_option=coffee",
                 ),
                 InlineKeyboardButton(
                     text=_("Фидбэк 💬", locale=locale),
-                    callback_data="menu_option=feedback"
-                )
+                    callback_data="menu_option=feedback",
+                ),
             ],
-            [
-                InlineKeyboardButton(
-                    text=_("Меню для админов ➡️", locale=locale),
-                    callback_data="menu_option=admin_menu"
-                )
-            ] if for_admins else []
+            (
+                [
+                    InlineKeyboardButton(
+                        text=_("Меню для админов ➡️", locale=locale),
+                        callback_data="menu_option=admin_menu",
+                    )
+                ]
+                if for_admins
+                else []
+            ),
         ]
     )
 
@@ -195,53 +203,46 @@ def admin_menu_keyboard():
             [
                 InlineKeyboardButton(
                     text=_("Фидбэки 💬"),
-                    callback_data="admin_menu_option=get_feedback"
+                    callback_data="admin_menu_option=get_feedback",
                 ),
                 InlineKeyboardButton(
                     text=_("Ошибка ❗️"),
-                    callback_data="admin_menu_option=error"
-                )
+                    callback_data="admin_menu_option=error",
+                ),
             ],
             [
                 InlineKeyboardButton(
                     text=_("Назначить админа 🙎‍♂️"),
-                    callback_data="admin_menu_option=admin"
+                    callback_data="admin_menu_option=admin",
                 ),
                 InlineKeyboardButton(
                     text=_("Статистика 📈"),
-                    callback_data="admin_menu_option=stats"
-                )
+                    callback_data="admin_menu_option=stats",
+                ),
             ],
             [
                 InlineKeyboardButton(
                     text=_("Создать рассылку 🔊"),
-                    callback_data="admin_menu_option=mailing"
+                    callback_data="admin_menu_option=mailing",
                 ),
                 InlineKeyboardButton(
                     text=_("Локации 📌"),
-                    callback_data="admin_menu_option=location"
-                )
+                    callback_data="admin_menu_option=location",
+                ),
             ],
             [
                 InlineKeyboardButton(
-                    text=_("Обычное меню ⬅️"),
-                    callback_data="cancel"
+                    text=_("Обычное меню ⬅️"), callback_data="cancel"
                 )
-            ]
+            ],
         ]
     )
-
 
 
 def back_to_menu_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text=_("Меню ↩️"),
-                    callback_data="cancel"
-                )
-            ]
+            [InlineKeyboardButton(text=_("Меню ↩️"), callback_data="cancel")]
         ]
     )
 
@@ -251,8 +252,7 @@ def back_to_admin_menu_keyboard():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text=_("Меню ↩️"),
-                    callback_data="cancel_admin"
+                    text=_("Меню ↩️"), callback_data="cancel_admin"
                 )
             ]
         ]

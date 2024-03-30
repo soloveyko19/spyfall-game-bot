@@ -17,9 +17,7 @@ router = Router()
     lambda call: call.data.startswith("location_option="),
     StateFilter(LocationStates.option),
 )
-async def callback_location(
-        call: CallbackQuery, state: FSMContext
-):
+async def callback_location(call: CallbackQuery, state: FSMContext):
     try:
         option = call.data.split("=")[1]
     except IndexError:
@@ -29,7 +27,7 @@ async def callback_location(
         await call.message.delete()
         await call.message.answer(
             text=_("*Все доступные локации:*\n\n")
-                 + escape_markdown_v2(
+            + escape_markdown_v2(
                 "\n".join([location.name for location in locations])
             )
         )
