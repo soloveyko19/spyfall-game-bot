@@ -59,18 +59,6 @@ def get_feedback_message(feedbacks: List[Feedback]) -> str:
     )
 
 
-async def delete_message(message: types.Message):
-    try:
-        await message.delete()
-    except TelegramBadRequest:
-        return
-
-
-async def delete_all_messages(messages: List[types.Message]):
-    tasks = [delete_message(message) for message in messages]
-    await asyncio.gather(*tasks)
-
-
 async def copy_message_mailing(
     bot: Bot,
     chat_id: int | str,

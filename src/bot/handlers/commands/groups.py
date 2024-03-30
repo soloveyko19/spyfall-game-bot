@@ -3,7 +3,7 @@ from aiogram.enums import ChatMemberStatus
 from filters.chat import ChatTypeFilter
 from database.models import Game
 from keyboards.inline import join_game_keyboard, link_to_bot_keyboard, vote_players_keyboard, languages_keyboard
-from utils.messages import join_message, delete_all_messages, discussion_message, escape_markdown_v2, language_by_locale
+from utils.messages import join_message, discussion_message, escape_markdown_v2, language_by_locale
 from utils.i18n import translate_request
 from utils.states import LanguageStates
 
@@ -53,7 +53,10 @@ async def command_game(message: types.Message, game: Game):
         while sec != 0:
             await asyncio.gather(asyncio.sleep(1), game.refresh())
             if game.state_id == 1:
-                return await delete_all_messages(reg_messages)
+                return await message.bot.delete_messages(
+                    chat_id=game.group_tg_id,
+                    message_ids=[_message.message_id for _message in reg_messages]
+                )
             elif game.state_id == 3:
                 break
             elif game.extend != 0:
@@ -78,8 +81,9 @@ async def command_game(message: types.Message, game: Game):
                     )
                 )
             sec -= 1
-        await asyncio.gather(
-            delete_all_messages(reg_messages), game.refresh()
+        await message.bot.delete_messages(
+            chat_id=game.group_tg_id,
+            message_ids=[_message.message_id for _message in reg_messages]
         )
         if len(game.players) < 4:
             await message.answer(

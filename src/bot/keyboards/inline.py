@@ -7,12 +7,12 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, SwitchInli
 from aiogram.utils.i18n import gettext as _
 
 
-def join_game_keyboard(join_key: str, bot_username: str):
+def join_game_keyboard(join_key: str, bot_username: str, locale: str = None):
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text=_("Присоединиться!"),
+                    text=_("Присоединиться!", locale=locale),
                     url=f"https://t.me/{bot_username}?start={join_key}",
                 )
             ]

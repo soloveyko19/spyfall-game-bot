@@ -64,7 +64,7 @@ async def command_start(
         chat_id=game.group_tg_id,
         text=join_message(seconds=90, players=sorted(game.players, key=lambda player: player.id), locale=game.locale),
         reply_markup=join_game_keyboard(
-            join_key=game.join_key, bot_username=bot.username
+            join_key=game.join_key, bot_username=bot.username, locale=game.locale
         ),
     )
     await message.answer(
