@@ -107,7 +107,7 @@ async def command_game(message: types.Message, game: Game):
             translated_location = await translate_request(
                 text=game.location.name,
                 source_lang="ru",
-                target_lang="en"
+                target_lang=game.locale
             )
         else:
             translated_location = game.location.name
@@ -143,7 +143,7 @@ async def command_game(message: types.Message, game: Game):
                         ).format(
                             location=escape_markdown_v2(
                                 translated_location
-                            )
+                            ).capitalize()
                         ),
                     )
                 )

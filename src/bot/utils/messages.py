@@ -14,7 +14,9 @@ LANGUAGES = {"en": "English 🇬🇧", "uk": "Українська 🇺🇦", "r
 def join_message(players: List[Player] = None, seconds: int = None, locale: str = None) -> str:
     msg = _("*Набор в игру\\!* 🔊\n", locale=locale)
     if seconds:
-        msg += _(f"Осталось _{seconds}_ секунд\\!⏳", locale=locale)
+        msg += _("Осталось _{seconds}_ секунд\\! ⏳", locale=locale).format(
+            seconds=seconds
+        )
     if players:
         msg += _("\n\n*Присоединившиеся участники:* ", locale=locale)
         players_links = []
