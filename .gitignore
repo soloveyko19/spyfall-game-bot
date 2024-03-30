@@ -184,3 +184,4 @@ fabric.properties
 
 # Database files
 postgres/postgres-data
+redis/redis-data
