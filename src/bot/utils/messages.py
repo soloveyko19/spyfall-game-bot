@@ -53,7 +53,7 @@ def discussion_message(players: List[Player]) -> str:
 
 def stats_message(stats: dict):
     return _(
-        "*Статистика 📈*\n\nКол\\-во пользователей: {users_count}\nПользователи ru: {users_ru_count}\nПользователи uk: {users_uk_count}\nПользователи ru: {users_ru_count}\n\nОбщее кол\\-во игр: {games_count}\nКол\\-во активных игр: {active_games_count}"
+        "*Статистика 📈*\n\nКол\\-во пользователей: {users_count}\nПользователи ru: {users_ru_count}\nПользователи uk: {users_uk_count}\nПользователи en: {users_en_count}\n\nОбщее кол\\-во игр: {games_count}\nКол\\-во активных игр: {active_games_count}"
     ).format(
         users_count=stats.get("users_count"),
         games_count=stats.get("games_count"),
