@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-30 23:42+0000\n"
-"PO-Revision-Date: 2024-03-30 23:44+0000\n"
+"POT-Creation-Date: 2024-03-31 19:12+0100\n"
+"PO-Revision-Date: 2024-03-31 19:17+0100\n"
 "Last-Translator: \n"
 "Language-Team: en <LL@li.org>\n"
 "Language: en\n"
@@ -506,6 +506,18 @@ msgstr "Basic menu ⬅️"
 #: keyboards/reply.py:14
 msgid "Выбрать пользователя 👤"
 msgstr "Select 👤"
+
+#: middlewares/inner_middlewares.py:36
+msgid ""
+"Слишком много действий за короткое время, подождите немного, и попробуте еще "
+"раз."
+msgstr "Too many actions in a short time, wait a little and try again."
+
+#: middlewares/inner_middlewares.py:45
+msgid ""
+"Слишком много действий за короткое время\\, подождите немного\\, и попробуте "
+"еще раз\\."
+msgstr "Too many actions in a short time\\, wait a little and try again\\."
 
 #: utils/messages.py:17
 msgid "*Набор в игру\\!* 🔊\n"
