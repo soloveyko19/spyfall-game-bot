@@ -5,12 +5,12 @@ from config import conf
 from utils.commands import get_commands
 from utils.database import load_fixtures
 from middlewares.outer_middlewares import (
-    ManageGameChatMiddleware,
     SendErrorInfoMiddleware,
     DatabaseContextMiddleware,
     DatabaseI18nMiddleware,
 )
-from database.redis import storage
+from middlewares.inner_middlewares import ManageGameChatMiddleware, ThrottlingMiddleware
+from database.redis import storage, storage_antispam, storage_restrict
 
 from aiogram import Bot, Dispatcher
 from aiogram.utils.i18n import I18n
@@ -43,10 +43,13 @@ def register_handlers(dp: Dispatcher):
 
 
 def set_middlewares(dp: Dispatcher):
+    # Outer middlewares
     dp.update.outer_middleware(DatabaseContextMiddleware())
-    dp.update.outer_middleware(ManageGameChatMiddleware())
     dp.update.outer_middleware(SendErrorInfoMiddleware())
     dp.update.outer_middleware(DatabaseI18nMiddleware(i18n=dp.get("i18n")))
+    dp.message.outer_middleware(ManageGameChatMiddleware(storage=storage_restrict))
+    # Inner middlewares
+    dp.update.middleware(ThrottlingMiddleware(storage=storage_antispam))
 
 
 async def aiogram_on_startup(bot: Bot):

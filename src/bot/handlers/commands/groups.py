@@ -101,7 +101,7 @@ async def command_game(message: types.Message, game: Game):
             chat_id=game.group_tg_id,
             message_ids=[_message.message_id for _message in reg_messages],
         )
-        if len(game.players) < 4:
+        if len(game.players) < 1:
             await message.answer(
                 text=_(
                     "*Игра не запущена\\! ❌*\n_Нужно как минимум 4 участника для игры\\._"

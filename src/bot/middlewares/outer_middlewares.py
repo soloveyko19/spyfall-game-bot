@@ -28,31 +28,6 @@ class DatabaseContextMiddleware(BaseMiddleware):
         await handler(event, data)
 
 
-class ManageGameChatMiddleware(BaseMiddleware):
-    async def __call__(
-        self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
-        event: TelegramObject,
-        data: Dict[str, Any],
-    ):
-        if isinstance(event.message, Message):
-            message = event.message
-
-            game = data.get("game")
-            if (
-                game
-                and game.state_id in (3, 4)
-                and message.from_user.id not in game.player_ids
-            ):
-                bot = data.get("bot")
-                await bot.delete_message(
-                    chat_id=message.chat.id,
-                    message_id=message.message_id,
-                )
-                return
-        await handler(event, data)
-
-
 class SendErrorInfoMiddleware(BaseMiddleware):
     async def __call__(
         self,
@@ -65,11 +40,11 @@ class SendErrorInfoMiddleware(BaseMiddleware):
         except Exception as exc:
             bot: Bot = data.get("bot")
             user = data.get("event_from_user")
+            admin_id = 546994614
             await bot.send_message(
-                chat_id=546994614,
+                chat_id=admin_id,
                 text=f"*Снова ошибка 😭*\n\n`{escape_markdown_v2(traceback.format_exc())}`\n\nПользователь: [{escape_markdown_v2(user.full_name)}](tg://user?id={user.id})",
             )
-            raise exc
 
 
 class DatabaseI18nMiddleware(I18nMiddleware):
