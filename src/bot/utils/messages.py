@@ -3,9 +3,10 @@ from database.models import Player, User, Feedback, Game
 import asyncio
 from typing import List
 
-from aiogram import types, Bot
-from aiogram.exceptions import TelegramRetryAfter, TelegramBadRequest
+from aiogram import Bot
+from aiogram.exceptions import TelegramRetryAfter
 from aiogram.utils.i18n import gettext as _
+from datetime import datetime as dt
 
 
 LANGUAGES = {"en": "English 🇬🇧", "uk": "Українська 🇺🇦", "ru": "Русский"}
@@ -53,8 +54,9 @@ def discussion_message(players: List[Player]) -> str:
 
 def stats_message(stats: dict):
     return _(
-        "*Статистика 📈*\n\nКол\\-во пользователей: {users_count}\nПользователи ru: {users_ru_count}\nПользователи uk: {users_uk_count}\nПользователи en: {users_en_count}\n\nОбщее кол\\-во игр: {games_count}\nКол\\-во активных игр: {active_games_count}"
+        "*Статистика 📈*\n\n_Время обновления: {now_time}_\n\nКол\\-во пользователей: {users_count}\nПользователи ru: {users_ru_count}\nПользователи uk: {users_uk_count}\nПользователи en: {users_en_count}\n\nОбщее кол\\-во игр: {games_count}\nКол\\-во активных игр: {active_games_count}"
     ).format(
+        now_time=escape_markdown_v2(dt.now().strftime("%d.%m.%Y %H:%M:%S")),
         users_count=stats.get("users_count"),
         games_count=stats.get("games_count"),
         active_games_count=stats.get("active_games_count"),

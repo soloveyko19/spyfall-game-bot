@@ -239,6 +239,23 @@ def admin_menu_keyboard():
     )
 
 
+def statistics_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=_("Обновить 🔄"),
+                    callback_data="admin_menu_option=stats",
+                ),
+                InlineKeyboardButton(
+                    text=_("Меню ↩️"),
+                    callback_data="cancel_admin"
+                )
+            ]
+        ]
+    )
+
+
 def back_to_menu_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[

@@ -15,7 +15,7 @@ from keyboards.inline import (
     admin_menu_keyboard,
     back_to_admin_menu_keyboard,
     cancel_keyboard,
-    location_options_keyboard,
+    location_options_keyboard, statistics_keyboard,
 )
 from keyboards.reply import request_contact_keyboard
 from utils.messages import (
@@ -23,7 +23,7 @@ from utils.messages import (
     rules_message,
     get_feedback_message,
     get_stats,
-    stats_message,
+    stats_message, escape_markdown_v2,
 )
 from utils.states import (
     LanguageStates,
@@ -115,10 +115,14 @@ async def callback_admin_menu_option(
         )
     elif arg == "stats":
         stats = await get_stats()
-        await call.message.edit_text(
-            text=stats_message(stats=stats),
-            reply_markup=back_to_admin_menu_keyboard(),
-        )
+        _stats_message = stats_message(stats=stats)
+        try:
+            await call.message.edit_text(
+                text=_stats_message,
+                reply_markup=statistics_keyboard(),
+            )
+        except TelegramBadRequest:
+            return
     elif arg == "mailing":
         await state.set_state(MailingStates.message)
         await call.message.edit_text(

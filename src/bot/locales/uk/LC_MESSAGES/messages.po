@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-31 19:12+0100\n"
-"PO-Revision-Date: 2024-03-31 19:15+0100\n"
+"POT-Creation-Date: 2024-04-01 16:39+0100\n"
+"PO-Revision-Date: 2024-04-01 16:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: uk <LL@li.org>\n"
 "Language: uk\n"
@@ -24,8 +24,8 @@ msgstr ""
 msgid "*Ваш язык изменен на: {language}*"
 msgstr "*Ваша мова змінена на: {language}*"
 
-#: handlers/callbacks/language.py:32 handlers/callbacks/menu.py:146
-#: handlers/callbacks/menu.py:154 handlers/commands/private_chats.py:46
+#: handlers/callbacks/language.py:32 handlers/callbacks/menu.py:154
+#: handlers/callbacks/menu.py:162 handlers/commands/private_chats.py:46
 #: handlers/messages/admin.py:27
 msgid ""
 "*Привет\\!* 👋\n"
@@ -46,7 +46,7 @@ msgstr ""
 "*Усі доступні локації:*\n"
 "\n"
 
-#: handlers/callbacks/location.py:35 handlers/callbacks/menu.py:133
+#: handlers/callbacks/location.py:35 handlers/callbacks/menu.py:141
 #: handlers/commands/admins.py:85
 msgid "*Выберите опцию:*"
 msgstr "*Виберіть опцію:*"
@@ -113,8 +113,8 @@ msgstr ""
 msgid "Для этой функции необходимы права администратора!"
 msgstr "Для цієї функції необхідні права адміністратора!"
 
-#: handlers/callbacks/menu.py:82 handlers/callbacks/menu.py:166
-#: handlers/callbacks/menu.py:172
+#: handlers/callbacks/menu.py:82 handlers/callbacks/menu.py:174
+#: handlers/callbacks/menu.py:180
 msgid "*Меню для админов\\! 💅*"
 msgstr "*Меню для адмінів\\! 💅*"
 
@@ -128,7 +128,13 @@ msgstr ""
 "_Будь ласка\\, поділіться контактом користувача якого ви бажаєте зробити "
 "адміном _"
 
-#: handlers/callbacks/menu.py:125 handlers/commands/admins.py:73
+#: handlers/callbacks/menu.py:126 middlewares/inner_middlewares.py:39
+msgid ""
+"Слишком много действий за короткое время, подождите немного, и попробуте еще "
+"раз."
+msgstr "Забагато дій за короткий час, почекайте трохи, та спробуйте ще раз."
+
+#: handlers/callbacks/menu.py:133 handlers/commands/admins.py:73
 msgid ""
 "*Вы собираетесь сделать рассылку\\!*\n"
 "Отправьте сообщение которое вы хотите разослать\\."
@@ -422,7 +428,8 @@ msgstr "Перелік усіх локацій 📋"
 msgid "Добавить локацию 🆕"
 msgstr "Додати локацію 🆕"
 
-#: keyboards/inline.py:84 keyboards/inline.py:245 keyboards/inline.py:255
+#: keyboards/inline.py:84 keyboards/inline.py:251 keyboards/inline.py:262
+#: keyboards/inline.py:272
 msgid "Меню ↩️"
 msgstr "Меню ↩️"
 
@@ -502,32 +509,30 @@ msgstr "Локації 📌"
 msgid "Обычное меню ⬅️"
 msgstr "Звичайне меню ⬅️"
 
+#: keyboards/inline.py:247
+msgid "Обновить 🔄"
+msgstr "Оновити 🔄"
+
 #: keyboards/reply.py:14
 msgid "Выбрать пользователя 👤"
 msgstr "Вибрати користувача 👤"
 
-#: middlewares/inner_middlewares.py:36
-msgid ""
-"Слишком много действий за короткое время, подождите немного, и попробуте еще "
-"раз."
-msgstr "Забагато дій за короткий час, почекайте трохи, та спробуйте ще раз."
-
-#: middlewares/inner_middlewares.py:45
+#: middlewares/inner_middlewares.py:48
 msgid ""
 "Слишком много действий за короткое время\\, подождите немного\\, и попробуте "
 "еще раз\\."
 msgstr ""
 "Забагато дій за короткий час\\, почекайте трохи\\, та спробуйте ще раз\\."
 
-#: utils/messages.py:17
+#: utils/messages.py:18
 msgid "*Набор в игру\\!* 🔊\n"
 msgstr "*Набір до гри\\!* 🔊\n"
 
-#: utils/messages.py:19
+#: utils/messages.py:20
 msgid "Осталось _{seconds}_ секунд\\! ⏳"
 msgstr "Залишилось _{seconds}_ секунд\\! ⏳"
 
-#: utils/messages.py:23
+#: utils/messages.py:24
 msgid ""
 "\n"
 "\n"
@@ -537,7 +542,7 @@ msgstr ""
 "\n"
 "*Учасники, що приєдналися:* "
 
-#: utils/messages.py:30
+#: utils/messages.py:31
 msgid ""
 "\n"
 "\n"
@@ -547,7 +552,7 @@ msgstr ""
 "\n"
 "_Всього {players_count} учасник\\(\\-ів\\)\\. 👤_"
 
-#: utils/messages.py:39
+#: utils/messages.py:40
 msgid ""
 "*Начинается обсуждение\\! 🗣*\n"
 "_Игра будет длиться: {min} минут\\(\\-ы\\) ⏳_\n"
@@ -559,7 +564,7 @@ msgstr ""
 "\n"
 "*Гравці:*\n"
 
-#: utils/messages.py:48
+#: utils/messages.py:49
 msgid ""
 "\n"
 "\n"
@@ -569,9 +574,11 @@ msgstr ""
 "\n"
 "_Всього {players_count} учасників\\. 👤_"
 
-#: utils/messages.py:55
+#: utils/messages.py:56
 msgid ""
 "*Статистика 📈*\n"
+"\n"
+"_Время обновления: {now_time}_\n"
 "\n"
 "Кол\\-во пользователей: {users_count}\n"
 "Пользователи ru: {users_ru_count}\n"
@@ -583,15 +590,17 @@ msgid ""
 msgstr ""
 "*Статистика 📈*\n"
 "\n"
+"_Час оновлення: {now_time}_\n"
+"\n"
 "Кіл\\-ть користувачів: {users_count}\n"
 "Користувачі ru: {users_ru_count}\n"
-"Уористувачі uk: {users_uk_count}\n"
+"Користувачі uk: {users_uk_count}\n"
 "Користувачі en: {users_en_count}\n"
 "\n"
 "Загальна кіл\\-ть ігор: {games_count}\n"
 "Кіл\\-ть активних ігор: {active_games_count}"
 
-#: utils/messages.py:68
+#: utils/messages.py:70
 msgid ""
 "*Вас приветствует бот для игры в Шпиона\\! 👋*\n"
 "\n"
@@ -637,7 +646,7 @@ msgstr ""
 "\n"
 "*Гарної гри\\!*"
 
-#: utils/messages.py:74
+#: utils/messages.py:76
 msgid ""
 "Вот последние отзывы:\n"
 "\n"
@@ -645,11 +654,11 @@ msgstr ""
 "Ось останні фідбеки:\n"
 "\n"
 
-#: utils/messages.py:119
+#: utils/messages.py:121
 msgid "*Рассылка начата\\!*"
 msgstr "*Розсилка почата\\!*"
 
-#: utils/messages.py:133
+#: utils/messages.py:135
 msgid ""
 "*Рассылка закончена\\!*\n"
 "Всего разослано для _{count}_ пользователей\\."
