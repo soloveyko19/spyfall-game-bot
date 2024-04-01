@@ -67,29 +67,31 @@ class ManageGameChatMiddleware(BaseMiddleware):
         ):
             await message.delete()
             user_member = await message.chat.get_member(user_id=message.from_user.id)
-            if user_member.status != ChatMemberStatus.CREATOR:
-                user = f"user_restrict_{message.from_user.id}"
-                redis_count = await self.storage.get(name=user)
-                if redis_count:
-                    count = int(redis_count.decode())
-                    if count == 0:
-                        return await message.bot.restrict_chat_member(
-                            chat_id=message.chat.id,
-                            user_id=message.from_user.id,
-                            permissions=ChatPermissions(
-                                can_send_messages=False
-                            ),
-                            until_date=dt.now() + timedelta(seconds=35),
-                            request_timeout=5
-                        )
-                    await self.storage.incrby(
-                        name=user,
-                        amount=-1
+            if user_member.status == ChatMemberStatus.CREATOR:
+                return
+            user = f"user_restrict_{message.from_user.id}"
+            redis_count = await self.storage.get(name=user)
+            if redis_count:
+                count = int(redis_count.decode())
+                if count == 0:
+                    return await message.bot.restrict_chat_member(
+                        chat_id=message.chat.id,
+                        user_id=message.from_user.id,
+                        permissions=ChatPermissions(
+                            can_send_messages=False
+                        ),
+                        until_date=dt.now() + timedelta(seconds=35),
+                        request_timeout=5
                     )
-                else:
-                    await self.storage.set(
-                        name=user,
-                        value=5,
-                        ex=30
-                    )
+                await self.storage.incrby(
+                    name=user,
+                    amount=-1
+                )
+            else:
+                await self.storage.set(
+                    name=user,
+                    value=3,
+                    ex=30
+                )
+            return
         await handler(message, data)
