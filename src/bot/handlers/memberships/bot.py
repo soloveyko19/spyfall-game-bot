@@ -60,32 +60,33 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
                 game.is_allowed = False
                 await game.save()
             return
-        rights = [
-            message.new_chat_member.can_delete_messages,
-            message.new_chat_member.can_restrict_members,
-            message.new_chat_member.can_pin_messages,
-        ]
-        if all(rights):
-            game.is_allowed = True
-            await game.save()
-            await message.answer(
-                text=_(
-                    "*Отлично\\! ✅\nВсе права предоставлены\\!* 😎\nМожем начнать игру /game"
+        if bot_member.status == ChatMemberStatus.ADMINISTRATOR:
+            rights = [
+                message.new_chat_member.can_delete_messages,
+                message.new_chat_member.can_restrict_members,
+                message.new_chat_member.can_pin_messages,
+            ]
+            if all(rights):
+                game.is_allowed = True
+                await game.save()
+                return await message.answer(
+                    text=_(
+                        "*Отлично\\! ✅\nВсе права предоставлены\\!* 😎\nМожем начнать игру /game"
+                    )
                 )
-            )
-        else:
-            game.state_id = 1
-            game.is_allowed = False
-            await game.save()
-            await message.answer(
-                text=_(
-                    "*Предоставлены не все необходимые права администратора\\:*\n{rule_1} \\- Удалять сообщения\n{rule_2} \\- Блокировать пользователей\n{rule_3} \\- Закреплять сообщения"
-                ).format(
-                    rule_1="✅" if rights[0] else "❌",
-                    rule_2="✅" if rights[1] else "❌",
-                    rule_3="✅" if rights[2] else "❌",
+            else:
+                game.state_id = 1
+                game.is_allowed = False
+                await game.save()
+        await message.answer(
+            text=_(
+                "*Предоставлены не все необходимые права администратора\\:*\n{rule_1} \\- Удалять сообщения\n{rule_2} \\- Блокировать пользователей\n{rule_3} \\- Закреплять сообщения"
+            ).format(
+                        rule_1="✅" if rights[0] else "❌",
+                        rule_2="✅" if rights[1] else "❌",
+                        rule_3="✅" if rights[2] else "❌",
+                    )
                 )
-            )
 
 
 @router.my_chat_member(ChatMemberUpdatedFilter(LEAVE_TRANSITION))
