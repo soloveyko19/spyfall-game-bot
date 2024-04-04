@@ -1,7 +1,5 @@
 import os
 
-import aiofiles
-
 from filters.chat import ChatTypeFilter
 from database.models import User, Player, Game
 from utils.messages import LANGUAGES, join_message, language_by_locale

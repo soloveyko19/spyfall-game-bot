@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, FSInputFile
 from aiogram.utils.i18n import gettext as _
 
-from database.models import User, Feedback, Game
+from database.models import User, Feedback
 from keyboards.inline import (
     languages_keyboard,
     buy_me_a_coffee_keyboard,
@@ -23,7 +23,7 @@ from utils.messages import (
     rules_message,
     get_feedback_message,
     get_stats,
-    stats_message, escape_markdown_v2,
+    stats_message,
 )
 from utils.states import (
     LanguageStates,

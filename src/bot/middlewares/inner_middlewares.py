@@ -6,7 +6,7 @@ from utils.messages import LANGUAGES
 from aiogram.exceptions import TelegramBadRequest
 from redis.asyncio import Redis
 from aiogram import BaseMiddleware
-from aiogram.types import TelegramObject, Message
+from aiogram.types import TelegramObject
 from aiogram.utils.i18n import gettext as _, I18nMiddleware
 
 

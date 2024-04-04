@@ -2,12 +2,10 @@ from utils.states import MailingStates
 from keyboards.inline import (
     add_buttons_to_mailing_keyboard,
     cancel_keyboard,
-    confirm_mailing_keyboard,
     languages_keyboard,
 )
 
 from aiogram import Router, types
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter
 from aiogram.utils.i18n import gettext as _

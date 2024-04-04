@@ -22,11 +22,6 @@ async def callback_user_locale(
         db_user.locale = call.data
         await db_user.save()
         await state.clear()
-        await call.message.answer(
-            text=_(
-                "*Ваш язык изменен на: {language}*", locale=db_user.locale
-            ).format(language=language_by_locale(db_user.locale))
-        )
         bot = await call.bot.get_me()
         await call.message.answer(
             text=_(

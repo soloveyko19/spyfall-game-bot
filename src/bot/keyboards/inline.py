@@ -6,7 +6,6 @@ from utils.messages import LANGUAGES
 from aiogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    SwitchInlineQueryChosenChat,
 )
 from aiogram.utils.i18n import gettext as _
 

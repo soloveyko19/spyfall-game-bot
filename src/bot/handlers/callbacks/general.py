@@ -1,9 +1,6 @@
 from aiogram import Router
 from aiogram.types import CallbackQuery
-from aiogram.fsm.context import FSMContext
-from aiogram.utils.i18n import gettext as _
 
-from keyboards.inline import menu_keyboard
 
 router = Router()
 

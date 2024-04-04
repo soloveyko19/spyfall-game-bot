@@ -1,5 +1,3 @@
-from aiogram.enums import ChatMemberStatus
-
 from filters.chat import ChatTypeFilter
 from database.models import Game
 from keyboards.inline import (
@@ -21,6 +19,7 @@ import asyncio
 import random
 
 from aiogram import Router, types
+from aiogram.enums import ChatMemberStatus
 from aiogram.filters import Command
 from aiogram.utils.i18n import gettext as _
 from aiogram.fsm.context import FSMContext

@@ -7,7 +7,7 @@ from keyboards.reply import request_contact_keyboard
 from keyboards.inline import (
     cancel_keyboard,
     location_options_keyboard,
-    back_to_admin_menu_keyboard, statistics_keyboard,
+    statistics_keyboard,
 )
 
 from aiogram import Router, types
