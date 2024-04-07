@@ -14,10 +14,10 @@ from redis.asyncio import Redis
 
 class DatabaseContextMiddleware(BaseMiddleware):
     async def __call__(
-            self,
-            handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
-            event: TelegramObject,
-            data: Dict[str, Any],
+        self,
+        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        event: TelegramObject,
+        data: Dict[str, Any],
     ):
         tg_user = data.get("event_from_user")
 
@@ -32,10 +32,10 @@ class DatabaseContextMiddleware(BaseMiddleware):
 
 class SendErrorInfoMiddleware(BaseMiddleware):
     async def __call__(
-            self,
-            handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
-            event: TelegramObject,
-            data: Dict[str, Any],
+        self,
+        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        event: TelegramObject,
+        data: Dict[str, Any],
     ):
         try:
             await handler(event, data)
@@ -54,19 +54,21 @@ class ManageGameChatMiddleware(BaseMiddleware):
         self.storage = storage
 
     async def __call__(
-            self,
-            handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
-            message: Message,
-            data: Dict[str, Any],
+        self,
+        handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
+        message: Message,
+        data: Dict[str, Any],
     ):
         game = data.get("game")
         if (
-                game
-                and game.state_id in (3, 4)
-                and message.from_user.id not in game.player_ids
+            game
+            and game.state_id in (3, 4)
+            and message.from_user.id not in game.player_ids
         ):
             await message.delete()
-            user_member = await message.chat.get_member(user_id=message.from_user.id)
+            user_member = await message.chat.get_member(
+                user_id=message.from_user.id
+            )
             if user_member.status == ChatMemberStatus.CREATOR:
                 return
             user = f"user_restrict_{message.from_user.id}"
@@ -77,21 +79,12 @@ class ManageGameChatMiddleware(BaseMiddleware):
                     return await message.bot.restrict_chat_member(
                         chat_id=message.chat.id,
                         user_id=message.from_user.id,
-                        permissions=ChatPermissions(
-                            can_send_messages=False
-                        ),
+                        permissions=ChatPermissions(can_send_messages=False),
                         until_date=dt.now() + timedelta(seconds=35),
-                        request_timeout=5
+                        request_timeout=5,
                     )
-                await self.storage.incrby(
-                    name=user,
-                    amount=-1
-                )
+                await self.storage.incrby(name=user, amount=-1)
             else:
-                await self.storage.set(
-                    name=user,
-                    value=3,
-                    ex=30
-                )
+                await self.storage.set(name=user, value=3, ex=30)
             return
         await handler(message, data)

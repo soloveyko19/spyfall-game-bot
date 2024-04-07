@@ -102,7 +102,7 @@ def add_buttons_to_mailing_keyboard():
     )
 
 
-def confirm_mailing_keyboard():
+def confirm_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -247,9 +247,8 @@ def statistics_keyboard():
                     callback_data="admin_menu_option=stats",
                 ),
                 InlineKeyboardButton(
-                    text=_("Меню ↩️"),
-                    callback_data="cancel_admin"
-                )
+                    text=_("Меню ↩️"), callback_data="cancel_admin"
+                ),
             ]
         ]
     )

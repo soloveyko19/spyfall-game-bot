@@ -1,8 +1,7 @@
-from keyboards.inline import menu_keyboard
-from utils.commands import set_admin_commands
-from utils.messages import escape_markdown_v2
+from keyboards.inline import menu_keyboard, confirm_keyboard
 from utils.states import AdminStates
 from database.models import User
+from filters.user import AdminFilter
 
 from aiogram import Router, types
 from aiogram.filters import StateFilter
@@ -13,15 +12,15 @@ from aiogram.utils.i18n import gettext as _
 router = Router()
 
 
-@router.message(StateFilter(AdminStates.message_user))
+@router.message(StateFilter(AdminStates.message_user), AdminFilter())
 async def message_admin_user(
     message: types.Message, state: FSMContext, db_user: User
 ):
     if message.text == _("Отменить! ❌"):
-        await state.clear()
         await message.answer(
             text=_("Отменено\\!"), reply_markup=ReplyKeyboardRemove()
         )
+        await state.clear()
         bot = await message.bot.get_me()
         return await message.answer(
             text=_("*Привет\\!* 👋\nДобавь меня в группу где будем играть\\!"),
@@ -30,30 +29,8 @@ async def message_admin_user(
             ),
         )
     elif message.user_shared:
-        if db_user:
-            db_user.is_admin = True
-            await db_user.save()
-            await message.answer(
-                text=_(
-                    "*Вы успешно сделали [{name}](tg://user?id={tg_id}) администратором\\!*"
-                ).format(
-                    name=escape_markdown_v2(db_user.full_name),
-                    tg_id=db_user.tg_id,
-                ),
-                reply_markup=ReplyKeyboardRemove(),
-            )
-            await state.clear()
-            await message.bot.send_message(
-                chat_id=db_user.tg_id,
-                text=_(
-                    "*[{name}](tg://user?id={tg_id}) назначил Вас моим администратором\\!*"
-                ).format(
-                    name=escape_markdown_v2(message.from_user.full_name),
-                    tg_id=message.from_user.id,
-                ),
-            )
-            await set_admin_commands(bot=message.bot, user=db_user)
-        else:
+        new_admin_user = await User.get(tg_id=message.user_shared.user_id)
+        if not new_admin_user:
             await message.answer(
                 text=_(
                     "*Такого пользователя нет в моей системе\\!*\n_Сперва ему нужно ввести команду /start\\._"
@@ -61,6 +38,33 @@ async def message_admin_user(
                 reply_markup=ReplyKeyboardRemove(),
             )
             await state.clear()
+        elif new_admin_user.is_admin:
+            await message.answer(
+                text=_(
+                    "*[{full_name}](tg://user?id={tg_id}) уже является администратором\\!*"
+                ).format(
+                    full_name=new_admin_user.full_name,
+                    tg_id=new_admin_user.tg_id,
+                ),
+                reply_markup=ReplyKeyboardRemove(),
+            )
+            await state.clear()
+        else:
+            await state.set_state(state=AdminStates.confirm_admin)
+            await state.update_data(data={"new_admin_id": new_admin_user.id})
+            await message.answer(
+                text=_(
+                    "*Вы уверенны что хотите сделать [{full_name}](tg://user?id={tg_id}) администратором?*"
+                ).format(
+                    full_name=new_admin_user.full_name,
+                    tg_id=new_admin_user.tg_id,
+                ),
+                reply_markup=ReplyKeyboardRemove(),
+            )
+            await message.answer(
+                text=_("*Подтвердите, пожалуйста 👇*"),
+                reply_markup=confirm_keyboard(),
+            )
     else:
         await message.answer(
             text=_(

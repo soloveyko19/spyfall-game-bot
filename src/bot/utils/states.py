@@ -12,6 +12,7 @@ class FeedbackStates(StatesGroup):
 
 class AdminStates(StatesGroup):
     message_user = State()
+    confirm_admin = State()
 
 
 class MailingStates(StatesGroup):

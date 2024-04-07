@@ -7,9 +7,12 @@ from utils.database import load_fixtures
 from middlewares.outer_middlewares import (
     SendErrorInfoMiddleware,
     DatabaseContextMiddleware,
-    ManageGameChatMiddleware
+    ManageGameChatMiddleware,
 )
-from middlewares.inner_middlewares import ThrottlingMiddleware, DatabaseI18nMiddleware
+from middlewares.inner_middlewares import (
+    ThrottlingMiddleware,
+    DatabaseI18nMiddleware,
+)
 from database.redis import storage, storage_antispam, storage_restrict
 
 from aiogram import Bot, Dispatcher
@@ -31,6 +34,7 @@ def register_handlers(dp: Dispatcher):
         callbacks.voting.router,
         callbacks.location.router,
         callbacks.language.router,
+        callbacks.admin.router,
         callbacks.general.router,
         # Message handlers
         messages.feedback.router,
@@ -46,7 +50,9 @@ def set_middlewares(dp: Dispatcher):
     # Outer middlewares
     dp.update.outer_middleware(DatabaseContextMiddleware())
     dp.update.outer_middleware(SendErrorInfoMiddleware())
-    dp.message.outer_middleware(ManageGameChatMiddleware(storage=storage_restrict))
+    dp.message.outer_middleware(
+        ManageGameChatMiddleware(storage=storage_restrict)
+    )
     # Inner middlewares
     dp.update.middleware(DatabaseI18nMiddleware(i18n=dp.get("i18n")))
     dp.update.middleware(ThrottlingMiddleware(storage=storage_antispam))

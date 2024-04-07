@@ -15,7 +15,8 @@ from keyboards.inline import (
     admin_menu_keyboard,
     back_to_admin_menu_keyboard,
     cancel_keyboard,
-    location_options_keyboard, statistics_keyboard,
+    location_options_keyboard,
+    statistics_keyboard,
 )
 from keyboards.reply import request_contact_keyboard
 from utils.messages import (

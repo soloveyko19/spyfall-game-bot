@@ -22,7 +22,12 @@ class ThrottlingMiddleware(BaseMiddleware):
     ):
         user_id = data.get("event_from_user").id
         chat_id = data.get("event_chat").id
-        if (user_id == chat_id or event.message and event.message.text and event.message.text.startswith("/")):
+        if (
+            user_id == chat_id
+            or event.message
+            and event.message.text
+            and event.message.text.startswith("/")
+        ):
             user = f"user_antispam_{user_id}"
             redis_count = await self.storage.get(name=user)
             if redis_count:
@@ -30,16 +35,13 @@ class ThrottlingMiddleware(BaseMiddleware):
                 if count == 0:
                     return
                 elif count == 1:
-                    await self.storage.incrby(
-                        name=user,
-                        amount=-1
-                    )
+                    await self.storage.incrby(name=user, amount=-1)
                     if event.callback_query:
                         await event.callback_query.answer(
                             text=_(
                                 "Слишком много действий за короткое время, подождите немного, и попробуте еще раз."
                             ),
-                            show_alert=True
+                            show_alert=True,
                         )
                     else:
                         try:
@@ -47,27 +49,20 @@ class ThrottlingMiddleware(BaseMiddleware):
                                 chat_id=data.get("event_chat").id,
                                 text=_(
                                     "Слишком много действий за короткое время\\, подождите немного\\, и попробуте еще раз\\."
-                                )
+                                ),
                             )
                         except TelegramBadRequest:
                             pass
                     return
-                await self.storage.incrby(
-                    name=user,
-                    amount=-1
-                )
+                await self.storage.incrby(name=user, amount=-1)
             else:
-                await self.storage.set(
-                    name=user,
-                    value=5,
-                    ex=10
-                )
+                await self.storage.set(name=user, value=5, ex=10)
         await handler(event, data)
 
 
 class DatabaseI18nMiddleware(I18nMiddleware):
     async def get_locale(
-            self, event: TelegramObject, data: Dict[str, Any]
+        self, event: TelegramObject, data: Dict[str, Any]
     ) -> str:
         user: User = data.get("db_user")
         lang = data.get("event_from_user").language_code
@@ -81,4 +76,3 @@ class DatabaseI18nMiddleware(I18nMiddleware):
             return lang
         else:
             return "en"
-

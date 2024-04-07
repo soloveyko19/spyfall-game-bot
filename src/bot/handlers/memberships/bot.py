@@ -82,11 +82,11 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
             text=_(
                 "*Предоставлены не все необходимые права администратора\\:*\n{rule_1} \\- Удалять сообщения\n{rule_2} \\- Блокировать пользователей\n{rule_3} \\- Закреплять сообщения"
             ).format(
-                        rule_1="✅" if rights[0] else "❌",
-                        rule_2="✅" if rights[1] else "❌",
-                        rule_3="✅" if rights[2] else "❌",
-                    )
-                )
+                rule_1="✅" if rights[0] else "❌",
+                rule_2="✅" if rights[1] else "❌",
+                rule_3="✅" if rights[2] else "❌",
+            )
+        )
 
 
 @router.my_chat_member(ChatMemberUpdatedFilter(LEAVE_TRANSITION))

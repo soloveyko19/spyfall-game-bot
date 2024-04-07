@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-04-01 16:39+0100\n"
-"PO-Revision-Date: 2024-04-01 16:45+0100\n"
+"POT-Creation-Date: 2024-04-07 17:29+0100\n"
+"PO-Revision-Date: 2024-04-07 17:29+0100\n"
 "Last-Translator: \n"
 "Language-Team: en <LL@li.org>\n"
 "Language: en\n"
@@ -19,12 +19,19 @@ msgstr ""
 "Generated-By: Babel 2.14.0\n"
 "X-Generator: Poedit 3.0.1\n"
 
-#: handlers/callbacks/language.py:26
-msgid "*Ваш язык изменен на: {language}*"
-msgstr "*Your language changed to {language}*"
+#: handlers/callbacks/admin.py:31
+msgid "*Вы успешно сделали [{name}](tg://user?id={tg_id}) администратором\\!*"
+msgstr ""
+"*You succesfully provided an administrator role for [{name}](tg://user?"
+"id={tg_id})*"
 
-#: handlers/callbacks/language.py:32 handlers/callbacks/menu.py:154
-#: handlers/callbacks/menu.py:162 handlers/commands/private_chats.py:46
+#: handlers/callbacks/admin.py:41
+msgid "*[{name}](tg://user?id={tg_id}) назначил Вас моим администратором\\!*"
+msgstr ""
+"*[{name}](tg://user?id={tg_id}) has appointed you as my administrator\\!*"
+
+#: handlers/callbacks/language.py:27 handlers/callbacks/menu.py:150
+#: handlers/callbacks/menu.py:158 handlers/commands/private_chats.py:44
 #: handlers/messages/admin.py:27
 msgid ""
 "*Привет\\!* 👋\n"
@@ -33,7 +40,7 @@ msgstr ""
 "*Hello\\!* 👋\n"
 "Invite me to the group where you are going to play\\!"
 
-#: handlers/callbacks/language.py:55
+#: handlers/callbacks/language.py:50
 msgid "*Язык группы изменен на: {language}*"
 msgstr "*Group language changed to {language}*"
 
@@ -45,7 +52,7 @@ msgstr ""
 "*All available locations:*\n"
 "\n"
 
-#: handlers/callbacks/location.py:35 handlers/callbacks/menu.py:141
+#: handlers/callbacks/location.py:35 handlers/callbacks/menu.py:137
 #: handlers/commands/admins.py:85
 msgid "*Выберите опцию:*"
 msgstr "*Please choose an option:*"
@@ -66,7 +73,7 @@ msgstr "You do not have access to this feature"
 msgid "*Напишите какой текст будет на кнопке*"
 msgstr "*Write what text will be on the button*"
 
-#: handlers/callbacks/mailing.py:37 handlers/messages/mailing.py:56
+#: handlers/callbacks/mailing.py:37 handlers/messages/mailing.py:54
 msgid "*Какой язык рассылки\\?*"
 msgstr "*What language of the broadcast\\?*"
 
@@ -78,7 +85,7 @@ msgstr ""
 "*Confirm that you want to make a mailing with this message\\.*\n"
 "Broadcast language: {language}"
 
-#: handlers/callbacks/menu.py:48 handlers/commands/private_chats.py:118
+#: handlers/callbacks/menu.py:48 handlers/commands/private_chats.py:116
 msgid ""
 "*Сейчас ваш язык: {language}\n"
 "Выберите язык *"
@@ -86,7 +93,7 @@ msgstr ""
 "*Now your language is {language}\n"
 "Select new language*"
 
-#: handlers/callbacks/menu.py:62 handlers/commands/private_chats.py:131
+#: handlers/callbacks/menu.py:62 handlers/commands/private_chats.py:129
 msgid ""
 "Этот проект полностью лежит на плечах одного разработчика\\, который "
 "оплачивает хостинг для этого бота и уделяет большое кол\\-во времени на его "
@@ -99,7 +106,7 @@ msgstr ""
 "them by treating them to a cup of coffee via the link below or by scanning "
 "the QR code :\\)"
 
-#: handlers/callbacks/menu.py:70 handlers/commands/private_chats.py:103
+#: handlers/callbacks/menu.py:70 handlers/commands/private_chats.py:101
 msgid ""
 "*Чтобы обратиться к разработчику напишите свой комментарий ниже\\. 👇*\n"
 "_Напоминаем что это не коммерческий продукт и каждый ваш отзыв помогает "
@@ -113,8 +120,8 @@ msgstr ""
 msgid "Для этой функции необходимы права администратора!"
 msgstr "You must have administrator rights to execute this function!"
 
-#: handlers/callbacks/menu.py:82 handlers/callbacks/menu.py:174
-#: handlers/callbacks/menu.py:180
+#: handlers/callbacks/menu.py:82 handlers/callbacks/menu.py:170
+#: handlers/callbacks/menu.py:176
 msgid "*Меню для админов\\! 💅*"
 msgstr "*Menu for admins\\! 💅*"
 
@@ -128,13 +135,7 @@ msgstr ""
 "_Please share the contact of the user you want to appoint as an "
 "administrator below 👇_"
 
-#: handlers/callbacks/menu.py:126 middlewares/inner_middlewares.py:39
-msgid ""
-"Слишком много действий за короткое время, подождите немного, и попробуте еще "
-"раз."
-msgstr "Too many actions in a short time, wait a little and try again."
-
-#: handlers/callbacks/menu.py:133 handlers/commands/admins.py:73
+#: handlers/callbacks/menu.py:129 handlers/commands/admins.py:73
 msgid ""
 "*Вы собираетесь сделать рассылку\\!*\n"
 "Отправьте сообщение которое вы хотите разослать\\."
@@ -154,16 +155,16 @@ msgstr "*[{name}](tg://user?id={tg_id}) voted\\!*"
 msgid "*Ошибка значения\\, лимит должен быть указан в числовом значении\\!*"
 msgstr "*Value error\\, the limit must be specified as a numerical value\\!*"
 
-#: handlers/commands/groups.py:46
+#: handlers/commands/groups.py:45
 msgid "*Для начала игры предоставьте мне необходимые права администратора\\!*"
 msgstr ""
 "*To start the game, please, provide me necessary administrator rights\\!*"
 
-#: handlers/commands/groups.py:52
+#: handlers/commands/groups.py:51
 msgid "*Игра уже запущена\\!* ⛔️"
 msgstr "*The game has already started\\!* ⛔️"
 
-#: handlers/commands/groups.py:84
+#: handlers/commands/groups.py:83
 msgid ""
 "*\\+30 секунд к регистрации\\!*\n"
 "_Оставшееся время \\- {sec} секунд\\._"
@@ -171,7 +172,7 @@ msgstr ""
 "*\\+30 seconds to registration\\!*\n"
 "_The remaining time is \\- {sec} seconds\\._"
 
-#: handlers/commands/groups.py:106
+#: handlers/commands/groups.py:105
 msgid ""
 "*Игра не запущена\\! ❌*\n"
 "_Нужно как минимум 4 участника для игры\\._"
@@ -179,7 +180,7 @@ msgstr ""
 "*The game is not started\\! ❌*\n"
 "_At least 4 players are required for the game\\._"
 
-#: handlers/commands/groups.py:113
+#: handlers/commands/groups.py:112
 msgid ""
 "*Игра не запущена\\! ❌*\n"
 "_Максимум 10 игроков в игре\\._"
@@ -187,7 +188,7 @@ msgstr ""
 "*The game is not started\\! ❌*\n"
 "_Maximum of 10 players in the game\\._"
 
-#: handlers/commands/groups.py:144
+#: handlers/commands/groups.py:143
 msgid ""
 "*Вы Шпион\\! 🦸*\n"
 "_Не дайте остальным участникам вычислить вашу роль\\!_"
@@ -195,7 +196,7 @@ msgstr ""
 "*You are the Spy\\! 🦸*\n"
 "_Don\\'t let the other players figure out your role\\!_"
 
-#: handlers/commands/groups.py:157
+#: handlers/commands/groups.py:156
 msgid ""
 "*Вы НЕ Шпион\\! 👨*\n"
 "Локация: *{location}*\n"
@@ -205,11 +206,11 @@ msgstr ""
 "Location: *{location}*\n"
 "_Figure out who the Spy is\\!_"
 
-#: handlers/commands/groups.py:176
+#: handlers/commands/groups.py:175
 msgid "*Осталась 1 минута до голосования\\! ⏳*"
 msgstr "*One minute left until voting\\! ⏳*"
 
-#: handlers/commands/groups.py:179
+#: handlers/commands/groups.py:178
 msgid ""
 "*Время на обсуждение вышло\\! ⌛️*\n"
 "Давайте проголосуем за шпиона\\!"
@@ -217,11 +218,11 @@ msgstr ""
 "*Time for discussion is up\\! ⌛️*\n"
 "Let\\'s vote for the Spy\\!"
 
-#: handlers/commands/groups.py:190
+#: handlers/commands/groups.py:189
 msgid "*Кто шпион? 🦸*"
 msgstr "*Who is the spy? 🦸*"
 
-#: handlers/commands/groups.py:222
+#: handlers/commands/groups.py:221
 msgid ""
 "*Мнения разошлись\\, а значит победа Шпиона\\! 💁‍♂️*\n"
 "Шпионом был\\(\\-a\\) [{name}](tg://user?id={tg_id})"
@@ -229,11 +230,11 @@ msgstr ""
 "*Opinions have diverged\\, which means victory for the Spy\\! 💁‍♂️*\n"
 "The Spy was [{name}](tg://user?id={tg_id})"
 
-#: handlers/commands/groups.py:232
+#: handlers/commands/groups.py:231
 msgid "*Большинство проголосовало за [{name}](tg://user?id={tg_id})*"
 msgstr "*The majority voted for [{name}](tg://user?id={tg_id})*"
 
-#: handlers/commands/groups.py:242
+#: handlers/commands/groups.py:241
 msgid ""
 "*Победа мирных игроков\\!*\n"
 "_Личность шпиона раскрыта\\!_"
@@ -241,7 +242,7 @@ msgstr ""
 "*Victory for the innocent players\\!*\n"
 "_The spy\\'s identity has been revealed\\!_"
 
-#: handlers/commands/groups.py:246
+#: handlers/commands/groups.py:245
 msgid ""
 "*Победа Шпиона\\!*\n"
 "_Его личность не раскрыта\\!_\n"
@@ -251,11 +252,11 @@ msgstr ""
 "_His identity remains undisclosed\\!_\n"
 "The spy was [{name}](tg://user?id={tg_id})"
 
-#: handlers/commands/groups.py:273
+#: handlers/commands/groups.py:272
 msgid "*Игра была отменена\\. ❌*"
 msgstr "*The game has been canceled\\. ❌*"
 
-#: handlers/commands/groups.py:302
+#: handlers/commands/groups.py:301
 msgid ""
 "*Сейчас язык группы: {language}\n"
 "Выберите язык*"
@@ -263,7 +264,7 @@ msgstr ""
 "*Now group language is {language}\n"
 "Select new language*"
 
-#: handlers/commands/private_chats.py:54
+#: handlers/commands/private_chats.py:52
 msgid ""
 "*Ошибка ❗️*\n"
 "_Такой игры не существует либо она уже была окончена\\._"
@@ -271,7 +272,7 @@ msgstr ""
 "*Error ❗️*\n"
 "_There are no such game or it is already ended\\._"
 
-#: handlers/commands/private_chats.py:60
+#: handlers/commands/private_chats.py:58
 msgid ""
 "*Ошибка ❗️*\n"
 "Набор в игру уже окончен\\!"
@@ -279,15 +280,15 @@ msgstr ""
 "*Error ❗️*\n"
 "The recruitment for the game has already concluded\\!"
 
-#: handlers/commands/private_chats.py:65
+#: handlers/commands/private_chats.py:63
 msgid "*Вы уже в игре\\!* ⛔️"
 msgstr "*You are already in the game\\!* ⛔️"
 
-#: handlers/commands/private_chats.py:85
+#: handlers/commands/private_chats.py:83
 msgid "*Вы присоединились к игре в Шпиона\\! ✅*"
 msgstr "*You\\'ve joined the Spy Game\\! ✅*"
 
-#: handlers/commands/private_chats.py:94
+#: handlers/commands/private_chats.py:92
 msgid ""
 "*Отмена\\! ❌*\n"
 "Все состояния сняты\\!"
@@ -317,7 +318,7 @@ msgstr ""
 "*You restricted the bot\\!*\n"
 "_To start the game, please, provide me necessary administrator rights_"
 
-#: handlers/memberships/bot.py:72
+#: handlers/memberships/bot.py:73
 msgid ""
 "*Отлично\\! ✅\n"
 "Все права предоставлены\\!* 😎\n"
@@ -327,7 +328,7 @@ msgstr ""
 "All rights have been provided\\!* 😎\n"
 "We can start the game /game"
 
-#: handlers/memberships/bot.py:81
+#: handlers/memberships/bot.py:82
 msgid ""
 "*Предоставлены не все необходимые права администратора\\:*\n"
 "{rule_1} \\- Удалять сообщения\n"
@@ -339,24 +340,15 @@ msgstr ""
 "{rule_2} \\- Block users\n"
 "{rule_3} \\- Pin messages"
 
-#: handlers/messages/admin.py:20 keyboards/inline.py:32 keyboards/reply.py:20
+#: handlers/messages/admin.py:19 keyboards/inline.py:31 keyboards/reply.py:20
 msgid "Отменить! ❌"
 msgstr "Cancel! ❌"
 
-#: handlers/messages/admin.py:23
+#: handlers/messages/admin.py:21
 msgid "Отменено\\!"
 msgstr "Canceled\\!"
 
-#: handlers/messages/admin.py:37
-msgid "*Вы успешно сделали [{name}](tg://user?id={tg_id}) администратором\\!*"
-msgstr "*You succesfully did the [{name}](tg://user?id={tg_id}) administrator*"
-
-#: handlers/messages/admin.py:48
-msgid "*[{name}](tg://user?id={tg_id}) назначил Вас моим администратором\\!*"
-msgstr ""
-"*[{name}](tg://user?id={tg_id}) has appointed you as my administrator\\!*"
-
-#: handlers/messages/admin.py:58
+#: handlers/messages/admin.py:36
 msgid ""
 "*Такого пользователя нет в моей системе\\!*\n"
 "_Сперва ему нужно ввести команду /start\\._"
@@ -364,7 +356,23 @@ msgstr ""
 "*This user is not in my system\\!*\n"
 "_They need to first enter the command /start\\._"
 
-#: handlers/messages/admin.py:66
+#: handlers/messages/admin.py:44
+msgid "*[{full_name}](tg://user?id={tg_id}) уже является администратором\\!*"
+msgstr "*[{full_name}](tg://user?id={tg_id}) is already an administrator\\!*"
+
+#: handlers/messages/admin.py:61
+msgid ""
+"*Вы уверенны что хотите сделать [{full_name}](tg://user?id={tg_id}) "
+"администратором?*"
+msgstr ""
+"*Are you sure you want to provide an administrator role for [{full_name}]"
+"(tg://user?id={tg_id}) *"
+
+#: handlers/messages/admin.py:68
+msgid "*Подтвердите, пожалуйста 👇*"
+msgstr "*Confirm, please 👇*"
+
+#: handlers/messages/admin.py:73
 msgid ""
 "*Некоректный ввод\\(*_Пожалуйста, поделитесь пользователем через клавиатуру "
 "👇_"
@@ -397,7 +405,7 @@ msgstr ""
 "\n"
 "*Shall we add more\\?*"
 
-#: handlers/messages/mailing.py:25
+#: handlers/messages/mailing.py:23
 msgid ""
 "*Принято\\!*\n"
 "Добавим кнопку со ссылкой?"
@@ -405,118 +413,124 @@ msgstr ""
 "*Got it\\!*\n"
 "Shall we add a button with a link?"
 
-#: handlers/messages/mailing.py:37
+#: handlers/messages/mailing.py:35
 msgid "*Отправьте ссылку которую хотите поместить в кнопку\\.*"
 msgstr "*Send the link you want to place in the button\\.*"
 
-#: handlers/messages/mailing.py:51
+#: handlers/messages/mailing.py:49
 msgid "*Некоректный формат ссылки\\, попробуйте еще раз*"
 msgstr "*Invalid link format\\, please try again*"
 
-#: keyboards/inline.py:19
+#: keyboards/inline.py:18
 msgid "Присоединиться!"
 msgstr "Join!"
 
-#: keyboards/inline.py:45
+#: keyboards/inline.py:44
 msgid "➡️ Перейти к боту ⬅️"
 msgstr "➡️ Go to the bot ⬅️"
 
-#: keyboards/inline.py:72
+#: keyboards/inline.py:71
 msgid "Список всех локаций 📋"
 msgstr "List of all locations 📋"
 
-#: keyboards/inline.py:78
+#: keyboards/inline.py:77
 msgid "Добавить локацию 🆕"
 msgstr "Add a location 🆕"
 
-#: keyboards/inline.py:84 keyboards/inline.py:251 keyboards/inline.py:262
-#: keyboards/inline.py:272
+#: keyboards/inline.py:83 keyboards/inline.py:250 keyboards/inline.py:261
+#: keyboards/inline.py:271
 msgid "Меню ↩️"
 msgstr "Menu ↩️"
 
-#: keyboards/inline.py:96
+#: keyboards/inline.py:95
 msgid "Добавить ✅"
 msgstr "Add ✅"
 
-#: keyboards/inline.py:99
+#: keyboards/inline.py:98
 msgid "Продолжить без кнопки ❎"
 msgstr "Continue without the button ❎"
 
-#: keyboards/inline.py:111
+#: keyboards/inline.py:110
 msgid "Подтвердить ✅"
 msgstr "Confirm ✅"
 
-#: keyboards/inline.py:114 keyboards/inline.py:130
+#: keyboards/inline.py:113 keyboards/inline.py:129
 msgid "Отменить ❌"
 msgstr "Cancel ❌"
 
-#: keyboards/inline.py:142
+#: keyboards/inline.py:141
 msgid "Купить кофе разработчику"
 msgstr "Buy coffee for the developer"
 
-#: keyboards/inline.py:148
+#: keyboards/inline.py:147
 msgid "Меню"
 msgstr "Menu"
 
-#: keyboards/inline.py:162
+#: keyboards/inline.py:161
 msgid "Начать игру в новом чате ➕"
 msgstr "Start the game in a new chat ➕"
 
-#: keyboards/inline.py:168
+#: keyboards/inline.py:167
 msgid "Язык"
 msgstr "Language"
 
-#: keyboards/inline.py:172
+#: keyboards/inline.py:171
 msgid "Правила 📋"
 msgstr "Rules 📋"
 
-#: keyboards/inline.py:178
+#: keyboards/inline.py:177
 msgid "Купить кофе ☕️"
 msgstr "Buy coffee ☕️"
 
-#: keyboards/inline.py:182
+#: keyboards/inline.py:181
 msgid "Фидбэк 💬"
 msgstr "Feedback 💬"
 
-#: keyboards/inline.py:189
+#: keyboards/inline.py:188
 msgid "Меню для админов ➡️"
 msgstr "Menu for admins ➡️"
 
-#: keyboards/inline.py:205
+#: keyboards/inline.py:204
 msgid "Фидбэки 💬"
 msgstr "Feedbacks 💬"
 
-#: keyboards/inline.py:209
+#: keyboards/inline.py:208
 msgid "Ошибка ❗️"
 msgstr "Error ❗️"
 
-#: keyboards/inline.py:215
+#: keyboards/inline.py:214
 msgid "Назначить админа 🙎‍♂️"
 msgstr "Add admin 🙎‍♂️"
 
-#: keyboards/inline.py:219
+#: keyboards/inline.py:218
 msgid "Статистика 📈"
 msgstr "Statistics 📈"
 
-#: keyboards/inline.py:225
+#: keyboards/inline.py:224
 msgid "Создать рассылку 🔊"
 msgstr "Make mailing 🔊"
 
-#: keyboards/inline.py:229
+#: keyboards/inline.py:228
 msgid "Локации 📌"
 msgstr "Locations 📌"
 
-#: keyboards/inline.py:235
+#: keyboards/inline.py:234
 msgid "Обычное меню ⬅️"
 msgstr "Basic menu ⬅️"
 
-#: keyboards/inline.py:247
+#: keyboards/inline.py:246
 msgid "Обновить 🔄"
 msgstr "Update 🔄"
 
 #: keyboards/reply.py:14
 msgid "Выбрать пользователя 👤"
 msgstr "Select 👤"
+
+#: middlewares/inner_middlewares.py:39
+msgid ""
+"Слишком много действий за короткое время, подождите немного, и попробуте еще "
+"раз."
+msgstr "Too many actions in a short time, wait a little and try again."
 
 #: middlewares/inner_middlewares.py:48
 msgid ""
@@ -666,6 +680,9 @@ msgid ""
 msgstr ""
 "*Mailing completed\\!*\n"
 "Sent to a total of _{count}_ users\\."
+
+#~ msgid "*Ваш язык изменен на: {language}*"
+#~ msgstr "*Your language changed to {language}*"
 
 #~ msgid ""
 #~ "*Пожалуйста\\, обновите мне права администратора*\n"

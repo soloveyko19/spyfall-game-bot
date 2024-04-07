@@ -2,7 +2,7 @@ from utils.messages import mailing_everyone, LANGUAGES
 from utils.states import MailingStates
 from keyboards.inline import (
     cancel_keyboard,
-    confirm_mailing_keyboard,
+    confirm_keyboard,
     languages_keyboard,
 )
 
@@ -67,7 +67,7 @@ async def callback_mailing_set_locale(call: CallbackQuery, state: FSMContext):
         text=_(
             "*Подтвердите что хотите разослать это сообщение\\.*\nЯзык рассылки: {language}"
         ).format(language=LANGUAGES.get(data.get("locale"))),
-        reply_markup=confirm_mailing_keyboard(),
+        reply_markup=confirm_keyboard(),
     )
     await state.set_state(MailingStates.confirm)
 
