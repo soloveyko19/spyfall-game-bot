@@ -51,7 +51,7 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
         if bot_member.status == ChatMemberStatus.RESTRICTED:
             if bot_member.can_send_messages:
                 await message.answer(
-                    _(
+                    text=_(
                         "*Вы ограничили права бота\\!*\n_Для начала игры предоставьте мне необходимые права администратора_"
                     )
                 )
@@ -60,7 +60,7 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
                 game.is_allowed = False
                 await game.save()
             return
-        if bot_member.status == ChatMemberStatus.ADMINISTRATOR:
+        elif bot_member.status == ChatMemberStatus.ADMINISTRATOR:
             rights = [
                 message.new_chat_member.can_delete_messages,
                 message.new_chat_member.can_restrict_members,
@@ -78,15 +78,15 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
                 game.state_id = 1
                 game.is_allowed = False
                 await game.save()
-        await message.answer(
-            text=_(
-                "*Предоставлены не все необходимые права администратора\\:*\n{rule_1} \\- Удалять сообщения\n{rule_2} \\- Блокировать пользователей\n{rule_3} \\- Закреплять сообщения"
-            ).format(
-                rule_1="✅" if rights[0] else "❌",
-                rule_2="✅" if rights[1] else "❌",
-                rule_3="✅" if rights[2] else "❌",
+            await message.answer(
+                text=_(
+                    "*Предоставлены не все необходимые права администратора\\:*\n{rule_1} \\- Удалять сообщения\n{rule_2} \\- Блокировать пользователей\n{rule_3} \\- Закреплять сообщения"
+                ).format(
+                    rule_1="✅" if rights[0] else "❌",
+                    rule_2="✅" if rights[1] else "❌",
+                    rule_3="✅" if rights[2] else "❌",
+                )
             )
-        )
 
 
 @router.my_chat_member(ChatMemberUpdatedFilter(LEAVE_TRANSITION))
