@@ -46,8 +46,9 @@ async def callback_group_locale(call: CallbackQuery, state: FSMContext):
         game.locale = call.data
         await game.save()
         await state.clear()
-        await call.message.answer(
-            text=_("*Язык группы изменен на: {language}*").format(
+        await call.bot.send_message(
+            chat_id=group_tg_id,
+            text=_("*Язык группы изменен на: {language}*", locale=game.locale).format(
                 language=language_by_locale(game.locale)
             )
         )

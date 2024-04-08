@@ -1,7 +1,8 @@
 from aiogram.enums import ChatMemberStatus
 
-from database.models import Game
+from database.models import Game, User
 from utils.messages import LANGUAGES
+from filters.chat import ChatTypeFilter
 
 from aiogram import Router, types
 from aiogram.filters import (
@@ -18,15 +19,23 @@ from aiogram.utils.i18n import gettext as _
 router = Router()
 
 
-@router.my_chat_member(ChatMemberUpdatedFilter(JOIN_TRANSITION))
-async def bot_joined(message: types.ChatMemberUpdated, game: Game):
+@router.my_chat_member(
+    ChatTypeFilter("group", "supergroup"),
+    ChatMemberUpdatedFilter(JOIN_TRANSITION)
+)
+async def bot_joined(message: types.ChatMemberUpdated, game: Game, db_user: User):
     if message.new_chat_member.user.id == message.bot.id:
         if not game:
-            locale = message.from_user.language_code
+            if db_user and db_user.locale:
+                locale = db_user.locale
+            elif message.from_user.language_code in LANGUAGES.keys():
+                locale = message.from_user.language_code
+            else:
+                locale = "en"
             game = Game(
                 group_tg_id=message.chat.id,
                 state_id=1,
-                locale=locale if locale in LANGUAGES.keys() else "en",
+                locale=locale,
             )
         else:
             game.is_allowed = False
@@ -89,7 +98,10 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
             )
 
 
-@router.my_chat_member(ChatMemberUpdatedFilter(LEAVE_TRANSITION))
+@router.my_chat_member(
+    ChatTypeFilter("group", "supergroup"),
+    ChatMemberUpdatedFilter(LEAVE_TRANSITION)
+)
 async def bot_leaved(message: types.ChatMemberUpdated, game: Game):
     if message.new_chat_member.user.id != message.bot.id or not game:
         return

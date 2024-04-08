@@ -1,5 +1,5 @@
 from filters.chat import ChatTypeFilter
-from database.models import Game
+from database.models import Game, User
 from keyboards.inline import (
     join_game_keyboard,
     link_to_bot_keyboard,
@@ -19,6 +19,7 @@ import asyncio
 import random
 
 from aiogram import Router, types
+from aiogram.exceptions import TelegramForbiddenError
 from aiogram.enums import ChatMemberStatus
 from aiogram.filters import Command
 from aiogram.utils.i18n import gettext as _
@@ -283,11 +284,25 @@ async def command_extend(message: types.Message, game: Game):
 
 @router.message(Command("language"), ChatTypeFilter("group", "supergroup"))
 async def command_language_group(
-    message: types.Message, game: Game, state: FSMContext
+    message: types.Message, game: Game, state: FSMContext, db_user: User
 ):
     if not game or game.state_id != 1 or not game.is_allowed:
         return
     await message.delete()
+    try:
+        await message.bot.send_message(
+            chat_id=message.from_user.id,
+            text=_("*Сейчас язык группы: {language}\nВыберите язык*", locale=db_user.locale).format(
+                language=language_by_locale(game.locale)
+            ),
+            reply_markup=languages_keyboard(),
+        )
+    except TelegramForbiddenError:
+        bot_user = await message.bot.get_me()
+        return await message.answer(
+            text=_("*Чтобы поменять язык в группе, вам сначала нужно инициализировать беседу с ботом\\!*"),
+            reply_markup=link_to_bot_keyboard(bot_username=bot_user.username)
+        )
     storage_key = StorageKey(
         bot_id=message.bot.id,
         chat_id=message.from_user.id,
@@ -296,10 +311,3 @@ async def command_language_group(
     new_state = FSMContext(storage=state.storage, key=storage_key)
     await new_state.set_state(LanguageStates.group_locale)
     await new_state.update_data(group_tg_id=message.chat.id)
-    await message.bot.send_message(
-        chat_id=message.from_user.id,
-        text=_("*Сейчас язык группы: {language}\nВыберите язык*").format(
-            language=language_by_locale(game.locale)
-        ),
-        reply_markup=languages_keyboard(),
-    )
