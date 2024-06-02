@@ -34,8 +34,8 @@ services:
     environment:
       - POSTGRES_USER=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-#    ports:
-#      - 5432:5432 # Only for developing (DO NOT USE IT IN PRODUCTION)
+    # ports:
+    #   - 5432:5432 # Only for developing (DO NOT USE IT IN PRODUCTION)
 
   redis:
     image: redis
@@ -47,8 +47,8 @@ services:
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
       - ./redis/redis-data:/data
     command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
-#    ports:
-#      - 6379:6379 # Only for developing (DO NOT USE IT IN PRODUCTION)
+    # ports:
+    #   - 6379:6379 # Only for developing (DO NOT USE IT IN PRODUCTION)
 
 networks:
   postgres_access:

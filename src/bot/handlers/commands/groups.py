@@ -21,7 +21,7 @@ import random
 from aiogram import Router, types
 from aiogram.exceptions import TelegramForbiddenError
 from aiogram.enums import ChatMemberStatus
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandObject
 from aiogram.utils.i18n import gettext as _
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import StorageKey
@@ -76,14 +76,15 @@ async def command_game(message: types.Message, game: Game):
             elif game.state_id == 3:
                 break
             elif game.extend != 0:
-                sec += 30 * game.extend
+                extend_time = game.extend
+                sec += extend_time
                 game.extend = 0
                 await game.save()
                 reg_messages.append(
                     await message.answer(
                         text=_(
-                            "*\\+30 секунд к регистрации\\!*\n_Оставшееся время \\- {sec} секунд\\._"
-                        ).format(sec=sec)
+                            "*\\+{extend_time}с к регистрации\\!*\n_Оставшееся время \\- {sec}с\\._"
+                        ).format(sec=sec, extend_time=extend_time)
                     )
                 )
             elif sec % 30 == 0:
@@ -274,11 +275,25 @@ async def command_stop(message: types.Message, game: Game):
 
 
 @router.message(Command("extend"), ChatTypeFilter("supergroup", "group"))
-async def command_extend(message: types.Message, game: Game):
+async def command_extend(message: types.Message, game: Game, command: CommandObject):
     if not game or game.state_id != 2 or not game.is_allowed:
         return
     await message.delete()
-    game.extend += 1
+    extend_time = 30
+    if command.args:
+        try:
+            extend_time = int(command.args)
+        except ValueError:
+            return
+    if extend_time > 300:
+        return await message.answer(
+            text=_('Нельзя увеличить время более чем на 300с за раз\\.')
+        )
+    elif extend_time < 10:
+        return await message.answer(
+            text=_('Нельзя увеличить время менее чем на 10с\\.')
+        )
+    game.extend += extend_time
     await game.save()
 
 

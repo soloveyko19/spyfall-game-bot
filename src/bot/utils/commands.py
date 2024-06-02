@@ -20,7 +20,7 @@ commands_group_chats = [
     ),
     BotCommand(command="stop", description="Cancel game"),
     BotCommand(command="help", description="Rules of the game"),
-    BotCommand(command="extend", description="Add 30 seconds to the "),
+    BotCommand(command="extend", description="Extend registration time"),
     BotCommand(command="language", description="Change the group language"),
 ]
 
