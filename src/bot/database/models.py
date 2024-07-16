@@ -15,6 +15,7 @@ from sqlalchemy import (
     ForeignKey,
     Boolean,
     and_,
+    exists,
     select,
     delete,
     BigInteger,
@@ -389,8 +390,15 @@ class Feedback(Base):
             await session.commit()
 
     @classmethod
-    async def get_last(self, limit: int = 10):
+    async def get_last(cls, limit: int = 10):
         async with async_session() as session:
             query = select(Feedback).order_by(desc(Feedback.id)).limit(limit)
             res = await session.execute(query)
             return res.scalars().all()
+        
+    @classmethod
+    async def get(cls, id: int):
+        async with async_session() as session:
+            query = select(Feedback).filter(Feedback.id == id)
+            res = await session.execute(query)
+            return res.scalar_one_or_none()

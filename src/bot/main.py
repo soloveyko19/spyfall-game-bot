@@ -35,6 +35,7 @@ def register_handlers(dp: Dispatcher):
         callbacks.location.router,
         callbacks.language.router,
         callbacks.admin.router,
+        callbacks.feedback.router,
         callbacks.general.router,
         # Message handlers
         messages.feedback.router,

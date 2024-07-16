@@ -272,3 +272,25 @@ def back_to_admin_menu_keyboard():
             ]
         ]
     )
+
+
+def feedback_option_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=_("Последние фидбеки"),
+                    callback_data="list"
+                ),
+                InlineKeyboardButton(
+                    text=_("Ответить на фидбек"),
+                    callback_data="answer"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text=_("Меню ↩️"), callback_data="cancel_admin"   
+                )
+            ]
+        ]
+    )
