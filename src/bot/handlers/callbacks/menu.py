@@ -6,8 +6,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, FSInputFile
 from aiogram.utils.i18n import gettext as _
 
-from database.models import User, Feedback
+from database.models import User
 from keyboards.inline import (
+    feedback_option_keyboard,
     languages_keyboard,
     buy_me_a_coffee_keyboard,
     menu_keyboard,
@@ -22,7 +23,6 @@ from keyboards.reply import request_contact_keyboard
 from utils.messages import (
     language_by_locale,
     rules_message,
-    get_feedback_message,
     get_stats,
     stats_message,
 )
@@ -98,10 +98,12 @@ async def callback_admin_menu_option(
     except IndexError:
         return
     if arg == "get_feedback":
-        feedbacks = await Feedback.get_last()
+        await state.set_state(FeedbackStates.feedback_option)
         await call.message.edit_text(
-            text=get_feedback_message(feedbacks=feedbacks),
-            reply_markup=back_to_admin_menu_keyboard(),
+            text=_(
+                "*Выберите опцию:*"
+            ),
+            reply_markup=feedback_option_keyboard()
         )
     elif arg == "error":
         return 1 / 0
