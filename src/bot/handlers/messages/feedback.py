@@ -21,8 +21,8 @@ async def message_feedback(
     await state.clear()
     await message.answer(
         text=_(
-            "*Спасибо за фидбэк\\! ❤️*\n_Ваше сообщение отправлено и будет принято во внимание разработчиками\\!_",
-        ),
+            "*Спасибо за фидбэк\\! ❤️*\n\nНомер вашего запроса: {feedback_id}\n\n_Ваше сообщение отправлено и будет принято во внимание разработчиками\\!_",
+        ).format(feedback_id=feedback.id),
         reply_markup=back_to_menu_keyboard(),
     )
 
