@@ -1,6 +1,5 @@
 from database.models import User
 from filters.user import AdminFilter
-from utils.commands import set_admin_commands
 from utils.messages import escape_markdown_v2
 from utils.states import AdminStates
 
@@ -44,4 +43,3 @@ async def callback_admin_confirm(
                     tg_id=db_user.tg_id,
                 ),
             )
-            await set_admin_commands(bot=call.bot, user=db_user)

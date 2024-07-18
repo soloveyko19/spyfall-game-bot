@@ -24,7 +24,6 @@ def register_handlers(dp: Dispatcher):
 
     dp.include_routers(
         # Command handlers
-        commands.admins.router,
         commands.groups.router,
         commands.private_chats.router,
         commands.general.router,
