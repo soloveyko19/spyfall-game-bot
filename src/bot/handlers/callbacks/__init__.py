@@ -1,1 +1,10 @@
-from . import menu, language, location, voting, mailing, admin, feedback, general
+from . import (
+    menu,
+    language,
+    location,
+    voting,
+    mailing,
+    admin,
+    feedback,
+    general,
+)

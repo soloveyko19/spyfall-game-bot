@@ -100,10 +100,8 @@ async def callback_admin_menu_option(
     if arg == "get_feedback":
         await state.set_state(FeedbackStates.feedback_option)
         await call.message.edit_text(
-            text=_(
-                "*Выберите опцию:*"
-            ),
-            reply_markup=feedback_option_keyboard()
+            text=_("*Выберите опцию:*"),
+            reply_markup=feedback_option_keyboard(),
         )
     elif arg == "error":
         return 1 / 0

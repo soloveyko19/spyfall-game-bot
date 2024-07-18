@@ -9,7 +9,7 @@ class LocationStates(StatesGroup):
 class FeedbackStates(StatesGroup):
     # for user feedback
     feedback = State()
-    # for admin feedback 
+    # for admin feedback
     feedback_option = State()
     feedback_number = State()
     answer = State()

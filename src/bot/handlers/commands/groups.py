@@ -275,7 +275,9 @@ async def command_stop(message: types.Message, game: Game):
 
 
 @router.message(Command("extend"), ChatTypeFilter("supergroup", "group"))
-async def command_extend(message: types.Message, game: Game, command: CommandObject):
+async def command_extend(
+    message: types.Message, game: Game, command: CommandObject
+):
     if not game or game.state_id != 2 or not game.is_allowed:
         return
     await message.delete()
@@ -287,11 +289,11 @@ async def command_extend(message: types.Message, game: Game, command: CommandObj
             return
     if extend_time > 300:
         return await message.answer(
-            text=_('Нельзя увеличить время более чем на 300с за раз\\.')
+            text=_("Нельзя увеличить время более чем на 300с за раз\\.")
         )
     elif extend_time < 10:
         return await message.answer(
-            text=_('Нельзя увеличить время менее чем на 10с\\.')
+            text=_("Нельзя увеличить время менее чем на 10с\\.")
         )
     game.extend += extend_time
     await game.save()
@@ -307,16 +309,19 @@ async def command_language_group(
     try:
         await message.bot.send_message(
             chat_id=message.from_user.id,
-            text=_("*Сейчас язык группы: {language}\nВыберите язык*", locale=db_user.locale).format(
-                language=language_by_locale(game.locale)
-            ),
+            text=_(
+                "*Сейчас язык группы: {language}\nВыберите язык*",
+                locale=db_user.locale,
+            ).format(language=language_by_locale(game.locale)),
             reply_markup=languages_keyboard(),
         )
     except TelegramForbiddenError:
         bot_user = await message.bot.get_me()
         return await message.answer(
-            text=_("*Чтобы поменять язык в группе, вам сначала нужно инициализировать беседу с ботом\\!*"),
-            reply_markup=link_to_bot_keyboard(bot_username=bot_user.username)
+            text=_(
+                "*Чтобы поменять язык в группе, вам сначала нужно инициализировать беседу с ботом\\!*"
+            ),
+            reply_markup=link_to_bot_keyboard(bot_username=bot_user.username),
         )
     storage_key = StorageKey(
         bot_id=message.bot.id,

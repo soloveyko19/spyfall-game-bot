@@ -21,9 +21,11 @@ router = Router()
 
 @router.my_chat_member(
     ChatTypeFilter("group", "supergroup"),
-    ChatMemberUpdatedFilter(JOIN_TRANSITION)
+    ChatMemberUpdatedFilter(JOIN_TRANSITION),
 )
-async def bot_joined(message: types.ChatMemberUpdated, game: Game, db_user: User):
+async def bot_joined(
+    message: types.ChatMemberUpdated, game: Game, db_user: User
+):
     if message.new_chat_member.user.id == message.bot.id:
         if not game:
             if db_user and db_user.locale:
@@ -100,7 +102,7 @@ async def check_promoted(message: types.ChatMemberUpdated, game: Game):
 
 @router.my_chat_member(
     ChatTypeFilter("group", "supergroup"),
-    ChatMemberUpdatedFilter(LEAVE_TRANSITION)
+    ChatMemberUpdatedFilter(LEAVE_TRANSITION),
 )
 async def bot_leaved(message: types.ChatMemberUpdated, game: Game):
     if message.new_chat_member.user.id != message.bot.id or not game:

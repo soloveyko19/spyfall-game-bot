@@ -14,7 +14,9 @@ router = Router()
 
 
 @router.callback_query(FeedbackStates.feedback_option)
-async def callback_choose_feedback_option(call: CallbackQuery, state: FSMContext):
+async def callback_choose_feedback_option(
+    call: CallbackQuery, state: FSMContext
+):
     feedback_option = call.data
     if feedback_option == "list":
         feedbacks = await Feedback.get_last()
@@ -37,15 +39,15 @@ async def callback_confirm_answer(call: CallbackQuery, state: FSMContext):
         feedback = await Feedback.get(data.get("feedback_id"))
         await call.bot.send_message(
             chat_id=feedback.user.tg_id,
-            text=_("*Ответ от разработчика на ваш фидбэк №{feedback_id}:*\n\n{feedback_message}",
-                    locale=feedback.user.locale
-                ).format(
+            text=_(
+                "*Ответ от разработчика на ваш фидбэк №{feedback_id}:*\n\n{feedback_message}",
+                locale=feedback.user.locale,
+            ).format(
                 feedback_id=feedback.id,
-                feedback_message=escape_markdown_v2(data.get("answer"))
-            )
+                feedback_message=escape_markdown_v2(data.get("answer")),
+            ),
         )
         await call.message.edit_text(
-            text=_("Отправлено\\!"),
-            reply_markup=back_to_admin_menu_keyboard()
+            text=_("Отправлено\\!"), reply_markup=back_to_admin_menu_keyboard()
         )
         await state.clear()

@@ -395,7 +395,7 @@ class Feedback(Base):
             query = select(Feedback).order_by(desc(Feedback.id)).limit(limit)
             res = await session.execute(query)
             return res.scalars().all()
-        
+
     @classmethod
     async def get(cls, id: int):
         async with async_session() as session:

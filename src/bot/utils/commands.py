@@ -2,7 +2,7 @@ from aiogram import Bot
 from aiogram.types import (
     BotCommand,
     BotCommandScopeAllGroupChats,
-    BotCommandScopeAllPrivateChats
+    BotCommandScopeAllPrivateChats,
 )
 
 
@@ -23,8 +23,9 @@ commands_group_chats = [
 commands_private_chats = [
     BotCommand(command="cancel", description="Cancel action"),
     BotCommand(command="start", description="Start the bot"),
-    BotCommand(command="help", description="Rules of the game")
+    BotCommand(command="help", description="Rules of the game"),
 ]
+
 
 async def get_commands(bot: Bot):
     await bot.set_my_commands(
