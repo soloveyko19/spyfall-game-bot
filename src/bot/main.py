@@ -9,11 +9,8 @@ from middlewares.outer_middlewares import (
     DatabaseContextMiddleware,
     ManageGameChatMiddleware,
 )
-from middlewares.inner_middlewares import (
-    ThrottlingMiddleware,
-    DatabaseI18nMiddleware,
-)
-from database.redis import storage, storage_antispam, storage_restrict
+from middlewares.inner_middlewares import DatabaseI18nMiddleware
+from database.redis import storage, storage_restrict
 
 from aiogram import Bot, Dispatcher
 from aiogram.utils.i18n import I18n
@@ -55,7 +52,6 @@ def set_middlewares(dp: Dispatcher):
     )
     # Inner middlewares
     dp.update.middleware(DatabaseI18nMiddleware(i18n=dp.get("i18n")))
-    dp.update.middleware(ThrottlingMiddleware(storage=storage_antispam))
 
 
 async def aiogram_on_startup(bot: Bot):
