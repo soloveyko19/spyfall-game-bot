@@ -1,7 +1,7 @@
 from database.models import Location
 from utils.states import LocationStates
 from utils.messages import escape_markdown_v2
-from keyboards.inline import cancel_keyboard, location_options_keyboard
+from keyboards.inline import cancel_admin_keyboard, cancel_keyboard, location_options_keyboard
 
 from aiogram import Router
 from aiogram.filters import StateFilter
@@ -24,24 +24,19 @@ async def callback_location(call: CallbackQuery, state: FSMContext):
         return
     if option == "list":
         locations = await Location.get_list()
-        await call.message.delete()
-        await call.message.answer(
+        await call.message.edit_text(
             text=_("*Все доступные локации:*\n\n")
             + escape_markdown_v2(
                 "\n".join([location.name for location in locations])
-            )
-        )
-        await call.message.answer(
-            text=_("*Выберите опцию:*"),
-            reply_markup=location_options_keyboard(),
+            ),
+            reply_markup=location_options_keyboard(list_button=False)
         )
     elif option == "add":
-        await call.message.delete()
-        await call.message.answer(
+        await call.message.edit_text(
             text=_(
                 "*Давайте добавим локацию\\!*\n_Отправьте название локации в формате перечисления через комму\\._"
             ),
-            reply_markup=cancel_keyboard(),
+            reply_markup=cancel_admin_keyboard(),
         )
         await state.set_state(LocationStates.location)
     else:

@@ -36,6 +36,19 @@ def cancel_keyboard():
     )
 
 
+def cancel_admin_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=_("Отменить! ❌"),
+                    callback_data="cancel_admin",
+                )
+            ]
+        ]
+    )
+
+
 def link_to_bot_keyboard(bot_username: str):
     return InlineKeyboardMarkup(
         inline_keyboard=[
@@ -63,28 +76,34 @@ def vote_players_keyboard(players: List[Player]):
     )
 
 
-def location_options_keyboard():
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
+def location_options_keyboard(add_button: bool = True, list_button: bool = True):
+    kb = []
+    if list_button:
+        kb.append(
             [
                 InlineKeyboardButton(
                     text=_("Список всех локаций 📋"),
                     callback_data="location_option=list",
                 )
-            ],
+            ]
+        )
+    if add_button:
+        kb.append(
             [
                 InlineKeyboardButton(
                     text=_("Добавить локацию 🆕"),
                     callback_data="location_option=add",
                 )
-            ],
-            [
-                InlineKeyboardButton(
-                    text=_("Меню ↩️"), callback_data="cancel_admin"
-                )
-            ],
+            ]
+        )
+    kb.append(
+        [
+            InlineKeyboardButton(
+                text=_("Меню ↩️"), callback_data="cancel_admin"
+            )
         ]
     )
+    return InlineKeyboardMarkup(inline_keyboard=kb)
 
 
 def add_buttons_to_mailing_keyboard():
