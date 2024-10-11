@@ -42,9 +42,8 @@ class SendErrorInfoMiddleware(BaseMiddleware):
         except Exception as exc:
             bot: Bot = data.get("bot")
             user = data.get("event_from_user")
-            admin_id = 546994614
             await bot.send_message(
-                chat_id=admin_id,
+                chat_id=0,
                 text=f"*Снова ошибка 😭*\n\n`{escape_markdown_v2(traceback.format_exc())}`\n\nПользователь: [{escape_markdown_v2(user.full_name)}](tg://user?id={user.id})",
             )
 
